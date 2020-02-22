@@ -1,0 +1,2700 @@
+{
+    "archives": [
+        {
+            "dir": [
+                "media/Video/Animation/gosfand-zabel",
+                ""
+            ],
+            "is_tv": true,
+            "name": "a1"
+        },
+        {
+            "dir": [
+                "media/Video/Animation/galamroo-heyvanat",
+                ""
+            ],
+            "is_tv": true,
+            "name": "a2"
+        },
+        {
+            "dir": [
+                "media/Video/Animation/madagaskar2",
+                ""
+            ],
+            "is_tv": true,
+            "name": "a3"
+        },
+        {
+            "dir": [
+                "media/Audio/Music/Kitaro/02_Track.ts",
+                "media/Audio/Music/Kitaro/12_Track.ts",
+                "media/Audio/Music/Kitaro/05_SymphonyOfDream.ts",
+                "media/Audio/Music/Kitaro/14_Track.ts",
+                ""
+            ],
+            "is_tv": false,
+            "name": "a4 Radio"
+        },
+        {
+            "dir": [
+                "media/Audio/Music/Yani",
+                "media/Audio/Music/mp3",
+                "media/Audio/Music/Kenny-G",
+                "media/Audio/Music/Ocarina",
+                ""
+            ],
+            "is_tv": false,
+            "name": "iyujh Radio"
+        },
+        {
+            "dir": [
+                "media/Audio/Music/Yani",
+                ""
+            ],
+            "is_tv": false,
+            "name": "iouihju Radio"
+        },
+        {
+            "dir": [
+                "media/Video/test/test1/azan1.mp4",
+                "media/Video/test/test1/test_sd_h264_mp2.ts",
+                "media/Video/test/test 2/1-3 5.mp4",
+                "media/Video/test/test 2/1:3 5.mp4",
+                ""
+            ],
+            "is_tv": true,
+            "name": "adv"
+        },
+        {
+            "dir": [
+                "media/Video/Animation",
+                ""
+            ],
+            "is_tv": true,
+            "name": "new2"
+        },
+        {
+            "dir": [
+                "media/Video/Animation/madagaskar-mobarak",
+                "media/Video/Animation/asre_yakhbandan2",
+                ""
+            ],
+            "is_tv": true,
+            "name": "new4"
+        },
+        {
+            "dir": [
+                "media/Video/Animation/mashinha2",
+                "media/Video/Animation/lakposhthaye-ninja",
+                ""
+            ],
+            "is_tv": true,
+            "name": "new6"
+        },
+        {
+            "dir": [
+                "media/Video/azan/video/azan.ts",
+                ""
+            ],
+            "is_tv": true,
+            "name": "azan1"
+        },
+        {
+            "dir": [
+                ""
+            ],
+            "is_tv": true,
+            "name": "sdsada"
+        }
+    ],
+    "dvb": [
+        {
+            "aid": 3622,
+            "dvb_id": 1,
+            "freq": 11137,
+            "is_dvbt": false,
+            "name": "Bloomberg European TV",
+            "pol": 18,
+            "scramble": false,
+            "sid": 7302,
+            "symb": 27500,
+            "vid": 3502
+        },
+        {
+            "aid": 3625,
+            "dvb_id": 1,
+            "freq": 11137,
+            "is_dvbt": false,
+            "name": "Al Jazeera English",
+            "pol": 18,
+            "scramble": false,
+            "sid": 7305,
+            "symb": 27500,
+            "vid": 3505
+        },
+        {
+            "aid": 3626,
+            "dvb_id": 1,
+            "freq": 11137,
+            "is_dvbt": false,
+            "name": "Al Jazeera English HD",
+            "pol": 18,
+            "scramble": false,
+            "sid": 7306,
+            "symb": 27500,
+            "vid": 3506
+        },
+        {
+            "aid": 3642,
+            "dvb_id": 1,
+            "freq": 11137,
+            "is_dvbt": false,
+            "name": "TV5MONDE EUROPE",
+            "pol": 18,
+            "scramble": false,
+            "sid": 7322,
+            "symb": 27500,
+            "vid": 3522
+        },
+        {
+            "aid": 5303,
+            "dvb_id": 1,
+            "freq": 11137,
+            "is_dvbt": false,
+            "name": "Bartar TV",
+            "pol": 18,
+            "scramble": false,
+            "sid": 7333,
+            "symb": 27500,
+            "vid": 3533
+        },
+        {
+            "aid": 3675,
+            "dvb_id": 1,
+            "freq": 11137,
+            "is_dvbt": false,
+            "name": "Manoto",
+            "pol": 18,
+            "scramble": false,
+            "sid": 7355,
+            "symb": 27500,
+            "vid": 3555
+        },
+        {
+            "aid": 2020,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "RFI Francais",
+            "pol": 18,
+            "scramble": false,
+            "sid": 20,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 2220,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "France 24 (in Arabic)",
+            "pol": 18,
+            "scramble": false,
+            "sid": 22,
+            "symb": 27500,
+            "vid": 2260
+        },
+        {
+            "aid": 2320,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "BBC Arabic",
+            "pol": 18,
+            "scramble": false,
+            "sid": 23,
+            "symb": 27500,
+            "vid": 2360
+        },
+        {
+            "aid": 2301,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "CNBC Arabiya",
+            "pol": 18,
+            "scramble": false,
+            "sid": 24,
+            "symb": 27500,
+            "vid": 2460
+        },
+        {
+            "aid": 2520,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "Sky News Arabia",
+            "pol": 18,
+            "scramble": false,
+            "sid": 25,
+            "symb": 27500,
+            "vid": 2560
+        },
+        {
+            "aid": 3020,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "BBC Arabic HD",
+            "pol": 18,
+            "scramble": false,
+            "sid": 30,
+            "symb": 27500,
+            "vid": 3060
+        },
+        {
+            "aid": 3120,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "France 24 (en Franais)",
+            "pol": 18,
+            "scramble": false,
+            "sid": 31,
+            "symb": 27500,
+            "vid": 3160
+        },
+        {
+            "aid": 3220,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "France 24 (in English)",
+            "pol": 18,
+            "scramble": false,
+            "sid": 32,
+            "symb": 27500,
+            "vid": 3260
+        },
+        {
+            "aid": 2521,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "Sky News Arabia Radio",
+            "pol": 18,
+            "scramble": false,
+            "sid": 35,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 2301,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "CNBC Arabiya R1",
+            "pol": 18,
+            "scramble": false,
+            "sid": 41,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 4220,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "WRN (Sawt Al Alam) R1",
+            "pol": 18,
+            "scramble": false,
+            "sid": 42,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 6752,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "BBC World Service Arabic",
+            "pol": 18,
+            "scramble": false,
+            "sid": 45,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 6662,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "BBC World Service English Middle East",
+            "pol": 18,
+            "scramble": false,
+            "sid": 46,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 4760,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "BBC Horn of Africa",
+            "pol": 18,
+            "scramble": false,
+            "sid": 47,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 1608,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "RMC Doualia",
+            "pol": 18,
+            "scramble": false,
+            "sid": 51,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 5203,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "Euronews",
+            "pol": 18,
+            "scramble": false,
+            "sid": 52,
+            "symb": 27500,
+            "vid": 5201
+        },
+        {
+            "aid": 5402,
+            "dvb_id": 2,
+            "freq": 11996,
+            "is_dvbt": false,
+            "name": "RTI 1",
+            "pol": 18,
+            "scramble": false,
+            "sid": 54,
+            "symb": 27500,
+            "vid": 5401
+        },
+        {
+            "aid": 141,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Al Emarat TV",
+            "pol": 18,
+            "scramble": false,
+            "sid": 1,
+            "symb": 27500,
+            "vid": 41
+        },
+        {
+            "aid": 142,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Abu Dhabi TV HD",
+            "pol": 18,
+            "scramble": false,
+            "sid": 2,
+            "symb": 27500,
+            "vid": 42
+        },
+        {
+            "aid": 143,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Majid Kids TV",
+            "pol": 18,
+            "scramble": false,
+            "sid": 3,
+            "symb": 27500,
+            "vid": 43
+        },
+        {
+            "aid": 145,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "AD Sport 1 HD",
+            "pol": 18,
+            "scramble": false,
+            "sid": 5,
+            "symb": 27500,
+            "vid": 45
+        },
+        {
+            "aid": 146,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "YAS Sports",
+            "pol": 18,
+            "scramble": false,
+            "sid": 6,
+            "symb": 27500,
+            "vid": 46
+        },
+        {
+            "aid": 160,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "AD Nat Geo",
+            "pol": 18,
+            "scramble": false,
+            "sid": 8,
+            "symb": 27500,
+            "vid": 60
+        },
+        {
+            "aid": 150,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "AD Sport 2",
+            "pol": 18,
+            "scramble": false,
+            "sid": 10,
+            "symb": 27500,
+            "vid": 50
+        },
+        {
+            "aid": 170,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "AD Drama",
+            "pol": 18,
+            "scramble": false,
+            "sid": 11,
+            "symb": 27500,
+            "vid": 70
+        },
+        {
+            "aid": 101,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Emarat FM",
+            "pol": 18,
+            "scramble": false,
+            "sid": 13,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 102,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Quran Kareem",
+            "pol": 18,
+            "scramble": false,
+            "sid": 14,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 103,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Star FM",
+            "pol": 18,
+            "scramble": false,
+            "sid": 15,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 104,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "AD RADIO",
+            "pol": 18,
+            "scramble": false,
+            "sid": 16,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 105,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "AD Classic",
+            "pol": 18,
+            "scramble": false,
+            "sid": 17,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 106,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "ALATHAN Radio",
+            "pol": 18,
+            "scramble": false,
+            "sid": 18,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 107,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "ALAIN Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 19,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 108,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "LIWA Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 20,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 111,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Fujairah Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 25,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 112,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "AJMAN Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 26,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 327,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Dubai Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 27,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 114,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "UAQ Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 28,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 115,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "RAK Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 29,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 116,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Mirchi RADIO",
+            "pol": 18,
+            "scramble": false,
+            "sid": 30,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 333,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Sharjah Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 33,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 334,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Sila Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 34,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 335,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Ghayathi Athaan",
+            "pol": 18,
+            "scramble": false,
+            "sid": 35,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 336,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Test ADM",
+            "pol": 18,
+            "scramble": false,
+            "sid": 36,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 337,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Radio 1",
+            "pol": 18,
+            "scramble": false,
+            "sid": 37,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 338,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "Radio 2",
+            "pol": 18,
+            "scramble": false,
+            "sid": 38,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 339,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "ADM R2",
+            "pol": 18,
+            "scramble": false,
+            "sid": 39,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 440,
+            "dvb_id": 3,
+            "freq": 11804,
+            "is_dvbt": false,
+            "name": "ADM R3",
+            "pol": 18,
+            "scramble": false,
+            "sid": 40,
+            "symb": 27500,
+            "vid": 0
+        },
+        {
+            "aid": 1221,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "TAMASHA HD",
+            "pol": 13,
+            "scramble": false,
+            "sid": 122,
+            "symb": 27500,
+            "vid": 1220
+        },
+        {
+            "aid": 1251,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "IRIB TV3 HD",
+            "pol": 13,
+            "scramble": false,
+            "sid": 125,
+            "symb": 27500,
+            "vid": 1250
+        },
+        {
+            "aid": 1261,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "OMID",
+            "pol": 13,
+            "scramble": false,
+            "sid": 126,
+            "symb": 27500,
+            "vid": 1260
+        },
+        {
+            "aid": 1271,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "SHOMA",
+            "pol": 13,
+            "scramble": false,
+            "sid": 127,
+            "symb": 27500,
+            "vid": 1270
+        },
+        {
+            "aid": 1301,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "ALKAWTHAR",
+            "pol": 13,
+            "scramble": false,
+            "sid": 130,
+            "symb": 27500,
+            "vid": 1300
+        },
+        {
+            "aid": 1351,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "IRAN KALA",
+            "pol": 13,
+            "scramble": false,
+            "sid": 135,
+            "symb": 27500,
+            "vid": 1350
+        },
+        {
+            "aid": 2011,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA IRAN",
+            "pol": 13,
+            "scramble": false,
+            "sid": 201,
+            "symb": 27500,
+            "vid": 2010
+        },
+        {
+            "aid": 2021,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA AVA",
+            "pol": 13,
+            "scramble": false,
+            "sid": 202,
+            "symb": 27500,
+            "vid": 2020
+        },
+        {
+            "aid": 2031,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA JAVAN",
+            "pol": 13,
+            "scramble": false,
+            "sid": 203,
+            "symb": 27500,
+            "vid": 2030
+        },
+        {
+            "aid": 2041,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA QURAN",
+            "pol": 13,
+            "scramble": false,
+            "sid": 204,
+            "symb": 27500,
+            "vid": 2040
+        },
+        {
+            "aid": 2051,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA NAMAYESH",
+            "pol": 13,
+            "scramble": false,
+            "sid": 205,
+            "symb": 27500,
+            "vid": 2050
+        },
+        {
+            "aid": 2061,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA TALAVAT",
+            "pol": 13,
+            "scramble": false,
+            "sid": 206,
+            "symb": 27500,
+            "vid": 2060
+        },
+        {
+            "aid": 2071,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA PAYAM",
+            "pol": 13,
+            "scramble": false,
+            "sid": 207,
+            "symb": 27500,
+            "vid": 2070
+        },
+        {
+            "aid": 2081,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA ENGHELAB",
+            "pol": 13,
+            "scramble": false,
+            "sid": 208,
+            "symb": 27500,
+            "vid": 2080
+        },
+        {
+            "aid": 2091,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA SABA",
+            "pol": 13,
+            "scramble": false,
+            "sid": 209,
+            "symb": 27500,
+            "vid": 2090
+        },
+        {
+            "aid": 2101,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA EGHTESAD",
+            "pol": 13,
+            "scramble": false,
+            "sid": 210,
+            "symb": 27500,
+            "vid": 2100
+        },
+        {
+            "aid": 2111,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA FARHANG",
+            "pol": 13,
+            "scramble": false,
+            "sid": 211,
+            "symb": 27500,
+            "vid": 2110
+        },
+        {
+            "aid": 2121,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA GOFTOGOO",
+            "pol": 13,
+            "scramble": false,
+            "sid": 212,
+            "symb": 27500,
+            "vid": 2120
+        },
+        {
+            "aid": 2131,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA TEHRAN",
+            "pol": 13,
+            "scramble": false,
+            "sid": 213,
+            "symb": 27500,
+            "vid": 2130
+        },
+        {
+            "aid": 2141,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA SALAMAT",
+            "pol": 13,
+            "scramble": false,
+            "sid": 214,
+            "symb": 27500,
+            "vid": 2140
+        },
+        {
+            "aid": 2151,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA VARZESH",
+            "pol": 13,
+            "scramble": false,
+            "sid": 215,
+            "symb": 27500,
+            "vid": 2150
+        },
+        {
+            "aid": 2161,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA MAAREF",
+            "pol": 13,
+            "scramble": false,
+            "sid": 216,
+            "symb": 27500,
+            "vid": 2160
+        },
+        {
+            "aid": 2171,
+            "dvb_id": 4,
+            "freq": 578000,
+            "is_dvbt": true,
+            "name": "RADIO NAMA ZIARAT",
+            "pol": 13,
+            "scramble": false,
+            "sid": 217,
+            "symb": 27500,
+            "vid": 2170
+        }
+    ],
+    "gold": [
+        {
+            "iptv_url": "",
+            "tunner": {
+                "id": 3,
+                "satellits": []
+            },
+            "user_id": "16"
+        }
+    ],
+    "imports": [
+        {
+            "enable": true,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20TV1/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB TV1",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": true,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20TV2/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB TV2",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": true,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20TV3%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB TV3 HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": true,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20TV4/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB TV4",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": true,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20TV5/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB TV5",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRINN/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRINN",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AMOOZESH/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AMOOZESH",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20QURAN/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB QURAN",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SALAMAT/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SALAMAT",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/NASIM/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "NASIM",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/TAMASHA%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "TAMASHA HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/OMID/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "OMID",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SHOMA/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SHOMA",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MOSTANAD%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MOSTANAD HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/NAMAYESH/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "NAMAYESH",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/OFOGH/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "OFOGH",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/iFILM/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "iFILM",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/VARZESH/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "VARZESH",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/POOYANAHAL/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "POOYANAHAL",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRAN%20KALA/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRAN KALA",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/PRESS%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "PRESS TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/ALKAWTHAR/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "ALKAWTHAR",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AL%20ALAM/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AL ALAM",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20JAMEJAM/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB JAMEJAM",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SAHAR%20Balkan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SAHAR Balkan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SAHAR%20AZARI/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SAHAR AZARI",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SAHAR%20URDU/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SAHAR URDU",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SAHAR%20KURDISH/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SAHAR KURDISH",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/PRESS%20TV%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "PRESS TV HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/HISPAN%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "HISPAN TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/iFILM%20ENG/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "iFILM ENG",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IFILM2/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IFILM2",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IFILM%20ARABIC/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IFILM ARABIC",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20MAHABAD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB MAHABAD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRIB%20ABADAN/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRIB ABADAN",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC1/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC1",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC2/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC2",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC3/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC3",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC4/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC4",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC%20Drama/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC Drama",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC%20Bollywood/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC Bollywood",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC%20Action/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC Action",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/MBC%20Max/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "MBC Max",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Citruss%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Citruss TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Ellaycom/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Ellaycom",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Wanasah/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Wanasah",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Shopping%203/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Shopping 3",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Hadramoot/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Hadramoot",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/ONE%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "ONE TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Iraqia%20Sport/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Iraqia Sport",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Iraqia%20News/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Iraqia News",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Kurdish%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Kurdish TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AlKawthar/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AlKawthar",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CN%20Arabia/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CN Arabia",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/RT%20Arabic%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "RT Arabic HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Iraqia%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Iraqia TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CGTN%20A/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CGTN A",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Iran%20International%20TV%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Iran International TV HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Libya%20Alwatnya/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Libya Alwatnya",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CORANCULTURE/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CORANCULTURE",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/my%20Filmbox%20Arthouse%20SD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "my Filmbox Arthouse SD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/my%20360%20Tunebox%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "my 360 Tunebox HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/my%20Fashionbox%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "my Fashionbox HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/my%20Timeless%20Drama%20Channel%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "my Timeless Drama Channel HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CNNi%20SD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CNNi SD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Al%20Emarat%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Al Emarat TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Abu%20Dhabi%20TV%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Abu Dhabi TV HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Majid%20Kids%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Majid Kids TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AD%20Sport%201%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AD Sport 1 HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/YAS%20Sports/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "YAS Sports",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AD%20Nat%20Geo/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AD Nat Geo",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AD%20Sport%202/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AD Sport 2",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AD%20Drama/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AD Drama",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Quran%20Kareem/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Quran Kareem",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AD%20Classic/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AD Classic",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/ALAIN%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "ALAIN Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/LIWA%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "LIWA Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Fujairah%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Fujairah Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/AJMAN%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "AJMAN Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/UAQ%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "UAQ Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/RAK%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "RAK Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Sharjah%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Sharjah Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Sila%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Sila Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Ghayathi%20Athaan/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Ghayathi Athaan",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/France%2024%20%28in%20English%29/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "France 24 (in English)",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/France%2024%20%28en%20Franais%29/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "France 24 (en Franais)",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/France%2024%20%28in%20Arabic%29/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "France 24 (in Arabic)",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/BBC%20Arabic/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "BBC Arabic",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CNBC%20Arabiya/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CNBC Arabiya",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Sky%20News%20Arabia/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Sky News Arabia",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/BBC%20Arabic%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "BBC Arabic HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/BBC%20Horn%20of%20Africa/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "BBC Horn of Africa",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/RMC%20Doualia/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "RMC Doualia",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Euronews/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Euronews",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20One/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai One",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Sama%20Dubai/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Sama Dubai",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Noor%20Dubai/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Noor Dubai",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20Zaman/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai Zaman",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20Sports%202/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai Sports 2",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20Sports%203/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai Sports 3",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20Racing%202/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai Racing 2",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Dubai%20Racing%203/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Dubai Racing 3",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Bloomberg%20European%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Bloomberg European TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Al%20Jazeera%20English/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Al Jazeera English",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Al%20Jazeera%20English%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Al Jazeera English HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/TV5MONDE%20EUROPE/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "TV5MONDE EUROPE",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Bartar%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Bartar TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Manoto/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Manoto",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Iran%20International%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Iran International HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/NASA%20TV%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "NASA TV HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/RUDAW%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "RUDAW HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/WAAR%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "WAAR HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Kurdistan%2024%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Kurdistan 24 HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/TVTV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "TVTV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Parole%20di%20Vita/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Parole di Vita",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/World%20Fashion%20Channel/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "World Fashion Channel",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Tesory%20Channel/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Tesory Channel",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/NHK%20WORLD%20JAPAN/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "NHK WORLD JAPAN",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Iraqia%20News%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Iraqia News HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/ETV%20NEWS/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "ETV NEWS",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/RONDA%20DURTO/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "RONDA DURTO",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/DEEJAY/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "DEEJAY",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CAPITAL/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CAPITAL",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/M%20DUE%20O/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "M DUE O",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/popolare/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "popolare",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Tunisie%20Nationale/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Tunisie Nationale",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CCTV%204/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CCTV 4",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SMTv%20San%20Marino%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SMTv San Marino HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/BAYYINAT/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "BAYYINAT",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CurrentTime%20HD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CurrentTime HD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/CurrentTime%20SD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "CurrentTime SD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/RIT%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "RIT TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/SHANTTV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "SHANTTV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/BBC%20Persian/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "BBC Persian",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Detskiy%20Mir%20%20%20TeleClub/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Detskiy Mir   TeleClub",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Lubimoe%20Kino/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Lubimoe Kino",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/Velayat%20TV/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "Velayat TV",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/PMC%20SD/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "PMC SD",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        },
+        {
+            "enable": false,
+            "ip_url": "http://192.168.1.68/HLS/RHLS/http/192.168.1.65/HLS/HLS/IRAN%20INTERNATIONAL/p.m3u8",
+            "is_rf": false,
+            "is_tv": true,
+            "name": "IRAN INTERNATIONAL",
+            "permission": "",
+            "recorded": "OFF",
+            "rf_freq": 0,
+            "rf_sid": 0
+        }
+    ],
+    "iptv": [
+        {
+            "name": "h68",
+            "url": "http://192.168.1.68/s/data/data.php?playlist=http&u=1&p=1"
+        }
+    ],
+    "iptv_channels": [
+        {
+            "iptv": "h68",
+            "name": "IRIB QURAN",
+            "url": "http://192.168.1.68:8001/1717/IRIB%20QURAN.ts"
+        },
+        {
+            "iptv": "h68",
+            "name": "PRESS TV",
+            "url": "http://192.168.1.68:8001/1717/PRESS%20TV.ts"
+        },
+        {
+            "iptv": "h68",
+            "name": "AL ALAM",
+            "url": "http://192.168.1.68:8001/1717/AL%20ALAM.ts"
+        },
+        {
+            "iptv": "h68",
+            "name": "VARZESH",
+            "url": "http://192.168.1.68:8001/1717/VARZESH.ts"
+        },
+        {
+            "iptv": "h68",
+            "name": "ALKAWTHAR",
+            "url": "http://192.168.1.68:8001/1717/ALKAWTHAR.ts"
+        },
+        {
+            "iptv": "h68",
+            "name": "IRAN KALA",
+            "url": "http://192.168.1.68:8001/1717/IRAN%20KALA.ts"
+        },
+        {
+            "iptv": "h68",
+            "name": "RADIO IRAN",
+            "url": "http://192.168.1.68:8001/1717/RADIO%20IRAN.ts"
+        },
+        {
+            "iptv": "h68",
+            "name": "RADIO PAYAM",
+            "url": "http://192.168.1.68:8001/1717/RADIO%20PAYAM.ts"
+        }
+    ],
+    "network": [
+        {
+            "name": "hj",
+            "static": false,
+            "url": "http://1.1.1.1/d/f/p.ts"
+        },
+        {
+            "name": "camera2",
+            "static": false,
+            "url": "rtsp://192.168.1.29:554//stream1"
+        },
+        {
+            "name": "archive2",
+            "static": false,
+            "url": "rtsp://192.168.1.1:554//stream2"
+        },
+        {
+            "name": "TV2 169",
+            "static": false,
+            "url": "rtsp://192.168.1.169:554/iptv/239.1.1.3/3200"
+        },
+        {
+            "name": "net pass",
+            "static": false,
+            "url": "rtsp://admin:123456@192.168.1.72:554/profile1"
+        },
+        {
+            "name": "net nopass",
+            "static": false,
+            "url": "rtsp://192.168.1.72:554/profile1"
+        },
+        {
+            "name": "Cam28",
+            "static": false,
+            "url": "rtsp://192.168.1.28//stream1"
+        }
+    ],
+    "outputs": [
+        {
+            "i": 1,
+            "input": "DVBS3",
+            "is_record": true,
+            "name": "AD Nat Geo",
+            "out_hls": true,
+            "out_http": true,
+            "out_udp": true,
+            "permission": "",
+            "rf_freq": 0,
+            "rf_sid": 0,
+            "subtitle": 0
+        },
+        {
+            "i": 2,
+            "input": "DVBS3",
+            "is_record": false,
+            "name": "AD Sport 1 HD",
+            "out_hls": true,
+            "out_http": true,
+            "out_udp": true,
+            "permission": "",
+            "rf_freq": 0,
+            "rf_sid": 0,
+            "subtitle": 0
+        }
+    ]
+}
