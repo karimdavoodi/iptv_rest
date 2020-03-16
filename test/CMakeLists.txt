@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(QT_QMAKE_EXECUTABLE "/usr/bin/qmake")
@@ -12,10 +13,14 @@ add_test(api ${PROJECT_NAME})
 aux_source_directory(. TEST_LIST)
 add_executable(${PROJECT_NAME} ${TEST_LIST} ${SRCS} )
 target_link_libraries(${PROJECT_NAME} pthread )
+find_package(Boost COMPONENTS system log REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} )
+add_definitions(-DBOOST_LOG_DYN_LINK=1)
+add_definitions(-ftest-coverage)
 
 # Check served packege
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SERVED REQUIRED served )
 target_include_directories(${PROJECT_NAME} PUBLIC ${SERVED_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${SERVED_LIBRARIES})
+add_custom_command(TARGET ${PROJECT_NAME} COMMAND sh -c "./test_api")

@@ -1,6 +1,7 @@
 /*
 
 */
+#include <cstdlib>
 #include <iostream>
 #include <served/served.hpp>
 
@@ -41,6 +42,7 @@ void test(served::response &res, const served::request &req)
     res << "Sourcs: " << req.source() << "\n";
     res << "Body:" << req.body() << "\n";
     res.set_status(200);
+
 }
 int main(int argc, char *argv[])
 {
@@ -48,7 +50,6 @@ int main(int argc, char *argv[])
     BOOST_LOG_TRIVIAL(info) << "Start Main";
 
     served::multiplexer mux;
-
     BOOST_LOG_TRIVIAL(info) << "Init Routes";
     //mux.handle("/test/{par}").get(test);
     #include "routes.hpp"

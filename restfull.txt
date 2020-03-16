@@ -1395,12 +1395,8 @@ Launcher #############################################
         ResponseBody: image file
 
         Method: POST
-        RequestBody: multipart
-            Part1: 
-                {
-                    "launcher": string    
-                }
-            Part2: background image file
+        Parameters: launcher=string
+        RequestBody: background image file
 
         Description: Manage of launcher logo
         Path: /launcher/logo
@@ -1411,13 +1407,9 @@ Launcher #############################################
         ResponseBody: image file
 
         Method: POST
-        RequestBody: multipart
-            Part1: 
-                {
-                    "launcher": string,    
-                    "language": string    
-                }
-            Part2: background image file
+        Parameters: launcher=string&
+                    language=string
+        RequestBody: background image file
 
 *** Components Maker
         Description: Manage of New components

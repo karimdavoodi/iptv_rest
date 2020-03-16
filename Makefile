@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/karim/src/myrest
+CMAKE_SOURCE_DIR = /home/karim/src/iptv_rest
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/karim/src/myrest
+CMAKE_BINARY_DIR = /home/karim/src/iptv_rest
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -78,22 +78,11 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
-# Special rule for the target test
-test:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
-	/usr/bin/ctest --force-new-ctest-process $(ARGS)
-.PHONY : test
-
-# Special rule for the target test
-test/fast: test
-
-.PHONY : test/fast
-
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/myrest/CMakeFiles /home/karim/src/myrest/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/iptv_rest/CMakeFiles /home/karim/src/iptv_rest/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/myrest/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/iptv_rest/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -133,19 +122,6 @@ main: cmake_check_build_system
 main/fast:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
-
-#=============================================================================
-# Target rules for targets named test_api
-
-# Build rule for target.
-test_api: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_api
-.PHONY : test_api
-
-# fast build rule for target.
-test_api/fast:
-	$(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/build
-.PHONY : test_api/fast
 
 src/launcher.o: src/launcher.cpp.o
 
@@ -397,10 +373,8 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... edit_cache"
 	@echo "... main"
-	@echo "... test"
-	@echo "... test_api"
+	@echo "... edit_cache"
 	@echo "... src/launcher.o"
 	@echo "... src/launcher.i"
 	@echo "... src/launcher.s"

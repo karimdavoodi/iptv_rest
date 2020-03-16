@@ -165,11 +165,15 @@ mux.handle("/launcher/background")
         .get(launcher_background_get)
         .post(launcher_background_post);
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/logo";
-mux.handle("/launcher/logo").get(launcher_logo);
+mux.handle("/launcher/logo")
+        .get(launcher_logo_get)
+        .post(launcher_logo_post);
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/make";
-mux.handle("/launcher/make").get(launcher_make);
-BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/make/id";
-mux.handle("/launcher/make/id").get(launcher_make_id);
+mux.handle("/launcher/make")
+        .get(launcher_make_get)
+        .put(launcher_make_put)
+        .post(launcher_make_post)
+        .del(launcher_make_delete);
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/arrange";
 mux.handle("/launcher/arrange").get(launcher_arrange);
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/arrange/id";

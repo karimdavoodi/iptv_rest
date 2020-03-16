@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/karim/src/myrest
+CMAKE_SOURCE_DIR = /home/karim/src/iptv_rest
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/karim/src/myrest
+CMAKE_BINARY_DIR = /home/karim/src/iptv_rest
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -91,14 +91,14 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/karim/src/myrest && $(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/myrest/CMakeFiles /home/karim/src/myrest/test/CMakeFiles/progress.marks
-	cd /home/karim/src/myrest && $(MAKE) -f CMakeFiles/Makefile2 test/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/myrest/CMakeFiles 0
+	cd /home/karim/src/iptv_rest && $(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/iptv_rest/CMakeFiles /home/karim/src/iptv_rest/test/CMakeFiles/progress.marks
+	cd /home/karim/src/iptv_rest && $(MAKE) -f CMakeFiles/Makefile2 test/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/iptv_rest/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/karim/src/myrest && $(MAKE) -f CMakeFiles/Makefile2 test/clean
+	cd /home/karim/src/iptv_rest && $(MAKE) -f CMakeFiles/Makefile2 test/clean
 .PHONY : clean
 
 # The main clean target
@@ -108,22 +108,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/karim/src/myrest && $(MAKE) -f CMakeFiles/Makefile2 test/preinstall
+	cd /home/karim/src/iptv_rest && $(MAKE) -f CMakeFiles/Makefile2 test/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/karim/src/myrest && $(MAKE) -f CMakeFiles/Makefile2 test/preinstall
+	cd /home/karim/src/iptv_rest && $(MAKE) -f CMakeFiles/Makefile2 test/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/karim/src/myrest && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/karim/src/iptv_rest && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 test/CMakeFiles/test_api.dir/rule:
-	cd /home/karim/src/myrest && $(MAKE) -f CMakeFiles/Makefile2 test/CMakeFiles/test_api.dir/rule
+	cd /home/karim/src/iptv_rest && $(MAKE) -f CMakeFiles/Makefile2 test/CMakeFiles/test_api.dir/rule
 .PHONY : test/CMakeFiles/test_api.dir/rule
 
 # Convenience name for target.
@@ -133,7 +133,7 @@ test_api: test/CMakeFiles/test_api.dir/rule
 
 # fast build rule for target.
 test_api/fast:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/build
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/build
 .PHONY : test_api/fast
 
 __/src/launcher.o: __/src/launcher.cpp.o
@@ -142,7 +142,7 @@ __/src/launcher.o: __/src/launcher.cpp.o
 
 # target to build an object file
 __/src/launcher.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/launcher.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/launcher.cpp.o
 .PHONY : __/src/launcher.cpp.o
 
 __/src/launcher.i: __/src/launcher.cpp.i
@@ -151,7 +151,7 @@ __/src/launcher.i: __/src/launcher.cpp.i
 
 # target to preprocess a source file
 __/src/launcher.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/launcher.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/launcher.cpp.i
 .PHONY : __/src/launcher.cpp.i
 
 __/src/launcher.s: __/src/launcher.cpp.s
@@ -160,7 +160,7 @@ __/src/launcher.s: __/src/launcher.cpp.s
 
 # target to generate assembly for a file
 __/src/launcher.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/launcher.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/launcher.cpp.s
 .PHONY : __/src/launcher.cpp.s
 
 __/src/live.o: __/src/live.cpp.o
@@ -169,7 +169,7 @@ __/src/live.o: __/src/live.cpp.o
 
 # target to build an object file
 __/src/live.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/live.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/live.cpp.o
 .PHONY : __/src/live.cpp.o
 
 __/src/live.i: __/src/live.cpp.i
@@ -178,7 +178,7 @@ __/src/live.i: __/src/live.cpp.i
 
 # target to preprocess a source file
 __/src/live.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/live.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/live.cpp.i
 .PHONY : __/src/live.cpp.i
 
 __/src/live.s: __/src/live.cpp.s
@@ -187,7 +187,7 @@ __/src/live.s: __/src/live.cpp.s
 
 # target to generate assembly for a file
 __/src/live.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/live.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/live.cpp.s
 .PHONY : __/src/live.cpp.s
 
 __/src/main_storage.o: __/src/main_storage.cpp.o
@@ -196,7 +196,7 @@ __/src/main_storage.o: __/src/main_storage.cpp.o
 
 # target to build an object file
 __/src/main_storage.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/main_storage.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/main_storage.cpp.o
 .PHONY : __/src/main_storage.cpp.o
 
 __/src/main_storage.i: __/src/main_storage.cpp.i
@@ -205,7 +205,7 @@ __/src/main_storage.i: __/src/main_storage.cpp.i
 
 # target to preprocess a source file
 __/src/main_storage.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/main_storage.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/main_storage.cpp.i
 .PHONY : __/src/main_storage.cpp.i
 
 __/src/main_storage.s: __/src/main_storage.cpp.s
@@ -214,7 +214,7 @@ __/src/main_storage.s: __/src/main_storage.cpp.s
 
 # target to generate assembly for a file
 __/src/main_storage.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/main_storage.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/main_storage.cpp.s
 .PHONY : __/src/main_storage.cpp.s
 
 __/src/report.o: __/src/report.cpp.o
@@ -223,7 +223,7 @@ __/src/report.o: __/src/report.cpp.o
 
 # target to build an object file
 __/src/report.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/report.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/report.cpp.o
 .PHONY : __/src/report.cpp.o
 
 __/src/report.i: __/src/report.cpp.i
@@ -232,7 +232,7 @@ __/src/report.i: __/src/report.cpp.i
 
 # target to preprocess a source file
 __/src/report.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/report.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/report.cpp.i
 .PHONY : __/src/report.cpp.i
 
 __/src/report.s: __/src/report.cpp.s
@@ -241,7 +241,7 @@ __/src/report.s: __/src/report.cpp.s
 
 # target to generate assembly for a file
 __/src/report.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/report.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/report.cpp.s
 .PHONY : __/src/report.cpp.s
 
 __/src/status.o: __/src/status.cpp.o
@@ -250,7 +250,7 @@ __/src/status.o: __/src/status.cpp.o
 
 # target to build an object file
 __/src/status.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/status.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/status.cpp.o
 .PHONY : __/src/status.cpp.o
 
 __/src/status.i: __/src/status.cpp.i
@@ -259,7 +259,7 @@ __/src/status.i: __/src/status.cpp.i
 
 # target to preprocess a source file
 __/src/status.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/status.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/status.cpp.i
 .PHONY : __/src/status.cpp.i
 
 __/src/status.s: __/src/status.cpp.s
@@ -268,7 +268,7 @@ __/src/status.s: __/src/status.cpp.s
 
 # target to generate assembly for a file
 __/src/status.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/status.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/status.cpp.s
 .PHONY : __/src/status.cpp.s
 
 __/src/storage.o: __/src/storage.cpp.o
@@ -277,7 +277,7 @@ __/src/storage.o: __/src/storage.cpp.o
 
 # target to build an object file
 __/src/storage.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/storage.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/storage.cpp.o
 .PHONY : __/src/storage.cpp.o
 
 __/src/storage.i: __/src/storage.cpp.i
@@ -286,7 +286,7 @@ __/src/storage.i: __/src/storage.cpp.i
 
 # target to preprocess a source file
 __/src/storage.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/storage.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/storage.cpp.i
 .PHONY : __/src/storage.cpp.i
 
 __/src/storage.s: __/src/storage.cpp.s
@@ -295,7 +295,7 @@ __/src/storage.s: __/src/storage.cpp.s
 
 # target to generate assembly for a file
 __/src/storage.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/storage.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/storage.cpp.s
 .PHONY : __/src/storage.cpp.s
 
 __/src/system.o: __/src/system.cpp.o
@@ -304,7 +304,7 @@ __/src/system.o: __/src/system.cpp.o
 
 # target to build an object file
 __/src/system.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/system.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/system.cpp.o
 .PHONY : __/src/system.cpp.o
 
 __/src/system.i: __/src/system.cpp.i
@@ -313,7 +313,7 @@ __/src/system.i: __/src/system.cpp.i
 
 # target to preprocess a source file
 __/src/system.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/system.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/system.cpp.i
 .PHONY : __/src/system.cpp.i
 
 __/src/system.s: __/src/system.cpp.s
@@ -322,7 +322,7 @@ __/src/system.s: __/src/system.cpp.s
 
 # target to generate assembly for a file
 __/src/system.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/system.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/system.cpp.s
 .PHONY : __/src/system.cpp.s
 
 __/src/users.o: __/src/users.cpp.o
@@ -331,7 +331,7 @@ __/src/users.o: __/src/users.cpp.o
 
 # target to build an object file
 __/src/users.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/users.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/users.cpp.o
 .PHONY : __/src/users.cpp.o
 
 __/src/users.i: __/src/users.cpp.i
@@ -340,7 +340,7 @@ __/src/users.i: __/src/users.cpp.i
 
 # target to preprocess a source file
 __/src/users.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/users.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/users.cpp.i
 .PHONY : __/src/users.cpp.i
 
 __/src/users.s: __/src/users.cpp.s
@@ -349,7 +349,7 @@ __/src/users.s: __/src/users.cpp.s
 
 # target to generate assembly for a file
 __/src/users.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/users.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/__/src/users.cpp.s
 .PHONY : __/src/users.cpp.s
 
 test_launcher.o: test_launcher.cpp.o
@@ -358,7 +358,7 @@ test_launcher.o: test_launcher.cpp.o
 
 # target to build an object file
 test_launcher.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_launcher.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_launcher.cpp.o
 .PHONY : test_launcher.cpp.o
 
 test_launcher.i: test_launcher.cpp.i
@@ -367,7 +367,7 @@ test_launcher.i: test_launcher.cpp.i
 
 # target to preprocess a source file
 test_launcher.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_launcher.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_launcher.cpp.i
 .PHONY : test_launcher.cpp.i
 
 test_launcher.s: test_launcher.cpp.s
@@ -376,7 +376,7 @@ test_launcher.s: test_launcher.cpp.s
 
 # target to generate assembly for a file
 test_launcher.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_launcher.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_launcher.cpp.s
 .PHONY : test_launcher.cpp.s
 
 test_main.o: test_main.cpp.o
@@ -385,7 +385,7 @@ test_main.o: test_main.cpp.o
 
 # target to build an object file
 test_main.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main.cpp.o
 .PHONY : test_main.cpp.o
 
 test_main.i: test_main.cpp.i
@@ -394,7 +394,7 @@ test_main.i: test_main.cpp.i
 
 # target to preprocess a source file
 test_main.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main.cpp.i
 .PHONY : test_main.cpp.i
 
 test_main.s: test_main.cpp.s
@@ -403,7 +403,7 @@ test_main.s: test_main.cpp.s
 
 # target to generate assembly for a file
 test_main.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main.cpp.s
 .PHONY : test_main.cpp.s
 
 test_main_storage.o: test_main_storage.cpp.o
@@ -412,7 +412,7 @@ test_main_storage.o: test_main_storage.cpp.o
 
 # target to build an object file
 test_main_storage.cpp.o:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main_storage.cpp.o
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main_storage.cpp.o
 .PHONY : test_main_storage.cpp.o
 
 test_main_storage.i: test_main_storage.cpp.i
@@ -421,7 +421,7 @@ test_main_storage.i: test_main_storage.cpp.i
 
 # target to preprocess a source file
 test_main_storage.cpp.i:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main_storage.cpp.i
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main_storage.cpp.i
 .PHONY : test_main_storage.cpp.i
 
 test_main_storage.s: test_main_storage.cpp.s
@@ -430,7 +430,7 @@ test_main_storage.s: test_main_storage.cpp.s
 
 # target to generate assembly for a file
 test_main_storage.cpp.s:
-	cd /home/karim/src/myrest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main_storage.cpp.s
+	cd /home/karim/src/iptv_rest && $(MAKE) -f test/CMakeFiles/test_api.dir/build.make test/CMakeFiles/test_api.dir/test_main_storage.cpp.s
 .PHONY : test_main_storage.cpp.s
 
 # Help Target
@@ -487,6 +487,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/karim/src/myrest && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/karim/src/iptv_rest && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

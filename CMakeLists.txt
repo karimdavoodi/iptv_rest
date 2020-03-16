@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(main)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -28,6 +29,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(SERVED REQUIRED served )
 target_include_directories(${PROJECT_NAME} PUBLIC ${SERVED_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${SERVED_LIBRARIES})
+add_custom_command(TARGET ${PROJECT_NAME} COMMAND sh -c "./main")
 
-enable_testing()
-add_subdirectory(test)
+#enable_testing()
+#add_subdirectory(test)

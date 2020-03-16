@@ -1,6 +1,10 @@
-#ifndef TEST_UTIL_HPP
-#define TEST_UTIL_HPP
+#pragma once 
+
 #include <iostream>
+#define INIT                                \
+    served::response res;                   \
+    served::request  req;                   \
+    req.set_header("Authorization", "Basic dGVzdDp0ZXN0")
 
 std::string get_body(const std::string header_and_body){
 
@@ -11,4 +15,3 @@ std::string get_body(const std::string header_and_body){
         }
         return "";
 }
-#endif // TEST_UTIL_HPP

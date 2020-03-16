@@ -107,7 +107,7 @@
         "fontFa": "string",
         "id": "int",
         "language": "string",
-        "launcher": "string",
+        "launcher": "main",
         "playWelcomeClip": "boolean",
         "testUserId": "int",
         "uiStartup": "string",
