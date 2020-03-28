@@ -74,7 +74,7 @@ class TestLauncher(unittest.TestCase):
         self.check_status_code(res)
         assert( len(res.content) > 1000 )
 
-    def test_post_background(self):
+    def xtest_post_logo(self):
         fdata = open('data/bg.png', 'rb').read()
         assert( len(fdata) > 1000 )
         res = requests.post(
@@ -85,7 +85,7 @@ class TestLauncher(unittest.TestCase):
                 data = fdata
                 )
         self.check_status_code(res)
-    def test_get_background(self):
+    def xtest_get_logo(self):
         res = requests.get(
                 "http://localhost:8139/launcher/logo",
                 auth = self.defAuth,
@@ -93,6 +93,21 @@ class TestLauncher(unittest.TestCase):
                 )
         self.check_status_code(res)
         assert( len(res.content) > 1000 )
+
+    def test_put_make(self):
+        res = requests.put(
+                "http://localhost:8139/launcher/make",
+                auth = self.defAuth,
+                json =  {
+                "id": 1,
+                "active": True,
+                "name": "newVOD",
+                "icon": "VOD1",
+                "type": "VOD",
+                "path": "Video/myVOD"
+               }
+                )
+        self.check_status_code(res)
 
 
 if __name__ == "__main__":

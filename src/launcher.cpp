@@ -155,6 +155,24 @@ void launcher_make_put(served::response &res, const served::request &req)
 {
 	BOOST_LOG_TRIVIAL(trace) << __func__ ;
 	CHECK_AUTH;
+    if(req.body().size() == 0){
+        ERRORSEND(res, 400, 1001, "No input!");
+    }
+    auto j = json::parse(req.body());
+    int id = j["id"];
+    std::cout << "id:" << id << std::endl;
+    if( id == 0 ){
+        ERRORSEND(res, 400, 1002, "Invalid input JSON!");
+    }
+    json make = st.getJson("configs", "launcher_make");
+    if(make.size() == 0 ){
+        make = json::array();
+        std::cout << "Make empty make\n";
+    } 
+    make = {j, j};
+    //make.push_back(j);
+    st.setJson("configs", "launcher_make", j);
+    res.set_status(200);
 }
 void launcher_make_delete(served::response &res, const served::request &req)
 {

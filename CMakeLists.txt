@@ -29,7 +29,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(SERVED REQUIRED served )
 target_include_directories(${PROJECT_NAME} PUBLIC ${SERVED_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${SERVED_LIBRARIES})
-add_custom_command(TARGET ${PROJECT_NAME} COMMAND sh -c "./main")
+#add_custom_command(TARGET ${PROJECT_NAME} COMMAND sh -c "./main")
 
 #enable_testing()
 #add_subdirectory(test)

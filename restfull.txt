@@ -1,5 +1,18 @@
 
-HTTP Code ###################################
+ChangLog:
+    2.0: March 28, 2020
+        - review all APIs.
+        - simplify Contents API (VOD/BOOK/PICTURES/...)
+        - add one item GET method to most APIs
+        - remove multipart APIs
+        - add new APIs for channels logo, components icons, ...
+        - refer to fields by id
+
+    1.0: 
+        - first version of APIs
+
+
+HTTP Code -----------------------------------
     swaitch(Response Code){
         case 200(OK):
                 Return Response or return this:
@@ -15,27 +28,27 @@ HTTP Code ###################################
                         "errorMessage": string
                     }
     }
-Methods: ####################################
+Methods: ------------------------------------
     GET    => for get data
     POST   => add new data
     PUT    => change a data
     DELETE => delete a data
 
-Authentication:  Basic Auth #################
+Authentication:  Basic Auth -----------------
     Any API must sent 'user:pass' with 'Authorization' header (HTTP Base Authentication)
     like: Authorization: Basic 'Base64 of user:pass'  
     example: curl --user user:pass  https://server/
 
-######################################################
-#########            API       #######################
-######################################################
+------------------------------------------------------
+---------            API       -----------------------
+------------------------------------------------------
 
-Status ###############################################       
+Status -----------------------------------------------       
 *** Dashboard              
 *** Sensor0 (information)
         Description: Get information
-        Method: GET
         Path: /status/information
+        Method: GET
         ResponseBody: 
             {
                 "Running": boolean,
@@ -56,128 +69,143 @@ Status ###############################################
 
 *** Sensor1 (CPU/MEM)  
         Description: Get CPU & MEM current stat
-        Method: GET
         Path: /status/cpu_mem
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
+        Method: GET
+        Parameters: from=epochtime&to=epochtime
         ResponseBody: 
             {
-                "time": epochtime,
-                "cpuLoad":float,
-                "cpuCoreNum": int,
-                "cpuPercent":float,
-                "memTotal": int,
-                "memFree": int,
+                "total":int,
+                "content":[
+                    {
+                    "time": epochtime,
+                    "cpuLoad":float,
+                    "cpuCoreNum": int,
+                    "cpuPercent":float,
+                    "memTotal": int,
+                    "memFree": int,
+                    }
+                ]
+
             }
 *** Sensor2 (Network)
         Description: Get Network current stat
-        Method: GET
         Path: /status/network
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
+        Method: GET
+        Parameters: from=epochtime&to=epochtime
         ResponseBody: 
             {
-                "time": epochtime,
-                "interfaces":[
+                "total":int,
+                "content":[
                     {
-                    "name": string,
-                    "ip": string,
-                    "mask": string,
-                    "send": int,
-                    "recive": int
+                        "time": epochtime,
+                        "interfaces":[
+                            {
+                            "name": string,
+                            "ip": string,
+                            "mask": string,
+                            "sendAve": int,
+                            "receiveAve": int
+                            },
+                        ],
+                        "dns": string,
+                        "gateway": string
                     },
-                ],
-                "dns": string,
-                "gateway": string
+                ]
             }
 
 *** Sensor3 (Storage)
         Description: Get Storage current stat
-        Method: GET
         Path: /status/storage
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
+        Method: GET
+        Parameters: from=epochtime&to=epochtime
         ResponseBody: 
             {
-                "time": epochtime,
-                "mounts":[
+                "total":int,
+                "content":[
                     {
-                    "name": string,
-                    "partition": string,
-                    "total": int,
-                    "free": int,
-                    "read": int,
-                    "write": int
+                        "time": epochtime,
+                        "mounts":[
+                            {
+                            "name": string,
+                            "partition": string,
+                            "total": int,
+                            "free": int,
+                            "readAve": int,
+                            "writeAve": int
+                            },
+                        ]
                     },
                 ]
             }
         
 *** Sensor4 (DVB)
         Description: Get DVB current stat
-        Method: GET
         Path: /status/dvb
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
+        Method: GET
+        Parameters: from=epochtime&to=epochtime
         ResponseBody: 
             {
-                "time": epochtime,
-                "inputDVBs":[
+                "total":int,
+                "content":[
                     {
-                    "id": int,
-                    "type": string
-                    "parameters": string,
-                    "channelNumber": int,
-                    "signal": int,
-                    "snr": int
-                    },
-                ],
-                "outputDVBs":[
-                    {
-                    "id": int,
-                    "frequency": int,
-                    "capacity": int
-                    },
+                        "time": epochtime,
+                        "inputDVBs":[
+                            {
+                            "id": int,
+                            "type": string
+                            "parameters": string,
+                            "channelNumber": int,
+                            "signal": int,
+                            "snr": int
+                            },
+                        ],
+                        "outputDVBs":[
+                            {
+                            "id": int,
+                            "frequency": int,
+                            "capacity": int
+                            },
+                        ]
+                    }
                 ]
             }
         
 *** Sensor5 (Input Channels)
         Description: Get Input channels list
-        Method: GET
         Path: /status/channels/input
+        Method: GET
+        Parameters: [from=int&to=int]
         ResponseBody: 
             {
-                "channels":[
+                "total":int,
+                "content":[
                     {
                     "id": int,
-                    "type": string
+                    "type": string,       //DVB, NET, HDD 
                     "name": string,
-                    "status": boolean,
+                    "health": boolean,
                     },
                 ]
             }
 
-
 *** Sensor6 (Output Channels Status)
         Description: Get Output channels list
-        Method: GET
         Path: /status/channels/output
+        Method: GET
+        Parameters: [from=int&to=int]
         ResponseBody: 
             {
-                "channels":[
+                "total":int,
+                "content":[
                     {
                     "status": boolean,
                     "id": int,
                     "type": string
                     "name": string,
-                    "logo":url,
                     "rf": boolean,
                     "rfFreq": int,
                     "rfSid": int,
-                    "permission": string,
+                    "permission": int,
                     "record": boolean,
                     "udp": boolean,
                     "http": boolean,
@@ -186,28 +214,35 @@ Status ###############################################
                     },
                 ]
             }
+
 *** Sensor7 (Output Channels Screenshut)    
         Description: Get Output channels view list
-        Method: GET
         Path: /status/channels/output/view
+        Method: GET
+        Parameters: [from=int&to=int]
         ResponseBody: 
             {
-                "channels":[
+                "total":int,
+                "content":[
                     {
-                    "name": string,
                     "id": int,
-                    "logo":url,
-                    "view":url
+                    "name": string,
                     },
                 ]
             }
-*** Sensor8 (Users)
-        Description: Get Output channels view list
+        Path: /status/channels/output/view/{id}
         Method: GET
+        ResponseBody: channel view image file 
+
+*** Sensor8 (Users)
+        Description: Get users list
         Path: /status/users
+        Method: GET
+        Parameters: [from=int&to=int]
         ResponseBody: 
             {
-                "users":[
+                "total":int,
+                "content":[
                     {
                     "id": int,
                     "name": string,
@@ -218,16 +253,16 @@ Status ###############################################
                     },
                 ]
             }
+
 *** Sensor9 (Errors) 
         Description: Get error list
-        Method: GET
         Path: /status/errors
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
+        Method: GET
+        Parameters: from=epochtime&to=epochtime
         ResponseBody: 
             {
-                "errors":[
+                "total":int,
+                "content":[
                     {
                     "time": epochtime,
                     "error": string,
@@ -235,11 +270,12 @@ Status ###############################################
                     },
                 ]
             }
-Reports(Backup,Export)  ##############################
+
+Reports(Backup,Export)  ------------------------------
 *** Users Activity
         Description: Get log of users activity. 'user' and 'activityType' are optional 
-        Method: GET
         Path: /report/user
+        Method: GET
         Parameters: 
                     from=epochtime&
                     to=epochtime&
@@ -247,7 +283,8 @@ Reports(Backup,Export)  ##############################
                     activityType=string
         ResponseBody: 
             {
-                "activities":[
+                "total":int,
+                "content":[
                     {
                     "time": epochtime,
                     "user": string,
@@ -257,15 +294,16 @@ Reports(Backup,Export)  ##############################
             }
 *** System Activity
         Description: Get log of system activity. 'activityType' is optional 
-        Method: GET
         Path: /report/system
+        Method: GET
         Parameters: 
                     from=epochtime&
                     to=epochtime&
                     activityType=string
         ResponseBody: 
             {
-                "activities":[
+                "total":int,
+                "content":[
                      {
                     "time": epochtime,
                     "activity": string
@@ -274,15 +312,16 @@ Reports(Backup,Export)  ##############################
             }
 *** Live Usage
         Description: Get log of Live channels activity. 'channel' is optional 
-        Method: GET
         Path: /report/live
+        Method: GET
         Parameters: 
                     from=epochtime&
                     to=epochtime&
                     channel=string
         ResponseBody: 
             {
-                "activities":[
+                "total":int,
+                "content":[
                     {
                     "time": epochtime,
                     "activity": string
@@ -291,15 +330,16 @@ Reports(Backup,Export)  ##############################
             }
 *** VOD Usage
         Description: Get log of VOD activity. 'media' is optional 
-        Method: GET
         Path: /report/vod
+        Method: GET
         Parameters: 
                     from=epochtime&
                     to=epochtime&
                     media=string
         ResponseBody: 
             {
-                "activities":[
+                "total":int,
+                "content":[
                     {
                     "time": epochtime,
                     "activity": string
@@ -308,15 +348,16 @@ Reports(Backup,Export)  ##############################
             }
 *** Components Usage
         Description: Get log of Components activity. 'component' is optional 
-        Method: GET
         Path: /report/component
+        Method: GET
         Parameters: 
                     from=epochtime&
                     to=epochtime&
                     component=string
         ResponseBody: 
             {
-                "activities":[
+                "total":int,
+                "content":[
                     {
                     "time": epochtime,
                     "activity": string
@@ -325,22 +366,23 @@ Reports(Backup,Export)  ##############################
             }
 *** System Users Activity
         Description: Get log of System users. 'user' is optional 
-        Method: GET
         Path: /report/system_user
+        Method: GET
         Parameters: 
                     from=epochtime&
                     to=epochtime&
                     user=string
         ResponseBody: 
             {
-                "activities":[
-                {
+                "total":int,
+                "content":[
+                    {
                     "time": epochtime,
                     "activity": string
-                },
+                    },
                 ]
             }
-System  ##############################################
+System  ----------------------------------------------
 *** Setting
         Description: Manage localization data 
         Path: /system/location
@@ -365,21 +407,24 @@ System  ##############################################
 
         Method: POST
         RequestBody: logo image file
-
+        ------------------------------------------
         Description: Manage of subtitle Logo
         Path: /system/subtitle_logo
         Method: GET
-        ResponseBody: multipart
-            part1:
+        ResponseBody: logo image file 
+        Method: POST
+        RequestBody: logo image file
+        ------------------------------------------
+        Description: Manage of subtitle Logo Config
+        Path: /system/subtitle_logo_config
+        Method: GET
+        ResponseBody:
             {
                 "isLeft": boolean,
                 "Components": [string, string, .. ]
             }
-            paert2: image file
-
         Method: POST
         RequestBody: same as GET ResponseBody
-
 
 *** Network
         Description: Manage network setting
@@ -387,11 +432,12 @@ System  ##############################################
         Method: GET
         ResponseBody: same as 'PUT' RequestBody
 
-        Method: PUT
+        Method: PUT,POST
         RequestBody: 
             {
                 "interfaces":[
                     {
+                    "id": int,
                     "name": string,
                     "description": string,
                     "ip": string,  
@@ -400,12 +446,12 @@ System  ##############################################
                    ],
                 "dns": string,
                 "gateway": string,
-                "mainInterface": string,
+                "mainInterface": int,
                 "multicastBase": string,
-                "multicastInterface": string,
+                "multicastInterface": int,
                 "addressForNAT": string,
-                "staticRoute": string,
-                "firewallRule": string
+                "staticRoute": [string, ... ],
+                "firewallRule": [string, ... ]
             }
 *** System Users Profile 
         Description: Get information of current user
@@ -425,7 +471,12 @@ System  ##############################################
                 ]
             }
 
-        Method: PUT 
+        Path: /system/users/{id}
+        Method: GET
+        ResponseBody: same as 'PUT'
+
+        Path: /system/users/{id}
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -445,11 +496,9 @@ System  ##############################################
                 "user": string,
                 "pass": string,
             }
-        Method: POST  
-        RequestBody: same as 'PUT' RequestBody
 
-        Method: DELETE 
         Path: /system/users/{id}
+        Method: DELETE 
 
 *** Software Integration(PMS)
         Description: Manage PMS setting
@@ -457,7 +506,7 @@ System  ##############################################
         Method: GET
         ResponseBody: same as 'PUT' RequestBody 
 
-        Method: PUT  
+        Method: PUT, POST  
         RequestBody: 
             {
                     "active": boolean,
@@ -480,7 +529,8 @@ System  ##############################################
                 ]
             }
 
-        Method: PUT 
+        Path: /system/vod_account/{id}
+        Method: PUT, POST 
         RequestBody: 
             {
                     "id": int,
@@ -488,11 +538,10 @@ System  ##############################################
                     "user": string,
                     "pass": string,
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody
 
-        Method: DELETE 
         Path: /system/vod_account/{id}
+        Method: DELETE 
+
 *** Permissions
         Description: Manage of Permissions
         Path: /system/permission
@@ -506,18 +555,18 @@ System  ##############################################
                 ]
             }
 
-        Method: PUT 
+        Path: /system/permission/{id}
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
                 "active": boolean,
                 "name": string 
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /system/permission/{id}
+        Method: DELETE 
+
 *** Week Times
         Description: Manage of Week Times
         Path: /system/weektime
@@ -531,7 +580,7 @@ System  ##############################################
                 ]
             }
 
-        Method: PUT 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -547,12 +596,11 @@ System  ##############################################
                     "6": [int, int, ..]
                 ]
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /system/weektime/{id}
-*** Storage #########
+        Method: DELETE 
+
+*** Storage ---------
 *** Setting 
         Description: Storage setting
         Path: /storage/setting
@@ -560,77 +608,30 @@ System  ##############################################
         ResponseBody: 
             {
                 "root": string,
-                "total": int,
-                "vod": int,
-                "aod": int,
-                "timeshift": int,
-                "npvr": int,
-                "audiobook": int,
-                "book": int,
-                "photo": int,
+                "partitions":{
+                        "vod": int,
+                        "aod": int,
+                        "timeshift": int,
+                        "npvr": int,
+                        "audiobook": int,
+                        "book": int,
+                        "photo": int,
+                    },
+                "timeShift":{
+                    "recordDuration": int,
+                    "EPGnaming": boolean,
+                    },
+                "NPVR":{
+                    "perUser": int
+                }
             }
-        Method: POST
+        Method: PUT, POST
         RequestBody: same as GET ResponsBody 
 
-*** TimeShift
-        Description: TimeShift setting
-        Path: /storage/timeshift/setting
-        Method: GET
-        ResponseBody: 
-            {
-                "recordDuration": int,
-                "EPGnaming": boolean,
-            }
-        Method: POST
-        RequestBody: same as GET ResponsBody 
 
-        Description: TimeShift export/delete
-        Path: /storage/timeshift/files
-        Method: GET
-        Parameters: channel=string&[from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[string, ... ]
-            }
-        Method: GET
-        Parameters: channel=string&file=string
-        ResponseBody: media file
-
-        Method: DELETE
-        Path: /storage/timeshift/files
-        Parameters: channel=string&file=string
-
-*** NPVR
-        Description: NPVR setting
-        Path: /storage/npvr/setting
-        Method: GET
-        ResponseBody: 
-            {
-                "perUser": int
-            }
-        Method: POST
-        RequestBody: same as GET ResponsBody 
-
-        Description: NPVR export/delete
-        Path: /storage/npvr/files
-        Method: GET
-        Parameters: userid=int&[from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[string, ... ]
-            }
-        Parameters: userid=int&file=string
-        ResponseBody: media file
-
-        Method: DELETE
-        Path: /storage/npvr/files
-        Parameters: userid=int&file=string
-
-*** VOD
-        Description: Get list of categories
-        Path: /storage/avod/categories
+*** Contents : Video, Audio, Book, AudioBook, Picture, Azan, TimeShift, NPVR, ... 
+        Description: Get list of types like: video, audio, book, image
+        Path: /storage/contents/types
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -643,203 +644,160 @@ System  ##############################################
                     },
                  ]
             }
-
-        Description: VOD/AOD import
-        Path: /storage/avod/import
-        Method: PUT
-        RequestBody: multipart
-            part1: 
-            {
-                "dir": string, 
-                "permission": string,
-                "price": int,
-                "platform": string,
-                "category":[int, ...] ,
-                "year": int,
-                "subtitles": [string, ...],
-                "audio" : [string, ... ], 
-                "description":[
-                    "en": {
-                        "name": string,
-                        "description": string
-                        },
-                    "fa": {
-                        "name": string,
-                        "description": string
-                        },
-                    "ar": {
-                        "name": string,
-                        "description": string
-                    }
-                ]
-            }
-            part2: media file
-            part3: poster file 
-            part4: subtitle file 
-
-        Description: VOD/AOD export
-        Path: /storage/avod/files
-        Method: GET
-        Parameters: dir=string&[from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[ string, ... ]
-            }
-
-        Parameters: dir=string&file=string
-        ResponseBody: media file
-
-        Description: VOD/AOD delete
-        Method: DELETE
-        Path: /storage/avod/files
-        Parameters: dir=string&file=string
-
-*** AudioBook
-        Description: AudioBook import
-        Path: /storage/audio_book/import
-        Method: PUT
-        RequestBody: multipart
-            part1: 
-            {
-                "dir": string, 
-                "permission": string,
-                "price": int,
-                "platform": string,
-                "category": string,
-                "description":[
-                    "en": {
-                        "name": string,
-                        "description": string
-                        },
-                    "fa": {
-                        "name": string,
-                        "description": string
-                        },
-                    "ar": {
-                        "name": string,
-                        "description": string
-                    }
-                ]
-            }
-            part2: tar file of *.jpg and *.mp3
-            part3: poster file 
-
-        Description: AudioBook export
-        Path: /storage/audio_book/files
-        Method: GET
-        Parameters: dir=string&[from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[ string, ... ]
-            }
-
-        Parameters: dir=string&file=string
-        ResponseBody: tar file
-
-        Description: AudioBook delete
-        Method: DELETE
-        Path: /storage/audio_book/files
-        Parameters: dir=string&file=string
-
-*** Book 
-        Description: Book import
-        Path: /storage/book/import
-        Method: PUT
-        RequestBody: multipart
-            part1: 
-            {
-                "dir": string, 
-                "permission": string,
-                "price": int,
-                "platform": string,
-                "category": string,
-                "description":[
-                    "en": {
-                        "name": string,
-                        "description": string
-                        },
-                    "fa": {
-                        "name": string,
-                        "description": string
-                        },
-                    "ar": {
-                        "name": string,
-                        "description": string
-                    }
-                ]
-            }
-            part2: tar file of *.jpg
-            part3: poster file 
-
-        Description: Book export
-        Path: /storage/book/files
-        Method: GET
-        Parameters: dir=string&[from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[ string, ... ]
-            }
-
-        Parameters: dir=string&file=string
-        ResponseBody: tar file
-
-        Description: Book delete
-        Method: DELETE
-        Path: /storage/book/files
-        Parameters: dir=string&file=string
-
-*** PhotoViewer
-        Same as Book by path /storage/photo/
-*** Azan
-        Same as VOD by path /storage/azan/
-
-*** Advertising
-        Description: Advertising import
-        Path: /storage/advertize/import
-        Method: PUT
-        RequestBody: multipart
-            part1: 
-            {
-                "id": int,
-                "name": string,
-                "platform": string,
-                "weektime": [string, ...],
-                "expire": epochtime,
-                "priority": int,
-            }
-            part2: media file
-
-        Description: Advertising export
-        Path: /storage/advertize/files
+        ---------------------------------------
+        Description: Get list of platforms like: samsung, lg, android, amino
+        Path: /storage/contents/platforms
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
             {
                 "total":int,
-                "content":[ string, ... ]
+                "content":[    
+                    {
+                    "id":int,
+                    "name":string,
+                    },
+                 ]
+            }
+        ---------------------------------------
+        Description: Get list of categories
+        Path: /storage/contents/categories
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    {
+                    "id":int,
+                    "name":string,
+                    },
+                 ]
+            }
+        Method: PUT, POST
+        ResponseBody: 
+            {
+                "id":int,
+                "name":string,
+            }
+        Method: DELETE
+        Path: /storage/contents/categories/{id}
+        --------------------------------------------
+        Description: Contents list
+        Path: /storage/contents/info
+        Method: GET 
+        Parameters: type=int[&from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    {
+                        "id": int,
+                        "type": int,
+                        "category":[int, ...],
+                        "group": string,
+                        "permission": int,
+                        "price": int,
+                        "platform":[int, ...],
+                        "date": epochtime,
+                        "languages" : [2-char, ... ], 
+                        "description":[
+                            "en": {
+                                "name": string,
+                                "description": string
+                                },
+                            "fa": {
+                                "name": string,
+                                "description": string
+                                },
+                            "ar": {
+                                "name": string,
+                                "description": string
+                            }
+                        ]
+                    },
+                ]
             }
 
-        Parameters: id=int
+        Method: PUT, POST
+        RequestBody: same as content in 'GET' ResponsBody 
+
+        Path: /storage/contents/info/{id}
+        Method: DELETE
+
+        -----------------------------------------------
+        Path: /storage/contents/media/{id}
+        Method: GET
         ResponseBody: media file
 
-        Description: Advertising delete
+        Path: /storage/contents/media/{id}
+        Method: POST, PUT
+        RequestBody: media file
+
+        Path: /storage/contents/media/{id}
         Method: DELETE
-        Path: /storage/advertize/files/{id}
+        -----------------------------------------------
+        Path: /storage/contents/poster/{id}
+        Method: GET
+        ResponseBody: poster file
+
+        Path: /storage/contents/poster/{id}
+        Method: POST, PUT
+        RequestBody: poster file
+
+        Path: /storage/contents/poster/{id}
+        Method: DELETE
+        -----------------------------------------------
+        Path: /storage/contents/subtitle/{id}
+        Method: GET
+        ResponseBody: subtitle file
+
+        Path: /storage/contents/subtitle/{id}
+        Method: POST, PUT
+        RequestBody: subtitle file
+
+        Path: /storage/contents/subtitle/{id}
+        Method: DELETE
+    
+*** Advertising
+        Description: Advertising Config
+        Path: /storage/advertize
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponsBody: 
+            {
+                "total":int,
+                "content":[
+                        {
+                            "id": int,
+                            "contentId": int,
+                            "name": string,
+                            "weektime": [int, ...],
+                            "expire": epochtime,
+                            "priority": int,
+                        },
+                    ]
+            }
+        Path: /storage/advertize/{id}
+        Method: PUT, POST
+        RequestBody: same as content in 'GET' ResponsBody 
+
+        Path: /storage/advertize/{id}
+        Method: DELETE
 
 *** Backup/Restore
-        Description: Manage setting
+        Description: Backup Setting
         Path: /system/backup
         Method: GET
         ResponseBody: application/gzip file
 
+        Description: Restor Setting
+        Path: /system/backup
         Method: PUT  
         RequestBody: application/gzip file
 
 *** Update
-        Description: get/set of license
+        Description: Get license
         Path: /system/license
         Method: GET
         ResponseBody: 
@@ -848,9 +806,13 @@ System  ##############################################
                     ...
                 }
             }
+
+        Description: Set of license
+        Path: /system/license
         Method: POST  
         RequestBody: application/octet-stream file
 
+        Description: Update Software
         Path: /system/firmware
         Method: POST  
         RequestBody: application/octet-stream file
@@ -870,7 +832,7 @@ System  ##############################################
         Path: /system/logout
         Method: GET
  
-Media Server #########################################
+Media Server -----------------------------------------
 *** Tuners(Scan,Enable,Disable)
         Description: Manage of Tunners
         Path: /live/input_tuners
@@ -884,7 +846,7 @@ Media Server #########################################
                  ]
             }
 
-        Method: PUT 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -898,11 +860,8 @@ Media Server #########################################
                 "switch": int, 
             }
 
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
-
-        Method: GET
         Path: /live/input_tuners_scan/{id}
+        Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
             {
@@ -935,7 +894,7 @@ Media Server #########################################
                  ]
             }
 
-        Method: PUT 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "dvbs": [int, int, ], 
@@ -945,10 +904,8 @@ Media Server #########################################
                 "pcr": int
             }
 
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-Live Inputs ####################
+Live Inputs --------------------
 *** Satellite Lists
         Description: Get list of satellite
         Path: /live/inputs/satellite
@@ -978,7 +935,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/inputs/dvb/{id}
+        Method: GET
+        ResponseBody: same as 'PUT' 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -994,11 +954,9 @@ Live Inputs ####################
                 "scramble": boolean, 
                 "symb": int
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/inputs/dvb/{id}
+        Method: DELETE 
 
 *** Archive Channels
         Description: Manage of Archive channels
@@ -1013,7 +971,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/inputs/archive/{id}
+        Method: GET
+        ResponseBody: same as 'PUT' 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1022,11 +983,9 @@ Live Inputs ####################
                 "name": string,
                 "active": boolean
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/inputs/archive/{id}
+        Method: DELETE 
 
 *** Network Channels
         Description: Manage of Network channels
@@ -1041,7 +1000,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/inputs/network/{id}
+        Method: GET
+        ResponseBody: same as 'PUT' 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1050,11 +1012,9 @@ Live Inputs ####################
                 "active": boolean,
                 "static": boolean
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/inputs/network/{id}
+        Method: DELETE 
 
 *** Account Channels
         Description: Manage of IPTV account channels
@@ -1069,7 +1029,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/inputs/iptv/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1078,11 +1041,9 @@ Live Inputs ####################
                 "url": string, 
                 "active": boolean
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/inputs/iptv/{id}
+        Method: DELETE 
 
 *** Virtual Network Channels
         Description: Manage of virtual NET channels (import channels )
@@ -1097,7 +1058,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/inputs/virtual_net/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1105,13 +1069,12 @@ Live Inputs ####################
                 "name": string, 
                 "url": string, 
                 "record": boolean,
-                "permission": string
+                "permission": int
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/inputs/virtual_net/{id}
+        Method: DELETE 
+
 *** Virtual DVB Channels
         Description: Manage of virtual DVB channels (import channels )
         Path: /live/inputs/virtual_dvb
@@ -1125,7 +1088,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/inputs/virtual_dvb/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1134,13 +1100,11 @@ Live Inputs ####################
                 "freq": int, 
                 "sid": int, 
                 "record": boolean,
-                "permission": string
+                "permission": int
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/inputs/virtual_dvb/{id}
+        Method: DELETE 
 
 *** Transcoding    
         Description: Manage of transcodec channels
@@ -1155,7 +1119,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/transcode/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1171,11 +1138,9 @@ Live Inputs ####################
                 "audioCodec": string, 
                 "audioRate": string 
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/transcode/{id}
+        Method: DELETE 
 
 *** UnScrambling
         Description: Manage of cccam accounts
@@ -1190,7 +1155,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/cccam/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1201,11 +1169,9 @@ Live Inputs ####################
                 "user": string, 
                 "pass": string 
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/cccam/{id}
+        Method: DELETE 
 
         Description: Manage of input scrambled channels
         Path: /live/unscramble
@@ -1219,7 +1185,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/unscramble/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1228,11 +1197,10 @@ Live Inputs ####################
                 "use_bsskey": boolean,
                 "use_cccam": boolean
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/unscramble/{id}
+        Method: DELETE 
+
 *** Scrambling   
         Description: Manage of channel scrambling
         Path: /live/scramble
@@ -1246,7 +1214,10 @@ Live Inputs ####################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/scramble/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1255,13 +1226,11 @@ Live Inputs ####################
                 "crypto": string,
                 "key": string 
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/scramble/{id}
+        Method: DELETE 
 
-Live Output  #########################################
+Live Output  -----------------------------------------
 *** Silver Channels
         Description: Manage of Output silver channels
         Path: /live/output/silver
@@ -1275,13 +1244,16 @@ Live Output  #########################################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/output/silver/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
                 "active": boolean,
                 "name": string, 
-                "permission": string,
+                "permission": int,
                 "freq": int, 
                 "sid": int, 
                 "record": boolean,
@@ -1290,11 +1262,10 @@ Live Output  #########################################
                 "rtsp": boolean,
                 "hls": boolean
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/output/silver/{id}
+        Method: DELETE 
+
 *** Gold Channels
         Description: Manage of Output gold channels
         Path: /live/output/gold
@@ -1308,59 +1279,59 @@ Live Output  #########################################
                  ]
             }
 
-        Method: PUT 
+        Path: /live/output/gold/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
                 "active": boolean,
-                "userId": string, 
+                "userId": int, 
                 "iptvAccount": string,
-                "tunnerId": string,
+                "tunnerId": int,
                 "satellites":[ 
                     {
                         "id":int,
-                        "LNC":[LH,LV,HH,HV]
+                        "LNC":["LH", "LV", "HH", "HV"]
                     }
                 ] 
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /live/output/gold/{id}
+        Method: DELETE 
+
 *** Channels Logo  
-        Description: Manage of Channels icons
-        Path: /live/icons
+        Description: Manage of channels Logo 
+        Path: /live/logo
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
             {
                 "total":int,
-                "content":[    
-                        {
-                        "id": int,
-                        "channelName": string, 
-                        "url": string 
-                        },
-                 ]
+                "content":[
+                    {
+                        "id":int,
+                        "channelName":string
+                    },
+                ]
             }
 
+        Path: /live/logo/{id}
+        Method: GET
+        ResponseBody: logo file
 
-        Method: POST
-        RequestBody: multipart
-            part1:
-                {
-                    "id": int,
-                    "channelName": string 
-                }
-            part2:
-                image file of channel icon
+        Path: /live/logo/{id}
+        Method: PUT, POST
+        Parameters: channelName=string
+        RequestBody: logo image file
 
-        Method: DELETE 
-        Path: /live/icons/{id}
+        Path: /live/logo/{id}
+        Method: DELET
 
-Launcher ############################################# 
+Launcher --------------------------------------------- 
 *** Setting
+        ------------------------------------------
         Description: Manage of Launchers
         Path: /launcher/default
         Method: GET
@@ -1371,49 +1342,66 @@ Launcher #############################################
             {
                 "id": int,
                 "launcher": string,
-                "fontFa": string, 
-                "fontEn": string, 
+                "font":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    },
+                "welcome":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    },
+                "user":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    },
                 "language": string,
-                "welcomeEn": string,
-                "welcomeFa": string,
-                "welcomeAr": string,
-                "userEn": string,
-                "userFa": string,
-                "userAr": string,
-                "playWelcomeClip": boolean,
+                "welcomeClip": boolean,
                 "uiStartup": string,
                 "unitName": string,
                 "clientHotspot": string,
                 "testUserId": int,
-                "defaultChannel": string 
+                "defaultChannel": int 
             }
-
+        ------------------------------------------
         Description: Manage of launcher background
-        Path: /launcher/background
+        Path: /launcher/background/{id}
         Method: GET
-        Parameters: launcher=string
         ResponseBody: image file
-
-        Method: POST
-        Parameters: launcher=string
+        Method: PUT, POST
         RequestBody: background image file
-
+        Method: DELETE
+        ------------------------------------------
         Description: Manage of launcher logo
-        Path: /launcher/logo
+        Path: /launcher/logo/{id}
         Method: GET
-        Parameters: 
-                    launcher=string&
-                    language=string
+        Parameters: language=string
         ResponseBody: image file
-
         Method: POST
-        Parameters: launcher=string&
-                    language=string
+        Parameters: language=string
         RequestBody: background image file
+        Method: DELETE
 
-*** Components Maker
-        Description: Manage of New components
-        Path: /launcher/make
+*** Components 
+        Description: Types of components like: LiveTV, LiveRadio, VoD, AoD, Picture, ..
+        Path: /launcher/components/types
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                        {
+                            "id": int,
+                            "name": string,
+                        },
+                 ]
+            }
+        ------------------------------------------
+        Description: Manage of components
+        Path: /launcher/components/info
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -1424,25 +1412,40 @@ Launcher #############################################
                  ]
             }
 
-        Method: PUT 
+        Path: /launcher/components/info/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
                 "active": boolean,
-                "name": string, 
-                "icon": string,
-                "type": string,
-                "path": string
+                "type": int,
+                "name":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    }, 
+                "icon": int,
+                "contentType": int,
+                "contentCategorie":[int, ...]
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
+        Path: /launcher/components/info/{id}
         Method: DELETE 
-        Path: /launcher/make/{id}
+
+        Description: Manage of components icons
+        Path: /launcher/components/logo/{id}
+        Method: GET
+        ResponseBody: image file
+        Method: POST
+        RequestBody: icon file
+        Method: DELETE
 
 *** Components Arrange
+        ------------------------------------------
         Description: Manage of Launcher's Menu
-        Path: /launcher/arrange
+        Path: /launcher/menu
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -1453,24 +1456,28 @@ Launcher #############################################
                  ]
             }
 
-        Method: PUT 
+        Path: /launcher/menu/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
                 "active": boolean,
-                "name": string, 
-                "permission": string,
-                "components": [string, ... ]
+                "name":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    }, 
+                "icon": int,
+                "permission": int,
+                "components": [int, ... ]
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
+        Path: /launcher/menu/{id}
         Method: DELETE 
-        Path: /launcher/arrange/{id}
 
-*** Components Setting ???
-
-Users ################################################
+Users ------------------------------------------------
 *** User Groups
         Description: Manage of Users's groups
         Path: /users/group
@@ -1484,22 +1491,24 @@ Users ################################################
                  ]
             }
 
-        Method: PUT 
+        Path: /users/group/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
                 "active": boolean,
                 "name": string, 
-                "permission": [string, ... ],
-                "weektime": [string, ... ] 
+                "permission": [int, ... ],
+                "weektime": [int, ... ] 
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /users/group/{id}
+        Method: DELETE 
+
 *** Profile(ExpireTime&Date,)     
-        Description: Manage of Users's groups
+        Description: Manage of Users
         Path: /users/user
         Method: GET
         Parameters: [from=int&to=int]
@@ -1511,7 +1520,10 @@ Users ################################################
                  ]
             }
 
-        Method: PUT 
+        Path: /users/user/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1521,22 +1533,19 @@ Users ################################################
                 "connections": int, 
                 "ipaddress": string, 
                 "language": string, 
-                "launcher": string, 
+                "launcher": int, 
                 "user": string, 
                 "pass": string, 
                 "vod_id": int,
                 "npvr": int,
                 "expire": epochtime,
             }
-        Method: POST 
-        RequestBody: same as 'PUT' RequestBody 
 
-        Method: DELETE 
         Path: /users/user/{id}
+        Method: DELETE 
 
-*** Messaging     // Message to/from    One/All User
-
-        Description: Message to User
+*** Messaging  
+        Description: Message to message
         Path: /users/message/to/{userid}
         Method: GET
         Parameters: [from=int&to=int]
@@ -1548,7 +1557,8 @@ Users ################################################
                  ]
             }
 
-        Method: PUT 
+        Path: /users/message/to/{userid}
+        Method: PUT, POST 
         RequestBody: 
             {
                 "id": int,
@@ -1556,8 +1566,8 @@ Users ################################################
                 "subject": string, 
                 "body": string,
             }
-        Method: DELETE 
         Path: /users/message/to/{userid}/{msg_id}
+        Method: DELETE 
 
         Description: Message from User
         Path: /users/message/from/{userid}
@@ -1571,9 +1581,8 @@ Users ################################################
                  ]
             }
 
-
-        Method: DELETE 
         Path: /users/message/to/{userid}/{msg_id}
+        Method: DELETE 
 
         Description: Message to All Users
         Path: /users/message/broadcast
@@ -1587,21 +1596,22 @@ Users ################################################
                  ]
             }
 
+        Path: /users/message/broadcast
         Method: PUT 
         RequestBody: 
             {
                 "id": int,
-                "group": [ string, ... ],
+                "group": [ int, ... ],
                 "time": epochtime,
                 "weektime": [int, ... ],
                 "expire": epochtime,
                 "subject": string, 
                 "body": string,
             }
-        Method: DELETE 
         Path: /users/message/broadcast/{msg_id}
+        Method: DELETE 
 
-Tools ###############################################
+Tools -----------------------------------------------
 *** FileManager
         Description: List contents of dir
         Path: /storage/fm/list
@@ -1625,7 +1635,4 @@ Tools ###############################################
         Path: /storage/fm/remove
         Method: DELETE
         Parameters: path=string
-
-
-*** Client Tools(AndroidApp,Sumsong,Tizen,ProCentric,ping,PlayListGEN.)
 
