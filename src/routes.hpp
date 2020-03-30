@@ -156,18 +156,41 @@ BOOST_LOG_TRIVIAL(trace) << "Add route /live/icons";
 mux.handle("/live/icons").get(live_icons);
 BOOST_LOG_TRIVIAL(trace) << "Add route /live/icons/id";
 mux.handle("/live/icons/id").get(live_icons_id);
+
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/default GET & POST";
 mux.handle("/launcher/default")
         .get(launcher_default_get)
         .post(launcher_default_post);
-BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/background GET & POST";
-mux.handle("/launcher/background")
+BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/background GET & POST & PUT & DEL";
+mux.handle("/launcher/background/{id}")
         .get(launcher_background_get)
-        .post(launcher_background_post);
+        .post(launcher_background_post)
+        .put(launcher_background_put)
+        .del(launcher_background_del);
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/logo";
-mux.handle("/launcher/logo")
+mux.handle("/launcher/logo/{id}")
         .get(launcher_logo_get)
+        .del(launcher_logo_del)
+        .put(launcher_logo_put)
         .post(launcher_logo_post);
+BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/components/types";
+mux.handle("/launcher/components/types")
+        .get(launcher_components_types_get);
+
+BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/components/logo";
+mux.handle("/launcher/components/logo/{id}")
+        .get(launcher_components_logo_get)
+        .del(launcher_components_logo_del)
+        .put(launcher_components_logo_put)
+        .post(launcher_components_logo_post);
+BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/components/logo";
+mux.handle("/launcher/components/info/{id}")
+        .get(launcher_components_info_get)
+        .del(launcher_components_info_del)
+        .put(launcher_components_info_put)
+        .post(launcher_components_info_post);
+mux.handle("/launcher/components/info")
+        .get(launcher_components_info_get);
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/make";
 mux.handle("/launcher/make")
         .get(launcher_make_get)

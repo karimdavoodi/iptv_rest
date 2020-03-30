@@ -102,22 +102,37 @@
     ],
     "launcher_default": {
         "clientHotspot": "string",
-        "defaultChannel": "string",
-        "fontEn": "string",
-        "fontFa": "string",
+        "defaultChannel": "int",
+        "font": {
+            "ar": "string",
+            "en": "string",
+            "fa": "string"
+        },
         "id": "int",
         "language": "string",
-        "launcher": "main",
-        "playWelcomeClip": "boolean",
+        "launcher": "string",
         "testUserId": "int",
         "uiStartup": "string",
         "unitName": "string",
-        "userAr": "string",
-        "userEn": "string",
-        "userFa": "string",
-        "welcomeAr": "string",
-        "welcomeEn": "string",
-        "welcomeFa": "string"
+        "user": {
+            "ar": "string",
+            "en": "string",
+            "fa": "string"
+        },
+        "welcome": {
+            "ar": "string",
+            "en": "string",
+            "fa": "string"
+        },
+        "welcomeClip": "boolean"
+    },
+    "launcher_make": {
+        "active": true,
+        "icon": "VOD1",
+        "id": 1,
+        "name": "newVOD",
+        "path": "Video/myVOD",
+        "type": "VOD"
     },
     "login": {
         "admin": "9e6acc929ea2beabb7b3a9c24a81287c",

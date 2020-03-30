@@ -1426,9 +1426,9 @@ Launcher ---------------------------------------------
                     "fa": string,
                     "ar": string
                     }, 
-                "icon": int,
+                "logo": int,
                 "contentType": int,
-                "contentCategorie":[int, ...]
+                "contentCategories":[int, ...]
             }
 
         Path: /launcher/components/info/{id}
@@ -1437,10 +1437,13 @@ Launcher ---------------------------------------------
         Description: Manage of components icons
         Path: /launcher/components/logo/{id}
         Method: GET
+        Parameters: launcher=int
         ResponseBody: image file
         Method: POST
-        RequestBody: icon file
+        Parameters: launcher=int
+        RequestBody: image file
         Method: DELETE
+        Parameters: launcher=int
 
 *** Components Arrange
         ------------------------------------------

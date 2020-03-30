@@ -1,9 +1,12 @@
-/*
-
-*/
+#include <boost/stacktrace/stacktrace_fwd.hpp>
 #include <cstdlib>
+#include <exception>
 #include <iostream>
+#include <fstream>
 #include <served/served.hpp>
+#include <csignal>
+#include <boost/stacktrace.hpp>
+#include <boost/filesystem.hpp>
 
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
@@ -17,6 +20,14 @@
 using namespace std;
 
 MainStorage st;
+#define DUMP_FILE "/tmp/iptv_rest.dump"
+void signal_handler(int signum)
+{
+    signal(signum, SIG_DFL);
+    //boost::stacktrace::safe_dump_to(DUMP_FILE);
+    BOOST_LOG_TRIVIAL(info) << boost::stacktrace::stacktrace(); 
+    raise(SIGABRT);
+}
 void init_log(){
     /*
    static const std::string COMMON_FMT("[%TimeStamp%][%Severity%]:  %Message%");
@@ -48,15 +59,35 @@ int main(int argc, char *argv[])
 {
 //    init_log();
     BOOST_LOG_TRIVIAL(info) << "Start Main";
+    //signal(SIGSEGV, &signal_handler);
+    //signal(SIGABRT, &signal_handler);
+    /*
+    if (boost::filesystem::exists(DUMP_FILE)) {
+        std::ifstream ifs(DUMP_FILE);
+        boost::stacktrace::stacktrace st = boost::stacktrace::stacktrace::from_dump(ifs);
+        std::cout << "Previous run crashed:\n" << st << std::endl;
+        ifs.close();
+        boost::filesystem::remove(DUMP_FILE);
+    }
+    */
 
-    served::multiplexer mux;
-    BOOST_LOG_TRIVIAL(info) << "Init Routes";
-    //mux.handle("/test/{par}").get(test);
-    #include "routes.hpp"
+    while(true){
+        try{
+            served::multiplexer mux;
+            BOOST_LOG_TRIVIAL(info) << "Init Routes";
 
-    BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/{APIs}";
-    
-    served::net::server server("0.0.0.0", PORT, mux);
-    server.run(THREADS); // Run with a pool of 10 threads.
+            #include "routes.hpp"
+
+            BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/{APIs}";
+            served::net::server server("0.0.0.0", PORT, mux);
+            server.run(); 
+            break;
+        }catch(std::exception& e){
+            BOOST_LOG_TRIVIAL(info) << "Exception " << e.what();
+        }catch(...){
+            BOOST_LOG_TRIVIAL(info) << "unknown exception\n";
+        }
+    }
     return 0;
+
 }

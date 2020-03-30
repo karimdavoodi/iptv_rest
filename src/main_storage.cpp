@@ -2,13 +2,28 @@
 #include <iostream>
 #include <fstream>
 #include <mutex>
+#include <nlohmann/json.hpp>
 
 #include "main_storage.hpp"
 using namespace std;
-
+// TODO:
+//  - create config files if thy are not exists.
+//
+void MainStorage::InitPreDefined()
+{
+    components_types.push_back( { { "id", "0" }, { "name" , "LiveTV" } }) ;
+    components_types.push_back( { { "id", "1" }, { "name" , "LiveRadio" } }) ;
+    components_types.push_back( { { "id", "2" }, { "name" , "VoD" } }) ;
+    components_types.push_back( { { "id", "3" }, { "name" , "AoD" } }) ;
+    components_types.push_back( { { "id", "4" }, { "name" , "Book" } }) ;
+    components_types.push_back( { { "id", "5" }, { "name" , "AudioBook" } }) ;
+    components_types.push_back( { { "id", "6" }, { "name" , "Picture" } }) ;
+    components_types.push_back( { { "id", "7" }, { "name" , "Map" } }) ;
+}
 MainStorage::MainStorage()
 {
     try{
+        InitPreDefined();
         ifstream  conf("conf/configs.json");
         if(conf.is_open()){
             conf >> configs;
