@@ -1,4 +1,3 @@
-#include <boost/stacktrace/stacktrace_fwd.hpp>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
