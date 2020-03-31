@@ -18,7 +18,7 @@ class TestLauncher(unittest.TestCase):
                 "http://localhost:8139/launcher/default",
                 auth = self.defAuth,
                 json =  {
-                "id": "int",
+                "_id": 1,
                 "launcher": "string",
                 "font":{
                     "en": "string",
@@ -57,7 +57,7 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(res.json()['launcher'], 'string', "OK")
 
 
-    def test_post_background(self):
+    def xtest_post_background(self):
         fdata = open('data/bg.png', 'rb').read()
         assert( len(fdata) > 1000 )
         res = requests.post(
@@ -68,9 +68,9 @@ class TestLauncher(unittest.TestCase):
                 data = fdata
                 )
         self.check_status_code(res)
-    def test_put_background(self):
+    def xtest_put_background(self):
             self.test_post_background()
-    def test_get_background(self):
+    def xtest_get_background(self):
         res = requests.get(
                 "http://localhost:8139/launcher/background/1",
                 auth = self.defAuth
@@ -85,7 +85,7 @@ class TestLauncher(unittest.TestCase):
                 )
         self.check_status_code(res)
 
-    def test_post_logo(self):
+    def xtest_post_logo(self):
         fdata = open('data/bg.png', 'rb').read()
         assert( len(fdata) > 1000 )
         res = requests.post(
@@ -96,9 +96,9 @@ class TestLauncher(unittest.TestCase):
                 data = fdata
                 )
         self.check_status_code(res)
-    def test_put_logo(self):
+    def xtest_put_logo(self):
             self.test_post_logo()
-    def test_get_logo(self):
+    def xtest_get_logo(self):
         res = requests.get(
                 "http://localhost:8139/launcher/logo/1",
                 params = { 'language': 'en' },
@@ -115,7 +115,7 @@ class TestLauncher(unittest.TestCase):
                 )
         self.check_status_code(res)
 
-    def test_get_components_types(self):
+    def xtest_get_components_types(self):
         res = requests.get(
                 "http://localhost:8139/launcher/components/types",
                 auth = self.defAuth,
@@ -123,7 +123,7 @@ class TestLauncher(unittest.TestCase):
         
         self.check_status_code(res)
 
-    def test_post_components_logo(self):
+    def xtest_post_components_logo(self):
         fdata = open('data/bg.png', 'rb').read()
         assert( len(fdata) > 1000 )
         res = requests.post(
@@ -134,9 +134,9 @@ class TestLauncher(unittest.TestCase):
                 data = fdata
                 )
         self.check_status_code(res)
-    def test_put_components_logo(self):
+    def xtest_put_components_logo(self):
             self.test_post_logo()
-    def test_get_components_logo(self):
+    def xtest_get_components_logo(self):
         res = requests.get(
                 "http://localhost:8139/launcher/components/logo/1",
                 params = { 'launcher': '1' },
@@ -144,7 +144,7 @@ class TestLauncher(unittest.TestCase):
                 )
         self.check_status_code(res)
         assert( len(res.content) > 1000 )
-    def test_put_make(self):
+    def xtest_put_make(self):
         res = requests.put(
                 "http://localhost:8139/launcher/make",
                 auth = self.defAuth,

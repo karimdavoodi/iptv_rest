@@ -10,15 +10,13 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
-
-#include "main_storage.hpp"
 #include "includes.hpp"
+#include "mongo_driver.hpp"
 
 #define PORT "8139"
 #define THREADS 2
 using namespace std;
 
-MainStorage st;
 #define DUMP_FILE "/tmp/iptv_rest.dump"
 void signal_handler(int signum)
 {
@@ -58,6 +56,7 @@ int main(int argc, char *argv[])
 {
 //    init_log();
     BOOST_LOG_TRIVIAL(info) << "Start Main";
+    Mongo::fill_defauls();
     //signal(SIGSEGV, &signal_handler);
     //signal(SIGABRT, &signal_handler);
     /*

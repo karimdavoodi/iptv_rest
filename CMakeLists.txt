@@ -29,6 +29,12 @@ target_link_libraries(${PROJECT_NAME}
 find_package(Boost COMPONENTS system log REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} )
 add_definitions(-DBOOST_LOG_DYN_LINK=1)
+
+set(CMAKE_MODULE_PATH /usr/local/lib/cmake )
+find_package(LIBMONGOCXX REQUIRED)
+target_link_libraries(${PROJECT_NAME} ${LIBMONGOCXX_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${LIBMONGOCXX_INCLUDE_DIRS})
+
 # Check served packege
 
 #find_package(PkgConfig REQUIRED)

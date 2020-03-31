@@ -1,7 +1,9 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <served/served.hpp>
-#include "main_storage.hpp"
+#include <boost/log/trivial.hpp>
+using json = nlohmann::json;
+//#include "main_storage.hpp"
 
 void launcher_default_get(served::response &, const served::request &);
 void launcher_default_post(served::response &, const served::request &);

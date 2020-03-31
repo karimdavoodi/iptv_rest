@@ -83,7 +83,7 @@ testLauncherPost()
 {
     http --auth "test:test" POST "http://localhost:8139/launcher/default" << END
               {
-                "id": "int",
+                "_id": 1,
                 "launcher": "miain",
                 "fontFa": "string",
                 "fontEn": "string",

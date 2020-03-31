@@ -231,6 +231,33 @@ src/main_storage.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main_storage.cpp.s
 .PHONY : src/main_storage.cpp.s
 
+src/mongo_driver.o: src/mongo_driver.cpp.o
+
+.PHONY : src/mongo_driver.o
+
+# target to build an object file
+src/mongo_driver.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/mongo_driver.cpp.o
+.PHONY : src/mongo_driver.cpp.o
+
+src/mongo_driver.i: src/mongo_driver.cpp.i
+
+.PHONY : src/mongo_driver.i
+
+# target to preprocess a source file
+src/mongo_driver.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/mongo_driver.cpp.i
+.PHONY : src/mongo_driver.cpp.i
+
+src/mongo_driver.s: src/mongo_driver.cpp.s
+
+.PHONY : src/mongo_driver.s
+
+# target to generate assembly for a file
+src/mongo_driver.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/mongo_driver.cpp.s
+.PHONY : src/mongo_driver.cpp.s
+
 src/report.o: src/report.cpp.o
 
 .PHONY : src/report.o
@@ -387,6 +414,9 @@ help:
 	@echo "... src/main_storage.o"
 	@echo "... src/main_storage.i"
 	@echo "... src/main_storage.s"
+	@echo "... src/mongo_driver.o"
+	@echo "... src/mongo_driver.i"
+	@echo "... src/mongo_driver.s"
 	@echo "... src/report.o"
 	@echo "... src/report.i"
 	@echo "... src/report.s"

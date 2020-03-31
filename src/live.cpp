@@ -1,5 +1,6 @@
 #include "auth.hpp"
 #include "live.hpp"
+#include "mongo_driver.hpp"
 
 extern MainStorage st;
 void live_input_tuners(served::response &res, const served::request &req)
