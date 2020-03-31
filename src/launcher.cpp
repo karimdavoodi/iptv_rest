@@ -7,10 +7,12 @@
 #include <iterator>
 #include <nlohmann/json.hpp>
 #include <utility>
-#define  QUERY_SIZE 10
 #include "auth.hpp"
 #include "launcher.hpp"
 #include "mongo_driver.hpp"
+#include "util.hpp"
+///////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
 
 void launcher_default_get(served::response &res, const served::request &req)
 {
@@ -33,48 +35,6 @@ void launcher_default_post(served::response &res, const served::request &req)
         Mongo::insert("launcher_default",req.body());
     res.set_status(200);
 
-}
-bool save_file(served::response &res, const served::request &req, const std::string path)
-{
-    BOOST_LOG_TRIVIAL(trace) << "Save " << path;
-    std::ofstream bg(path, std::ios_base::binary);
-    if(bg.is_open()){
-        bg.write(req.body().c_str(), req.body().size());
-        bg.close(); 
-        res.set_status(200);
-        BOOST_LOG_TRIVIAL(trace) << "Saved: " << path;
-        return true;
-    }
-    return false;
-}
-bool send_file(served::response &res, const served::request &req, const std::string path)
-{
-    BOOST_LOG_TRIVIAL(trace) << "Send " << path;
-    std::ifstream bg(path, std::ios_base::binary);
-    if(bg.is_open()){
-        res.set_body(std::string(
-                    (std::istreambuf_iterator<char>(bg) ),
-                    (std::istreambuf_iterator<char>()    )
-                    ));
-        res.set_header("Content-type", "image/png");
-        res.set_header("Content-Lenght", std::to_string(res.body_size()));
-        res.set_status(200);
-        return true;
-    }
-    return false;
-}
-bool get_id(const served::request &req, std::string& id)
-{
-    id = req.params["id"];
-    if(id.size() < 1) return false;
-    return true;
-}
-bool get_id(const served::request &req, int& id)
-{
-    auto sid = req.params["id"];
-    if(sid.size() < 1) return false;
-    id = std::stoi(sid);
-    return true;
 }
 void launcher_background_get(served::response &res, const served::request &req)
 {
@@ -210,23 +170,6 @@ nlohmann::json get_json_array_scope(const served::request &req, const nlohmann::
     };
     return j2;
 }
-std::pair<int,int> req_range(const served::request &req)
-{
-    int s = 1;
-    int e = QUERY_SIZE;
-
-    std::string from = req.query.get("from");
-    if(from.size()>0){
-        s = std::stoi(from);
-    }
-    std::string to = req.query.get("to");
-    if(to.size()>0){
-        e = std::stoi(to);
-    }else{
-        e = s + QUERY_SIZE;
-    }
-    return std::make_pair(s, e);
-}
 void launcher_components_types_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
@@ -304,25 +247,6 @@ void launcher_components_info_get(served::response &res, const served::request &
     res << Mongo::find_id_range("launcher_components_info", from, to);
     res.set_status(200);
 }
-int get_id_from_body_and_url(const served::request &req)
-{
-    int id;
-    if(!get_id(req, id)){
-        BOOST_LOG_TRIVIAL(trace) << "Not exists 'id' in url";
-        return -1;
-    }
-    auto j = json::parse(req.body());
-    if( j.count("_id") == 0 ){
-        BOOST_LOG_TRIVIAL(trace) << "Not exists '_id' in body json";
-        return -1;
-    }
-    int _id = j["_id"];
-    if(id != _id){
-        BOOST_LOG_TRIVIAL(trace) << "Diffrent '_id' in body and 'id' in url";
-        return -1;
-    }
-    return id;
-}
 void launcher_components_info_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
@@ -360,6 +284,57 @@ void launcher_components_info_del(served::response &res, const served::request &
         ERRORSEND(res, 400, 1002, "Not remove, not exists by _id!");
     }
     Mongo::remove_by_id("launcher_components_info", id);
+    res.set_status(200);
+}
+void launcher_menu_get(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    int id;
+    
+    auto [from, to] = req_range(req);
+    if(get_id(req, id)){ 
+        from = to = id;
+    }
+    res << Mongo::find_id_range("launcher_menu", from, to);
+    res.set_status(200);
+}
+void launcher_menu_put(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    int id = get_id_from_body_and_url(req);
+    if(id < 0 ){
+        ERRORSEND(res, 400, 1002, "Invalid id!");
+    }
+    if(Mongo::exists_id("launcher_menu", id)){
+        ERRORSEND(res, 400, 1002, "Not insert, exists by _id!");
+    }
+    Mongo::insert("launcher_menu", req.body());
+    res.set_status(200);
+}
+void launcher_menu_post(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    int id = get_id_from_body_and_url(req);
+    if(id < 0 ){
+        ERRORSEND(res, 400, 1002, "Invalid id!");
+    }
+    if(!Mongo::exists_id("launcher_menu", id)){
+        ERRORSEND(res, 400, 1002, "Not update, not exists by _id!");
+    }
+    Mongo::replace_by_id("launcher_menu", id, req.body());
+    res.set_status(200);
+}
+void launcher_menu_del(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    int id = get_id_from_body_and_url(req);
+    if(id < 0 ){
+        ERRORSEND(res, 400, 1002, "Invalid id!");
+    }
+    if(!Mongo::exists_id("launcher_menu", id)){
+        ERRORSEND(res, 400, 1002, "Not remove, not exists by _id!");
+    }
+    Mongo::remove_by_id("launcher_menu", id);
     res.set_status(200);
 }
 void launcher_make_get(served::response &res, const served::request &req)

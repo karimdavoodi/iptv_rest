@@ -151,7 +151,7 @@ Status -----------------------------------------------
                         "time": epochtime,
                         "inputDVBs":[
                             {
-                            "id": int,
+                            "_id": int,
                             "type": string
                             "parameters": string,
                             "channelNumber": int,
@@ -161,7 +161,7 @@ Status -----------------------------------------------
                         ],
                         "outputDVBs":[
                             {
-                            "id": int,
+                            "_id": int,
                             "frequency": int,
                             "capacity": int
                             },
@@ -180,7 +180,7 @@ Status -----------------------------------------------
                 "total":int,
                 "content":[
                     {
-                    "id": int,
+                    "_id": int,
                     "type": string,       //DVB, NET, HDD 
                     "name": string,
                     "health": boolean,
@@ -199,7 +199,7 @@ Status -----------------------------------------------
                 "content":[
                     {
                     "status": boolean,
-                    "id": int,
+                    "_id": int,
                     "type": string
                     "name": string,
                     "rf": boolean,
@@ -225,7 +225,7 @@ Status -----------------------------------------------
                 "total":int,
                 "content":[
                     {
-                    "id": int,
+                    "_id": int,
                     "name": string,
                     },
                 ]
@@ -244,7 +244,7 @@ Status -----------------------------------------------
                 "total":int,
                 "content":[
                     {
-                    "id": int,
+                    "_id": int,
                     "name": string,
                     "active": boolean,
                     "online": boolean,
@@ -437,7 +437,7 @@ System  ----------------------------------------------
             {
                 "interfaces":[
                     {
-                    "id": int,
+                    "_id": int,
                     "name": string,
                     "description": string,
                     "ip": string,  
@@ -479,7 +479,7 @@ System  ----------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "name": string,
                 "locationName": string,
                 "creatorId": int, 
@@ -533,7 +533,7 @@ System  ----------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                    "id": int,
+                    "_id": int,
                     "partner": string,
                     "user": string,
                     "pass": string,
@@ -559,7 +559,7 @@ System  ----------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string 
             }
@@ -583,7 +583,7 @@ System  ----------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string,
                 "hours": [
@@ -639,7 +639,7 @@ System  ----------------------------------------------
                 "total":int,
                 "content":[    
                     {
-                    "id":int,
+                    "_id":int,
                     "name":string,
                     },
                  ]
@@ -654,7 +654,7 @@ System  ----------------------------------------------
                 "total":int,
                 "content":[    
                     {
-                    "id":int,
+                    "_id":int,
                     "name":string,
                     },
                  ]
@@ -669,7 +669,7 @@ System  ----------------------------------------------
                 "total":int,
                 "content":[    
                     {
-                    "id":int,
+                    "_id":int,
                     "name":string,
                     },
                  ]
@@ -677,7 +677,7 @@ System  ----------------------------------------------
         Method: PUT, POST
         ResponseBody: 
             {
-                "id":int,
+                "_id":int,
                 "name":string,
             }
         Method: DELETE
@@ -692,7 +692,7 @@ System  ----------------------------------------------
                 "total":int,
                 "content":[    
                     {
-                        "id": int,
+                        "_id": int,
                         "type": int,
                         "category":[int, ...],
                         "group": string,
@@ -769,7 +769,7 @@ System  ----------------------------------------------
                 "total":int,
                 "content":[
                         {
-                            "id": int,
+                            "_id": int,
                             "contentId": int,
                             "name": string,
                             "weektime": [int, ...],
@@ -849,7 +849,7 @@ Media Server -----------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "name": string, 
                 "active": boolean,
                 "is_dvbt": boolean, 
@@ -916,7 +916,7 @@ Live Inputs --------------------
                 "total":int,
                 "content":[    
                     {
-                    "id":int,
+                    "_id":int,
                     "name":string,
                     "switch":int,
                     },
@@ -941,7 +941,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string, 
                 "dvb_id": int, 
@@ -977,7 +977,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "dir": [ string, .. ]
                 "is_tv": boolean, 
                 "name": string,
@@ -1006,7 +1006,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "name": string,
                 "url": string, 
                 "active": boolean,
@@ -1035,7 +1035,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "name": string,
                 "iptv": string,
                 "url": string, 
@@ -1064,7 +1064,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string, 
                 "url": string, 
@@ -1094,7 +1094,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string, 
                 "freq": int, 
@@ -1125,7 +1125,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "input": string, 
                 "output": string, 
@@ -1161,7 +1161,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string, 
                 "protocol": string,
@@ -1191,7 +1191,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "channel": string, 
                 "use_bsskey": boolean,
@@ -1220,7 +1220,7 @@ Live Inputs --------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "channel": string, 
                 "crypto": string,
@@ -1250,7 +1250,7 @@ Live Output  -----------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string, 
                 "permission": int,
@@ -1285,14 +1285,14 @@ Live Output  -----------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "userId": int, 
                 "iptvAccount": string,
                 "tunnerId": int,
                 "satellites":[ 
                     {
-                        "id":int,
+                        "_id":int,
                         "LNC":["LH", "LV", "HH", "HV"]
                     }
                 ] 
@@ -1311,7 +1311,7 @@ Live Output  -----------------------------------------
                 "total":int,
                 "content":[
                     {
-                        "id":int,
+                        "_id":int,
                         "channelName":string
                     },
                 ]
@@ -1340,7 +1340,7 @@ Launcher ---------------------------------------------
         Method: POST
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "launcher": string,
                 "font":{
                     "en": string,
@@ -1394,7 +1394,7 @@ Launcher ---------------------------------------------
                 "total":int,
                 "content":[    
                         {
-                            "id": int,
+                            "_id": int,
                             "name": string,
                         },
                  ]
@@ -1418,7 +1418,7 @@ Launcher ---------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "type": int,
                 "name":{
@@ -1465,7 +1465,7 @@ Launcher ---------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name":{
                     "en": string,
@@ -1500,7 +1500,7 @@ Users ------------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string, 
                 "permission": [int, ... ],
@@ -1529,7 +1529,7 @@ Users ------------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "active": boolean,
                 "name": string, 
                 "group": [int, ... ],
@@ -1564,7 +1564,7 @@ Users ------------------------------------------------
         Method: PUT, POST 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "time": epochtime,
                 "subject": string, 
                 "body": string,
@@ -1603,7 +1603,7 @@ Users ------------------------------------------------
         Method: PUT 
         RequestBody: 
             {
-                "id": int,
+                "_id": int,
                 "group": [ int, ... ],
                 "time": epochtime,
                 "weektime": [int, ... ],

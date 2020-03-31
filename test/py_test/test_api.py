@@ -36,7 +36,7 @@ class TestLauncher(unittest.TestCase):
                     "ar": "string"
                     },
                 "language": "string",
-                "welcomeClip": "boolean",
+                "welcomeClip": True,
                 "uiStartup": "string",
                 "unitName": "string",
                 "clientHotspot": "string",
@@ -57,7 +57,7 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(res.json()['launcher'], 'string', "OK")
 
 
-    def xtest_post_background(self):
+    def test_post_background(self):
         fdata = open('data/bg.png', 'rb').read()
         assert( len(fdata) > 1000 )
         res = requests.post(
@@ -68,9 +68,9 @@ class TestLauncher(unittest.TestCase):
                 data = fdata
                 )
         self.check_status_code(res)
-    def xtest_put_background(self):
+    def test_put_background(self):
             self.test_post_background()
-    def xtest_get_background(self):
+    def test_get_background(self):
         res = requests.get(
                 "http://localhost:8139/launcher/background/1",
                 auth = self.defAuth
@@ -85,7 +85,7 @@ class TestLauncher(unittest.TestCase):
                 )
         self.check_status_code(res)
 
-    def xtest_post_logo(self):
+    def test_post_logo(self):
         fdata = open('data/bg.png', 'rb').read()
         assert( len(fdata) > 1000 )
         res = requests.post(
@@ -96,9 +96,18 @@ class TestLauncher(unittest.TestCase):
                 data = fdata
                 )
         self.check_status_code(res)
-    def xtest_put_logo(self):
-            self.test_post_logo()
-    def xtest_get_logo(self):
+    def test_put_logo(self):
+        fdata = open('data/bg.png', 'rb').read()
+        assert( len(fdata) > 1000 )
+        res = requests.put(
+                "http://localhost:8139/launcher/logo/1",
+                auth = self.defAuth,
+                params = { 'language': 'en' },
+                headers={'Content-Type': 'application/octet-stream'},
+                data = fdata
+                )
+        self.check_status_code(res)
+    def test_get_logo(self):
         res = requests.get(
                 "http://localhost:8139/launcher/logo/1",
                 params = { 'language': 'en' },
@@ -115,7 +124,7 @@ class TestLauncher(unittest.TestCase):
                 )
         self.check_status_code(res)
 
-    def xtest_get_components_types(self):
+    def test_get_components_types(self):
         res = requests.get(
                 "http://localhost:8139/launcher/components/types",
                 auth = self.defAuth,
@@ -123,7 +132,7 @@ class TestLauncher(unittest.TestCase):
         
         self.check_status_code(res)
 
-    def xtest_post_components_logo(self):
+    def test_post_components_logo(self):
         fdata = open('data/bg.png', 'rb').read()
         assert( len(fdata) > 1000 )
         res = requests.post(
@@ -134,9 +143,18 @@ class TestLauncher(unittest.TestCase):
                 data = fdata
                 )
         self.check_status_code(res)
-    def xtest_put_components_logo(self):
-            self.test_post_logo()
-    def xtest_get_components_logo(self):
+    def test_put_components_logo(self):
+        fdata = open('data/bg.png', 'rb').read()
+        assert( len(fdata) > 1000 )
+        res = requests.put(
+                "http://localhost:8139/launcher/logo/1",
+                auth = self.defAuth,
+                params = { 'language': 'en' },
+                headers={'Content-Type': 'application/octet-stream'},
+                data = fdata
+                )
+        self.check_status_code(res)
+    def test_get_components_logo(self):
         res = requests.get(
                 "http://localhost:8139/launcher/components/logo/1",
                 params = { 'launcher': '1' },
@@ -144,19 +162,100 @@ class TestLauncher(unittest.TestCase):
                 )
         self.check_status_code(res)
         assert( len(res.content) > 1000 )
-    def xtest_put_make(self):
+    def test_get_components_info(self):
+        res = requests.get(
+                "http://localhost:8139/launcher/components/info/1",
+                auth = self.defAuth,
+                params = { 'from': 1, 'to':10 },
+                )
+        self.check_status_code(res)
+    def xtest_put_components_info(self):
         res = requests.put(
-                "http://localhost:8139/launcher/make",
+                "http://localhost:8139/launcher/components/info/1",
                 auth = self.defAuth,
                 json =  {
-                "id": 1,
+                "_id": 1,
                 "active": True,
-                "name": "newVOD",
-                "icon": "VOD1",
-                "type": "VOD",
-                "path": "Video/myVOD"
+                "type": 1,
+                "name":{
+                    "en": "string",
+                    "fa": "string",
+                    "ar": "string"
+                    }, 
+                "logo": 1,
+                "contentType": 1,
+                "contentCategories":[1, 2, 3, 4]
                }
                 )
+        self.check_status_code(res)
+    def test_post_components_info(self):
+        res = requests.post(
+                "http://localhost:8139/launcher/components/info",
+                auth = self.defAuth,
+                json =  {
+                "_id": 1,
+                "active": True,
+                "type": 1,
+                "name":{
+                    "en": "string",
+                    "fa": "string",
+                    "ar": "string"
+                    }, 
+                "logo": 1,
+                "contentType": 1,
+                "contentCategories":[1, 2, 3, 4]
+               }
+             )
+        self.check_status_code(res)
+
+    def test_get_launcher_menu(self):
+        res = requests.get(
+                "http://localhost:8139/launcher/menu",
+                auth = self.defAuth,
+                params = { 'from': 1, 'to':10 },
+                )
+        self.check_status_code(res)
+        res = requests.get(
+                "http://localhost:8139/launcher/menu/1",
+                auth = self.defAuth,
+                )
+        self.check_status_code(res)
+    def xtest_put_launcher_menu(self):
+        res = requests.put(
+                "http://localhost:8139/launcher/menu/1",
+                auth = self.defAuth,
+                json =  {
+                "_id": 1,
+                "active": True,
+                "name":{
+                    "en": "string",
+                    "fa": "string",
+                    "ar": "string"
+                    }, 
+                "icon": 1,
+                "permission": 1,
+                "components": [1,2,3 ]
+               }
+                )
+        self.check_status_code(res)
+    def test_post_launcher_menu(self):
+        res = requests.post(
+                "http://localhost:8139/launcher/menu/1",
+                auth = self.defAuth,
+                json =  {
+                "_id": 1,
+                "active": True,
+                "type": 3,
+                "name":{
+                    "en": "string",
+                    "fa": "string",
+                    "ar": "string"
+                    }, 
+                "logo": 1,
+                "contentType": 1,
+                "contentCategories":[1, 2, 3, 4]
+               }
+             )
         self.check_status_code(res)
 
 
