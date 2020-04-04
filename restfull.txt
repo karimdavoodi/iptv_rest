@@ -1,5 +1,7 @@
 
 ChangLog:
+    2.1: April 4, 2020
+        - 
     2.0: March 28, 2020
         - review all APIs.
         - simplify Contents API (VOD/BOOK/PICTURES/...)
@@ -29,10 +31,11 @@ HTTP Code -----------------------------------
                     }
     }
 Methods: ------------------------------------
-    GET    => for get data
-    POST   => add new data
-    PUT    => change a data
-    DELETE => delete a data
+    PUT    => add an item           -> Dosen't have ResponseBody
+    POST   => change an item        -> Dosen't have ResponseBody
+    DELETE => delete an item        -> Dosen't have RequestBody
+    GET    => get one or more items -> Dosen't have ResponseBody
+
 
 Authentication:  Basic Auth -----------------
     Any API must sent 'user:pass' with 'Authorization' header (HTTP Base Authentication)
@@ -834,8 +837,35 @@ System  ----------------------------------------------
  
 Media Server -----------------------------------------
 *** Tuners(Scan,Enable,Disable)
+        Description: Get Tuners from System
+        Path: /live/tuners/hadrware/input
+        Method: GET
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    {
+                    "_id": int,
+                    "name": string, 
+                    "is_dvbt": boolean, 
+                    }
+                 ]
+            }
+        Path: /live/tuners/hadrware/output
+        Method: GET
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    {
+                    "_id": int,
+                    "name": string, 
+                    "is_dvbt": boolean, 
+                    }
+                 ]
+            }
         Description: Manage of Tunners
-        Path: /live/input_tuners
+        Path: /live/tuners/input
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -846,8 +876,9 @@ Media Server -----------------------------------------
                  ]
             }
 
-        Method: PUT, POST 
-        RequestBody: 
+        Path: /live/tuners/input/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: in PUT, POST  
             {
                 "_id": int,
                 "name": string, 
@@ -860,9 +891,8 @@ Media Server -----------------------------------------
                 "switch": int, 
             }
 
-        Path: /live/input_tuners_scan/{id}
+        Path: /live/tuners/input/scan/{id}
         Method: GET
-        Parameters: [from=int&to=int]
         ResponseBody: 
             {
                 "total":int,
@@ -878,23 +908,13 @@ Media Server -----------------------------------------
                         "pol": int, 
                         "scramble": boolean, 
                         "symb": int
-                    },
+                    }
 
                 ]
             }
 
-        Path: /live/output_tuners
-        Method: GET
-        Parameters: [from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    ... same as 'PUT' RequestBody
-                 ]
-            }
-
-        Method: PUT, POST 
+        Path: /live/tuners/output
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "dvbs": [int, int, ], 
@@ -906,22 +926,6 @@ Media Server -----------------------------------------
 
 
 Live Inputs --------------------
-*** Satellite Lists
-        Description: Get list of satellite
-        Path: /live/inputs/satellite
-        Method: GET
-        Parameters: [from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    {
-                    "_id":int,
-                    "name":string,
-                    "switch":int,
-                    },
-                 ]
-            }
 *** DVB Channels
         Description: Manage of DVB channels
         Path: /live/inputs/dvb
@@ -936,9 +940,7 @@ Live Inputs --------------------
             }
 
         Path: /live/inputs/dvb/{id}
-        Method: GET
-        ResponseBody: same as 'PUT' 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -955,8 +957,6 @@ Live Inputs --------------------
                 "symb": int
             }
 
-        Path: /live/inputs/dvb/{id}
-        Method: DELETE 
 
 *** Archive Channels
         Description: Manage of Archive channels
@@ -972,9 +972,7 @@ Live Inputs --------------------
             }
 
         Path: /live/inputs/archive/{id}
-        Method: GET
-        ResponseBody: same as 'PUT' 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -983,9 +981,6 @@ Live Inputs --------------------
                 "name": string,
                 "active": boolean
             }
-
-        Path: /live/inputs/archive/{id}
-        Method: DELETE 
 
 *** Network Channels
         Description: Manage of Network channels
@@ -1001,9 +996,7 @@ Live Inputs --------------------
             }
 
         Path: /live/inputs/network/{id}
-        Method: GET
-        ResponseBody: same as 'PUT' 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1013,8 +1006,6 @@ Live Inputs --------------------
                 "static": boolean
             }
 
-        Path: /live/inputs/network/{id}
-        Method: DELETE 
 
 *** Account Channels
         Description: Manage of IPTV account channels
@@ -1030,9 +1021,7 @@ Live Inputs --------------------
             }
 
         Path: /live/inputs/iptv/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1042,8 +1031,6 @@ Live Inputs --------------------
                 "active": boolean
             }
 
-        Path: /live/inputs/iptv/{id}
-        Method: DELETE 
 
 *** Virtual Network Channels
         Description: Manage of virtual NET channels (import channels )
@@ -1059,9 +1046,7 @@ Live Inputs --------------------
             }
 
         Path: /live/inputs/virtual_net/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1072,8 +1057,6 @@ Live Inputs --------------------
                 "permission": int
             }
 
-        Path: /live/inputs/virtual_net/{id}
-        Method: DELETE 
 
 *** Virtual DVB Channels
         Description: Manage of virtual DVB channels (import channels )
@@ -1089,9 +1072,7 @@ Live Inputs --------------------
             }
 
         Path: /live/inputs/virtual_dvb/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1103,8 +1084,6 @@ Live Inputs --------------------
                 "permission": int
             }
 
-        Path: /live/inputs/virtual_dvb/{id}
-        Method: DELETE 
 
 *** Transcoding    
         Description: Manage of transcodec channels
@@ -1120,9 +1099,7 @@ Live Inputs --------------------
             }
 
         Path: /live/transcode/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1139,8 +1116,6 @@ Live Inputs --------------------
                 "audioRate": string 
             }
 
-        Path: /live/transcode/{id}
-        Method: DELETE 
 
 *** UnScrambling
         Description: Manage of cccam accounts
@@ -1156,9 +1131,7 @@ Live Inputs --------------------
             }
 
         Path: /live/cccam/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1170,8 +1143,6 @@ Live Inputs --------------------
                 "pass": string 
             }
 
-        Path: /live/cccam/{id}
-        Method: DELETE 
 
         Description: Manage of input scrambled channels
         Path: /live/unscramble
@@ -1186,9 +1157,7 @@ Live Inputs --------------------
             }
 
         Path: /live/unscramble/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1198,8 +1167,6 @@ Live Inputs --------------------
                 "use_cccam": boolean
             }
 
-        Path: /live/unscramble/{id}
-        Method: DELETE 
 
 *** Scrambling   
         Description: Manage of channel scrambling
@@ -1215,9 +1182,7 @@ Live Inputs --------------------
             }
 
         Path: /live/scramble/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1227,8 +1192,6 @@ Live Inputs --------------------
                 "key": string 
             }
 
-        Path: /live/scramble/{id}
-        Method: DELETE 
 
 Live Output  -----------------------------------------
 *** Silver Channels
@@ -1245,9 +1208,7 @@ Live Output  -----------------------------------------
             }
 
         Path: /live/output/silver/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1263,8 +1224,6 @@ Live Output  -----------------------------------------
                 "hls": boolean
             }
 
-        Path: /live/output/silver/{id}
-        Method: DELETE 
 
 *** Gold Channels
         Description: Manage of Output gold channels
@@ -1280,26 +1239,23 @@ Live Output  -----------------------------------------
             }
 
         Path: /live/output/gold/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
                 "active": boolean,
                 "userId": int, 
                 "iptvAccount": string,
-                "tunnerId": int,
+                "tunerId": int,
                 "satellites":[ 
                     {
-                        "_id":int,
+                        "name": string,
+                        "switch": int,
                         "LNC":["LH", "LV", "HH", "HV"]
                     }
                 ] 
             }
 
-        Path: /live/output/gold/{id}
-        Method: DELETE 
 
 *** Channels Logo  
         Description: Manage of channels Logo 
@@ -1584,7 +1540,7 @@ Users ------------------------------------------------
                  ]
             }
 
-        Path: /users/message/to/{userid}/{msg_id}
+        Path: /users/message/from/{userid}/{msg_id}
         Method: DELETE 
 
         Description: Message to All Users

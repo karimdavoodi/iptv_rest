@@ -1,49 +1,113 @@
+#include <nlohmann/json.hpp>
+#include <utility>
 #include "auth.hpp"
+#include "mongo_driver.hpp"
+#include "util.hpp"
 #include "users.hpp"
 
-extern MainStorage st;
-void users_group(served::response &res, const served::request &req)
+void users_group_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_group";
-	CHECK_AUTH;
+    CHECK_AUTH;
+    PUT_ID_COL("users_group");
 }
-void users_group_id(served::response &res, const served::request &req)
+void users_group_post(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_group_id";
 	CHECK_AUTH;
+    POST_ID_COL("users_group");
 }
-void users_user(served::response &res, const served::request &req)
+void users_group_del(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_user";
 	CHECK_AUTH;
+    DEL_ID_COL("users_group");
 }
-void users_user_id(served::response &res, const served::request &req)
+void users_group_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_user_id";
 	CHECK_AUTH;
+    GET_ID_COL("users_group");
 }
-void users_message_to_userid(served::response &res, const served::request &req)
+
+void users_user_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_message_to_userid";
-	CHECK_AUTH;
+    CHECK_AUTH;
+    PUT_ID_COL("users_user");
 }
-void users_message_to_userid_msg_id(served::response &res, const served::request &req)
+void users_user_post(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_message_to_userid_msg_id";
 	CHECK_AUTH;
+    POST_ID_COL("users_user");
 }
-void users_message_from_userid(served::response &res, const served::request &req)
+void users_user_del(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_message_from_userid";
 	CHECK_AUTH;
+    DEL_ID_COL("users_user");
 }
-void users_message_broadcast(served::response &res, const served::request &req)
+void users_user_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_message_broadcast";
 	CHECK_AUTH;
+    GET_ID_COL("users_user");
 }
-void users_message_broadcast_msg_id(served::response &res, const served::request &req)
+
+void users_message_to_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start users_message_broadcast_msg_id";
-	CHECK_AUTH;
+    CHECK_AUTH;
+    PUT_ID_COL("users_message_to");
 }
+void users_message_to_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("users_message_to");
+}
+void users_message_to_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("users_message_to");
+}
+void users_message_to_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID_COL("users_message_to");
+}
+
+void users_message_from_put(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    PUT_ID_COL("users_message_from");
+}
+void users_message_from_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("users_message_from");
+}
+void users_message_from_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("users_message_from");
+}
+void users_message_from_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("users_message_from");
+}
+
+void users_message_broadcast_put(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    PUT_ID_COL("users_message_broadcast");
+}
+void users_message_broadcast_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("users_message_broadcast");
+}
+void users_message_broadcast_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("users_message_broadcast");
+}
+void users_message_broadcast_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID_COL("users_message_broadcast");
+}
+
+

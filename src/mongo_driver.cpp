@@ -38,6 +38,7 @@ void Mongo::fill_defauls(){
 }
 void Mongo::info()
 {
+    BOOST_LOG_TRIVIAL(trace) << __func__ ;
     auto dbs = client.database("iptv");
     auto cols = dbs.list_collection_names();
     for(auto col : cols){
@@ -48,12 +49,14 @@ bool Mongo::exists(std::string col_name, std::string doc)
 {
     auto db = client[db_name];     
     
+    BOOST_LOG_TRIVIAL(trace) << __func__ ;
     auto result = db[col_name].count_documents(bsoncxx::from_json(doc));
     if(result > 0) return true;
     return false;
 }
 bool Mongo::exists_id(std::string col_name, int id)
 {
+    BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
     auto db = client[db_name];     
     
     auto result = db[col_name].count_documents(make_document(kvp("_id", id)));
@@ -62,6 +65,7 @@ bool Mongo::exists_id(std::string col_name, int id)
 }
 bool Mongo::insert(std::string col, std::string doc)
 {
+    BOOST_LOG_TRIVIAL(trace) << __func__ ;
     try{
         auto dB = client[db_name];
         auto ret = dB[col].insert_one(bsoncxx::from_json(doc));
@@ -72,6 +76,7 @@ bool Mongo::insert(std::string col, std::string doc)
 }
 bool Mongo::remove(std::string col, std::string doc)
 {
+    BOOST_LOG_TRIVIAL(trace) << __func__ ;
     try{
         auto dB = client[db_name];
         auto ret = dB[col].delete_one(bsoncxx::from_json(doc));
@@ -83,6 +88,7 @@ bool Mongo::remove(std::string col, std::string doc)
 }
 bool Mongo::remove_by_id(std::string col, int id)
 {
+    BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
     try{
         auto dB = client[db_name];
         auto ret = dB[col].delete_one(make_document(kvp("_id", id)));
@@ -94,6 +100,7 @@ bool Mongo::remove_by_id(std::string col, int id)
 }
 bool Mongo::replace(std::string col, std::string filter, std::string doc)
 {
+    BOOST_LOG_TRIVIAL(trace) << __func__ ;
     try{
         auto dB = client[db_name];
         auto ret = dB[col].replace_one(bsoncxx::from_json(filter) ,bsoncxx::from_json(doc));
@@ -106,10 +113,11 @@ bool Mongo::replace(std::string col, std::string filter, std::string doc)
 }
 bool Mongo::replace_by_id(std::string col, int id, std::string doc)
 {
-    BOOST_LOG_TRIVIAL(trace) << __func__;
+    BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
     try{
         auto dB = client[db_name];
-        auto ret = dB[col].replace_one(make_document(kvp("_id", id)) ,bsoncxx::from_json(doc));
+        auto ret = dB[col].replace_one(make_document(kvp("_id", id)) ,
+                                       bsoncxx::from_json(doc));
         return ret.value().modified_count() > 0;
     }catch(...){
         return false;
@@ -136,6 +144,25 @@ std::string Mongo::find( std::string col, std::string doc)
     }
     return result_str;
 }
+std::string Mongo::find_id(std::string col, int id)
+{
+    auto dB = client[db_name];     
+   
+    BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
+    try{
+        bsoncxx::document::view  v;
+        auto result = dB[col].find(make_document(kvp("_id", id)));
+        std::string result_str = "";
+        for(auto e : result){
+                result_str = bsoncxx::to_json(e); 
+        }
+        return result_str;
+
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
+        return "";
+    }
+}
 std::string Mongo::find_id_range(std::string col, int begin, int end)
 {
     auto dB = client[db_name];     
@@ -145,23 +172,22 @@ std::string Mongo::find_id_range(std::string col, int begin, int end)
         bsoncxx::document::view  v;
         auto result = dB[col].find(v);
         std::string result_str = "";
-        int count = 0;
+        int total = 0;
         for(auto e : result){
             if(e.find("_id") == e.end()){
                 BOOST_LOG_TRIVIAL(trace) << " _id not found!" ;
                 continue;
             }
             int id = e["_id"].get_int32();
+            total++;
             if(id >= begin && id <= end){
-                count++;
                 result_str += bsoncxx::to_json(e) + ","; 
             }
         }
-        if(result_str.size() == 0) return "";
-        result_str.pop_back();
-        if(count > 1){
-            result_str = "[ " + result_str + " ]";
-        }
+        if(result_str.size() > 0)
+            result_str.pop_back();
+        result_str =  "{ total: " + std::to_string(total) + 
+                         ", content:[" + result_str + "] }";
         return result_str;
 
     }catch(std::exception& e){

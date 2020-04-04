@@ -1,3 +1,4 @@
+#include <exception>
 #include <fstream>
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
@@ -6,13 +7,13 @@
 
 bool get_id(const served::request &req, std::string& id)
 {
-    id = req.params["id"];
+    id = req.params.get("id");
     if(id.size() < 1) return false;
     return true;
 }
 bool get_id(const served::request &req, int& id)
 {
-    auto sid = req.params["id"];
+    auto sid = req.params.get("id");
     if(sid.size() < 1) return false;
     id = std::stoi(sid);
     return true;
@@ -20,21 +21,27 @@ bool get_id(const served::request &req, int& id)
 int get_id_from_body_and_url(const served::request &req)
 {
     int id;
-    if(!get_id(req, id)){
-        BOOST_LOG_TRIVIAL(trace) << "Not exists 'id' in url";
+    try{
+        if(!get_id(req, id)){
+            BOOST_LOG_TRIVIAL(trace) << "Not exists 'id' in url";
+            return -1;
+        }
+        auto j = json::parse(req.body());
+        if( j.count("_id") == 0 ){
+            BOOST_LOG_TRIVIAL(trace) << "Not exists '_id' in body json";
+            return -1;
+        }
+        int _id = j["_id"];
+        if(id != _id){
+            BOOST_LOG_TRIVIAL(trace) << "Diffrent '_id' in body and 'id' in url";
+            return -1;
+        }
+        return id;
+
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception: " << e.what();
         return -1;
     }
-    auto j = json::parse(req.body());
-    if( j.count("_id") == 0 ){
-        BOOST_LOG_TRIVIAL(trace) << "Not exists '_id' in body json";
-        return -1;
-    }
-    int _id = j["_id"];
-    if(id != _id){
-        BOOST_LOG_TRIVIAL(trace) << "Diffrent '_id' in body and 'id' in url";
-        return -1;
-    }
-    return id;
 }
 bool save_file(served::response &res, const served::request &req, const std::string path)
 {

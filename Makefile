@@ -123,6 +123,33 @@ main/fast:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+src/hardware.o: src/hardware.cpp.o
+
+.PHONY : src/hardware.o
+
+# target to build an object file
+src/hardware.cpp.o:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/hardware.cpp.o
+.PHONY : src/hardware.cpp.o
+
+src/hardware.i: src/hardware.cpp.i
+
+.PHONY : src/hardware.i
+
+# target to preprocess a source file
+src/hardware.cpp.i:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/hardware.cpp.i
+.PHONY : src/hardware.cpp.i
+
+src/hardware.s: src/hardware.cpp.s
+
+.PHONY : src/hardware.s
+
+# target to generate assembly for a file
+src/hardware.cpp.s:
+	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/hardware.cpp.s
+.PHONY : src/hardware.cpp.s
+
 src/launcher.o: src/launcher.cpp.o
 
 .PHONY : src/launcher.o
@@ -429,6 +456,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... main"
 	@echo "... edit_cache"
+	@echo "... src/hardware.o"
+	@echo "... src/hardware.i"
+	@echo "... src/hardware.s"
 	@echo "... src/launcher.o"
 	@echo "... src/launcher.i"
 	@echo "... src/launcher.s"

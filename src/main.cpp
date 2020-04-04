@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
 //    init_log();
     BOOST_LOG_TRIVIAL(info) << "Start Main";
     Mongo::fill_defauls();
-    //signal(SIGSEGV, &signal_handler);
-    //signal(SIGABRT, &signal_handler);
+    signal(SIGSEGV, &signal_handler);
+    signal(SIGABRT, &signal_handler);
     /*
     if (boost::filesystem::exists(DUMP_FILE)) {
         std::ifstream ifs(DUMP_FILE);

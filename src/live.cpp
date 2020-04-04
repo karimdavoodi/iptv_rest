@@ -1,150 +1,113 @@
-#include "auth.hpp"
-#include "live.hpp"
+#include <nlohmann/json.hpp>
 #include "mongo_driver.hpp"
+#include "hardware.hpp"
+#include "auth.hpp"
+#include "util.hpp"
+#include "live.hpp"
 
-extern MainStorage st;
-void live_input_tuners(served::response &res, const served::request &req)
+void live_tuners_hardware_input_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_input_tuners";
 	CHECK_AUTH;
+    res << Hardware::input_tuners();
+    res.set_status(200);
 }
-void live_input_tuners_scan_id(served::response &res, const served::request &req)
+void live_tuners_hardware_output_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_input_tuners_scan_id";
 	CHECK_AUTH;
+    res << Hardware::output_tuners();
+    res.set_status(200);
 }
-void live_output_tuners(served::response &res, const served::request &req)
+void live_tuners_input_scan_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_output_tuners";
 	CHECK_AUTH;
+    int id;
+    if(!get_id(req, id) ){
+        ERRORSEND(res, 400, 1002, "Invalid id!");
+    }
+    auto tuner = Mongo::find_id("live_tuners_input", id);
+    if(tuner.size() == 0 ){
+        ERRORSEND(res, 400, 1002, "Invalid tuner!");
+    }
+    
+    res << Hardware::scan_input_tuner(tuner);
+    res.set_status(200);
 }
-void live_inputs_dvb(served::response &res, const served::request &req)
+
+void live_tuners_input_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_dvb";
-	CHECK_AUTH;
+    CHECK_AUTH;
+    PUT_ID_COL("live_tuners_input");
 }
-void live_inputs_dvb_id(served::response &res, const served::request &req)
+void live_tuners_input_post(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_dvb_id";
 	CHECK_AUTH;
+    POST_ID_COL("live_tuners_input");
 }
-void live_inputs_archive(served::response &res, const served::request &req)
+void live_tuners_input_del(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_archive";
 	CHECK_AUTH;
+    DEL_ID_COL("live_tuners_input");
 }
-void live_inputs_archive_id(served::response &res, const served::request &req)
+void live_tuners_input_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_archive_id";
 	CHECK_AUTH;
+    GET_ID_COL("live_tuners_input");
 }
-void live_inputs_network(served::response &res, const served::request &req)
+
+void live_tuners_output_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_network";
-	CHECK_AUTH;
+    CHECK_AUTH;
+    int id = 1;
+    if(Mongo::exists_id("live_tuners_output", id)){
+        ERRORSEND(res, 400, 1002, "Not insert, exists by _id = 1!");
+    }
+    Mongo::insert("live_tuners_output", req.body());
+    res.set_status(200);
 }
-void live_inputs_network_id(served::response &res, const served::request &req)
+void live_tuners_output_post(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_network_id";
 	CHECK_AUTH;
+    int id = 1;
+    if(!Mongo::exists_id("live_tuners_output", id)){
+        ERRORSEND(res, 400, 1002, "Not update, not exists by _id!");
+    }
+    Mongo::replace_by_id("live_tuners_output", id, req.body());
+    res.set_status(200);
 }
-void live_inputs_iptv(served::response &res, const served::request &req)
+void live_tuners_output_del(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_iptv";
 	CHECK_AUTH;
+    int id = 1;
+    if(!Mongo::exists_id("live_tuners_output", id)){
+        ERRORSEND(res, 400, 1002, "Not remove, not exists by _id!");
+    }
+    Mongo::remove_by_id("live_tuners_output", id);
+    res.set_status(200);
 }
-void live_inputs_iptv_id(served::response &res, const served::request &req)
+void live_tuners_output_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_iptv_id";
 	CHECK_AUTH;
+    int id = 1;
+    res << Mongo::find_id("live_tuners_output", id);
+    res.set_status(200);
 }
-void live_inputs_virtual_net(served::response &res, const served::request &req)
+void live_input_dvb_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_virtual_net";
-	CHECK_AUTH;
+    CHECK_AUTH;
+    PUT_ID_COL("live_input_dvb");
 }
-void live_inputs_virtual_net_id(served::response &res, const served::request &req)
+void live_input_dvb_post(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_virtual_net_id";
 	CHECK_AUTH;
+    POST_ID_COL("live_input_dvb");
 }
-void live_inputs_virtual_dvb(served::response &res, const served::request &req)
+void live_input_dvb_del(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_virtual_dvb";
 	CHECK_AUTH;
+    DEL_ID_COL("live_input_dvb");
 }
-void live_inputs_virtual_dvb_id(served::response &res, const served::request &req)
+void live_input_dvb_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start live_inputs_virtual_dvb_id";
 	CHECK_AUTH;
-}
-void live_transcode(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_transcode";
-	CHECK_AUTH;
-}
-void live_transcode_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_transcode_id";
-	CHECK_AUTH;
-}
-void live_cccam(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_cccam";
-	CHECK_AUTH;
-}
-void live_cccam_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_cccam_id";
-	CHECK_AUTH;
-}
-void live_unscramble(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_unscramble";
-	CHECK_AUTH;
-}
-void live_unscramble_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_unscramble_id";
-	CHECK_AUTH;
-}
-void live_scramble(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_scramble";
-	CHECK_AUTH;
-}
-void live_scramble_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_scramble_id";
-	CHECK_AUTH;
-}
-void live_output_silver(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_output_silver";
-	CHECK_AUTH;
-}
-void live_output_silver_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_output_silver_id";
-	CHECK_AUTH;
-}
-void live_output_gold(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_output_gold";
-	CHECK_AUTH;
-}
-void live_output_gold_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_output_gold_id";
-	CHECK_AUTH;
-}
-void live_icons(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_icons";
-	CHECK_AUTH;
-}
-void live_icons_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start live_icons_id";
-	CHECK_AUTH;
+    GET_ID_COL("live_input_dvb");
 }

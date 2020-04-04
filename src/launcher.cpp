@@ -11,13 +11,11 @@
 #include "launcher.hpp"
 #include "mongo_driver.hpp"
 #include "util.hpp"
-///////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
 
 void launcher_default_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    res <<  Mongo::find("launcher_default","{}");
+    res <<  Mongo::find_id("launcher_default", 1);
 }
 void launcher_default_post(served::response &res, const served::request &req)
 {
@@ -238,151 +236,40 @@ void launcher_components_logo_del(served::response &res, const served::request &
 void launcher_components_info_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id;
-    
-    auto [from, to] = req_range(req);
-    if(get_id(req, id)){ 
-        from = to = id;
-    }
-    res << Mongo::find_id_range("launcher_components_info", from, to);
-    res.set_status(200);
+    GET_ID_COL("launcher_components_info");
 }
 void launcher_components_info_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id = get_id_from_body_and_url(req);
-    if(id < 0 ){
-        ERRORSEND(res, 400, 1002, "Invalid id!");
-    }
-    if(Mongo::exists_id("launcher_components_info", id)){
-        ERRORSEND(res, 400, 1002, "Not insert, exists by _id!");
-    }
-    Mongo::insert("launcher_components_info", req.body());
-    res.set_status(200);
+    PUT_ID_COL("launcher_components_info");
 }
 void launcher_components_info_post(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id = get_id_from_body_and_url(req);
-    if(id < 0 ){
-        ERRORSEND(res, 400, 1002, "Invalid id!");
-    }
-    if(!Mongo::exists_id("launcher_components_info", id)){
-        ERRORSEND(res, 400, 1002, "Not update, not exists by _id!");
-    }
-    Mongo::replace_by_id("launcher_components_info", id, req.body());
-    res.set_status(200);
+    POST_ID_COL("launcher_components_info");
 }
 void launcher_components_info_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id = get_id_from_body_and_url(req);
-    if(id < 0 ){
-        ERRORSEND(res, 400, 1002, "Invalid id!");
-    }
-    if(!Mongo::exists_id("launcher_components_info", id)){
-        ERRORSEND(res, 400, 1002, "Not remove, not exists by _id!");
-    }
-    Mongo::remove_by_id("launcher_components_info", id);
-    res.set_status(200);
+    DEL_ID_COL("launcher_components_info");
 }
 void launcher_menu_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id;
-    
-    auto [from, to] = req_range(req);
-    if(get_id(req, id)){ 
-        from = to = id;
-    }
-    res << Mongo::find_id_range("launcher_menu", from, to);
-    res.set_status(200);
+    GET_ID_COL("launcher_menu");
 }
 void launcher_menu_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id = get_id_from_body_and_url(req);
-    if(id < 0 ){
-        ERRORSEND(res, 400, 1002, "Invalid id!");
-    }
-    if(Mongo::exists_id("launcher_menu", id)){
-        ERRORSEND(res, 400, 1002, "Not insert, exists by _id!");
-    }
-    Mongo::insert("launcher_menu", req.body());
-    res.set_status(200);
+    PUT_ID_COL("launcher_menu");
 }
 void launcher_menu_post(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id = get_id_from_body_and_url(req);
-    if(id < 0 ){
-        ERRORSEND(res, 400, 1002, "Invalid id!");
-    }
-    if(!Mongo::exists_id("launcher_menu", id)){
-        ERRORSEND(res, 400, 1002, "Not update, not exists by _id!");
-    }
-    Mongo::replace_by_id("launcher_menu", id, req.body());
-    res.set_status(200);
+    POST_ID_COL("launcher_menu");
 }
 void launcher_menu_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    int id = get_id_from_body_and_url(req);
-    if(id < 0 ){
-        ERRORSEND(res, 400, 1002, "Invalid id!");
-    }
-    if(!Mongo::exists_id("launcher_menu", id)){
-        ERRORSEND(res, 400, 1002, "Not remove, not exists by _id!");
-    }
-    Mongo::remove_by_id("launcher_menu", id);
-    res.set_status(200);
-}
-void launcher_make_get(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-}
-void launcher_make_post(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << __func__ ;
-	CHECK_AUTH;
-}
-void launcher_make_put(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << __func__ ;
-	CHECK_AUTH;
-    if(req.body().size() == 0){
-        ERRORSEND(res, 400, 1001, "No input!");
-    }
-    auto j = json::parse(req.body());
-    int id = j["id"];
-    std::cout << "id:" << id << std::endl;
-    if( id == 0 ){
-        ERRORSEND(res, 400, 1002, "Invalid input JSON!");
-    }
-    /*
-    json make = st.getJson("configs", "launcher_make");
-    if(make.size() == 0 ){
-        make = json::array();
-        std::cout << "Make empty make\n";
-    } 
-    make = {j, j};
-    st.setJson("configs", "launcher_make", j);
-    */
-    res.set_status(200);
-
-}
-void launcher_make_delete(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << __func__ ;
-	CHECK_AUTH;
-}
-void launcher_arrange(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start launcher_arrange";
-	CHECK_AUTH;
-}
-void launcher_arrange_id(served::response &res, const served::request &req)
-{
-	BOOST_LOG_TRIVIAL(trace) << "Start launcher_arrange_id";
-	CHECK_AUTH;
+    DEL_ID_COL("launcher_menu");
 }
