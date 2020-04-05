@@ -30,8 +30,21 @@
         }                                                       \
     }while(false)  
 
+#define CHECK_BODY_ID                                           \
+    do{                                                         \
+        if(req.body().size() == 0){                             \
+            ERRORSEND(res, 400, 1001, "No input!");             \
+        }                                                       \
+        auto j = json::parse(req.body());                       \
+        if( j.count("_id") == 0 ){                              \
+            ERRORSEND(res, 400, 1002, "Invalid input JSON!");   \
+        }                                                       \
+    }while(false)  
+
+
 #define PUT_ID_COL(col)                                             \
     do{                                                             \
+        CHECK_BODY_ID;                                              \
         int id = get_id_from_body_and_url(req);                     \
         if(id < 0 ){                                                \
             ERRORSEND(res, 400, 1002, "Invalid id!");               \
@@ -43,8 +56,19 @@
         res.set_status(200);                                        \
     }while(false)                       
 
+#define PUT_ID1_COL(col)                                            \
+    do{                                                             \
+        CHECK_BODY_ID;                                              \
+        if(Mongo::exists_id(col, 1)){                               \
+            ERRORSEND(res, 400, 1002, "Not insert, exists id 1!");  \
+        }                                                           \
+        Mongo::insert(col, req.body());                             \
+        res.set_status(200);                                        \
+    }while(false)                       
+
 #define POST_ID_COL(col)                                            \
     do{                                                             \
+        CHECK_BODY_ID;                                               \
         int id = get_id_from_body_and_url(req);                     \
         if(id < 0 ){                                                \
             ERRORSEND(res, 400, 1002, "Invalid id!");               \
@@ -53,6 +77,16 @@
             ERRORSEND(res, 400, 1002, "Not update, not exists by _id!");    \
         }                                                           \
         Mongo::replace_by_id(col, id, req.body());                  \
+        res.set_status(200);                                        \
+    }while(false)                       
+
+#define POST_ID1_COL(col)                                           \
+    do{                                                             \
+        CHECK_BODY_ID;                                               \
+        if(!Mongo::exists_id(col, 1)){                              \
+            ERRORSEND(res, 400, 1002, "Not update, not exists by 1!");    \
+        }                                                           \
+        Mongo::replace_by_id(col, 1, req.body());                   \
         res.set_status(200);                                        \
     }while(false)                       
 
@@ -69,6 +103,15 @@
         res.set_status(200);                                        \
     }while(false)                       
 
+#define DEL_ID1_COL(col)                                            \
+    do{                                                             \
+        if(!Mongo::exists_id(col, 1)){                              \
+            ERRORSEND(res, 400, 1002, "Not remove, not exists by id 1!");\
+        }                                                           \
+        Mongo::remove_by_id(col, 1);                                \
+        res.set_status(200);                                        \
+    }while(false)                       
+
 #define GET_ID_COL(col)                                             \
     do{                                                             \
         int id;                                                     \
@@ -78,5 +121,11 @@
         }else{                                                      \
             res << Mongo::find_id_range(col, from, to);             \
         }                                                           \
+        res.set_status(200);                                        \
+    }while(false)                       
+
+#define GET_ID1_COL(col)                                            \
+    do{                                                             \
+        res << Mongo::find_id(col, 1);                              \
         res.set_status(200);                                        \
     }while(false)                       

@@ -13,14 +13,12 @@ ChangLog:
     1.0: 
         - first version of APIs
 
-
-HTTP Code -----------------------------------
-    swaitch(Response Code){
+#######################################################
+HTTP Code:
+    switch(Response Code){
         case 200(OK):
-                Return Response or return this:
-                    {
-                        "status":true,
-                    }
+                Return Response in GET and empty in other methods
+                break
         case 400(Bad Request):
         case 401(Unauthorized):
         case 500(Internal Server Error):
@@ -30,25 +28,25 @@ HTTP Code -----------------------------------
                         "errorMessage": string
                     }
     }
-Methods: ------------------------------------
-    PUT    => add an item           -> Dosen't have ResponseBody
-    POST   => change an item        -> Dosen't have ResponseBody
-    DELETE => delete an item        -> Dosen't have RequestBody
-    GET    => get one or more items -> Dosen't have ResponseBody
-
-
-Authentication:  Basic Auth -----------------
-    Any API must sent 'user:pass' with 'Authorization' header (HTTP Base Authentication)
+#######################################################
+Methods:
+    PUT:    => add an item           -> Dosen't have ResponseBody
+    POST:   => change an item        -> Dosen't have ResponseBody
+    DELETE: => delete an item        -> Dosen't have RequestBody
+    GET:    => get one or more items -> Dosen't have ResponseBody
+#######################################################
+Authentication:  Basic Auth 
+    Any API must sent Base64 of 'user:pass' with 'Authorization' header
     like: Authorization: Basic 'Base64 of user:pass'  
-    example: curl --user user:pass  https://server/
+    example: curl ##user user:pass  https://server/
 
-------------------------------------------------------
----------            API       -----------------------
-------------------------------------------------------
+#######################################################
+##########            API       #######################
+#######################################################
 
-Status -----------------------------------------------       
-*** Dashboard              
-*** Sensor0 (information)
+#Status ###############################################       
+### Dashboard              
+### Sensor0 (information)
         Description: Get information
         Path: /status/information
         Method: GET
@@ -70,7 +68,7 @@ Status -----------------------------------------------
                 "Memory": string
             }
 
-*** Sensor1 (CPU/MEM)  
+### Sensor1 (CPU/MEM)  
         Description: Get CPU & MEM current stat
         Path: /status/cpu_mem
         Method: GET
@@ -90,7 +88,7 @@ Status -----------------------------------------------
                 ]
 
             }
-*** Sensor2 (Network)
+### Sensor2 (Network)
         Description: Get Network current stat
         Path: /status/network
         Method: GET
@@ -116,7 +114,7 @@ Status -----------------------------------------------
                 ]
             }
 
-*** Sensor3 (Storage)
+### Sensor3 (Storage)
         Description: Get Storage current stat
         Path: /status/storage
         Method: GET
@@ -141,7 +139,7 @@ Status -----------------------------------------------
                 ]
             }
         
-*** Sensor4 (DVB)
+### Sensor4 (DVB)
         Description: Get DVB current stat
         Path: /status/dvb
         Method: GET
@@ -173,7 +171,7 @@ Status -----------------------------------------------
                 ]
             }
         
-*** Sensor5 (Input Channels)
+### Sensor5 (Input Channels)
         Description: Get Input channels list
         Path: /status/channels/input
         Method: GET
@@ -191,7 +189,7 @@ Status -----------------------------------------------
                 ]
             }
 
-*** Sensor6 (Output Channels Status)
+### Sensor6 (Output Channels Status)
         Description: Get Output channels list
         Path: /status/channels/output
         Method: GET
@@ -218,7 +216,7 @@ Status -----------------------------------------------
                 ]
             }
 
-*** Sensor7 (Output Channels Screenshut)    
+### Sensor7 (Output Channels Screenshut)    
         Description: Get Output channels view list
         Path: /status/channels/output/view
         Method: GET
@@ -237,7 +235,7 @@ Status -----------------------------------------------
         Method: GET
         ResponseBody: channel view image file 
 
-*** Sensor8 (Users)
+### Sensor8 (Users)
         Description: Get users list
         Path: /status/users
         Method: GET
@@ -257,7 +255,7 @@ Status -----------------------------------------------
                 ]
             }
 
-*** Sensor9 (Errors) 
+### Sensor9 (Errors) 
         Description: Get error list
         Path: /status/errors
         Method: GET
@@ -274,8 +272,8 @@ Status -----------------------------------------------
                 ]
             }
 
-Reports(Backup,Export)  ------------------------------
-*** Users Activity
+### Reports(Backup,Export)  ##############################
+### Users Activity
         Description: Get log of users activity. 'user' and 'activityType' are optional 
         Path: /report/user
         Method: GET
@@ -295,7 +293,7 @@ Reports(Backup,Export)  ------------------------------
                     },
                 ]
             }
-*** System Activity
+### System Activity
         Description: Get log of system activity. 'activityType' is optional 
         Path: /report/system
         Method: GET
@@ -313,7 +311,7 @@ Reports(Backup,Export)  ------------------------------
                     },
                 ]
             }
-*** Live Usage
+### Live Usage
         Description: Get log of Live channels activity. 'channel' is optional 
         Path: /report/live
         Method: GET
@@ -331,7 +329,7 @@ Reports(Backup,Export)  ------------------------------
                     },
                 ]
             }
-*** VOD Usage
+### VOD Usage
         Description: Get log of VOD activity. 'media' is optional 
         Path: /report/vod
         Method: GET
@@ -349,7 +347,7 @@ Reports(Backup,Export)  ------------------------------
                     },
                 ]
             }
-*** Components Usage
+### Components Usage
         Description: Get log of Components activity. 'component' is optional 
         Path: /report/component
         Method: GET
@@ -367,7 +365,7 @@ Reports(Backup,Export)  ------------------------------
                     },
                 ]
             }
-*** System Users Activity
+### System Users Activity
         Description: Get log of System users. 'user' is optional 
         Path: /report/system_user
         Method: GET
@@ -385,8 +383,8 @@ Reports(Backup,Export)  ------------------------------
                     },
                 ]
             }
-System  ----------------------------------------------
-*** Setting
+### System  ##############################################
+### Setting
         Description: Manage localization data 
         Path: /system/location
         Method: GET
@@ -402,7 +400,7 @@ System  ----------------------------------------------
                     "systemTime": epochtime,
                     "gamaryShift": int
             }
-*** Logo
+### Logo
         Description: Manage of system Logo 
         Path: /system/system_logo
         Method: GET
@@ -410,14 +408,14 @@ System  ----------------------------------------------
 
         Method: POST
         RequestBody: logo image file
-        ------------------------------------------
+
         Description: Manage of subtitle Logo
         Path: /system/subtitle_logo
         Method: GET
         ResponseBody: logo image file 
         Method: POST
         RequestBody: logo image file
-        ------------------------------------------
+
         Description: Manage of subtitle Logo Config
         Path: /system/subtitle_logo_config
         Method: GET
@@ -429,7 +427,7 @@ System  ----------------------------------------------
         Method: POST
         RequestBody: same as GET ResponseBody
 
-*** Network
+### Network
         Description: Manage network setting
         Path: /system/network
         Method: GET
@@ -456,7 +454,7 @@ System  ----------------------------------------------
                 "staticRoute": [string, ... ],
                 "firewallRule": [string, ... ]
             }
-*** System Users Profile 
+### System Users Profile 
         Description: Get information of current user
         Path: /system/users/me
         Method: GET
@@ -503,7 +501,7 @@ System  ----------------------------------------------
         Path: /system/users/{id}
         Method: DELETE 
 
-*** Software Integration(PMS)
+### Software Integration(PMS)
         Description: Manage PMS setting
         Path: /system/pms
         Method: GET
@@ -519,7 +517,7 @@ System  ----------------------------------------------
                     "pass": string,   
             }
 
-*** VOD Accounts
+### VOD Accounts
         Description: Manage VOD accounts
         Path: /system/vod_account
         Method: GET
@@ -545,7 +543,7 @@ System  ----------------------------------------------
         Path: /system/vod_account/{id}
         Method: DELETE 
 
-*** Permissions
+### Permissions
         Description: Manage of Permissions
         Path: /system/permission
         Method: GET
@@ -570,7 +568,7 @@ System  ----------------------------------------------
         Path: /system/permission/{id}
         Method: DELETE 
 
-*** Week Times
+### Week Times
         Description: Manage of Week Times
         Path: /system/weektime
         Method: GET
@@ -603,8 +601,8 @@ System  ----------------------------------------------
         Path: /system/weektime/{id}
         Method: DELETE 
 
-*** Storage ---------
-*** Setting 
+### Storage ###############################
+### Setting 
         Description: Storage setting
         Path: /storage/setting
         Method: GET
@@ -632,7 +630,7 @@ System  ----------------------------------------------
         RequestBody: same as GET ResponsBody 
 
 
-*** Contents : Video, Audio, Book, AudioBook, Picture, Azan, TimeShift, NPVR, ... 
+### Contents : Video, Audio, Book, AudioBook, Picture, Azan, TimeShift, NPVR, ... 
         Description: Get list of types like: video, audio, book, image
         Path: /storage/contents/types
         Method: GET
@@ -647,7 +645,6 @@ System  ----------------------------------------------
                     },
                  ]
             }
-        ---------------------------------------
         Description: Get list of platforms like: samsung, lg, android, amino
         Path: /storage/contents/platforms
         Method: GET
@@ -662,7 +659,6 @@ System  ----------------------------------------------
                     },
                  ]
             }
-        ---------------------------------------
         Description: Get list of categories
         Path: /storage/contents/categories
         Method: GET
@@ -685,7 +681,7 @@ System  ----------------------------------------------
             }
         Method: DELETE
         Path: /storage/contents/categories/{id}
-        --------------------------------------------
+
         Description: Contents list
         Path: /storage/contents/info
         Method: GET 
@@ -728,7 +724,6 @@ System  ----------------------------------------------
         Path: /storage/contents/info/{id}
         Method: DELETE
 
-        -----------------------------------------------
         Path: /storage/contents/media/{id}
         Method: GET
         ResponseBody: media file
@@ -739,7 +734,7 @@ System  ----------------------------------------------
 
         Path: /storage/contents/media/{id}
         Method: DELETE
-        -----------------------------------------------
+        ###############################################
         Path: /storage/contents/poster/{id}
         Method: GET
         ResponseBody: poster file
@@ -750,7 +745,7 @@ System  ----------------------------------------------
 
         Path: /storage/contents/poster/{id}
         Method: DELETE
-        -----------------------------------------------
+        ###############################################
         Path: /storage/contents/subtitle/{id}
         Method: GET
         ResponseBody: subtitle file
@@ -762,7 +757,7 @@ System  ----------------------------------------------
         Path: /storage/contents/subtitle/{id}
         Method: DELETE
     
-*** Advertising
+### Advertising
         Description: Advertising Config
         Path: /storage/advertize
         Method: GET
@@ -788,7 +783,7 @@ System  ----------------------------------------------
         Path: /storage/advertize/{id}
         Method: DELETE
 
-*** Backup/Restore
+### Backup/Restore
         Description: Backup Setting
         Path: /system/backup
         Method: GET
@@ -799,7 +794,7 @@ System  ----------------------------------------------
         Method: PUT  
         RequestBody: application/gzip file
 
-*** Update
+### Update
         Description: Get license
         Path: /system/license
         Method: GET
@@ -820,7 +815,7 @@ System  ----------------------------------------------
         Method: POST  
         RequestBody: application/octet-stream file
 
-*** Start/Stop/Reboot/Shotdown/Logout
+### Start/Stop/Reboot/Shotdown/Logout
         Description: Operation on system
 
         Path: /system/restart
@@ -835,8 +830,8 @@ System  ----------------------------------------------
         Path: /system/logout
         Method: GET
  
-Media Server -----------------------------------------
-*** Tuners(Scan,Enable,Disable)
+### Media Server #########################################
+### Tuners(Scan,Enable,Disable)
         Description: Get Tuners from System
         Path: /live/tuners/hadrware/input
         Method: GET
@@ -925,8 +920,8 @@ Media Server -----------------------------------------
             }
 
 
-Live Inputs --------------------
-*** DVB Channels
+### Live Inputs ################################
+### DVB Channels
         Description: Manage of DVB channels
         Path: /live/inputs/dvb
         Method: GET
@@ -958,7 +953,7 @@ Live Inputs --------------------
             }
 
 
-*** Archive Channels
+### Archive Channels
         Description: Manage of Archive channels
         Path: /live/inputs/archive
         Method: GET
@@ -982,7 +977,7 @@ Live Inputs --------------------
                 "active": boolean
             }
 
-*** Network Channels
+### Network Channels
         Description: Manage of Network channels
         Path: /live/inputs/network
         Method: GET
@@ -1007,7 +1002,7 @@ Live Inputs --------------------
             }
 
 
-*** Account Channels
+### Account Channels
         Description: Manage of IPTV account channels
         Path: /live/inputs/iptv
         Method: GET
@@ -1032,7 +1027,7 @@ Live Inputs --------------------
             }
 
 
-*** Virtual Network Channels
+### Virtual Network Channels
         Description: Manage of virtual NET channels (import channels )
         Path: /live/inputs/virtual_net
         Method: GET
@@ -1058,7 +1053,7 @@ Live Inputs --------------------
             }
 
 
-*** Virtual DVB Channels
+### Virtual DVB Channels
         Description: Manage of virtual DVB channels (import channels )
         Path: /live/inputs/virtual_dvb
         Method: GET
@@ -1085,7 +1080,7 @@ Live Inputs --------------------
             }
 
 
-*** Transcoding    
+### Transcoding    
         Description: Manage of transcodec channels
         Path: /live/transcode
         Method: GET
@@ -1117,7 +1112,7 @@ Live Inputs --------------------
             }
 
 
-*** UnScrambling
+### UnScrambling
         Description: Manage of cccam accounts
         Path: /live/cccam
         Method: GET
@@ -1168,7 +1163,7 @@ Live Inputs --------------------
             }
 
 
-*** Scrambling   
+### Scrambling   
         Description: Manage of channel scrambling
         Path: /live/scramble
         Method: GET
@@ -1193,8 +1188,8 @@ Live Inputs --------------------
             }
 
 
-Live Output  -----------------------------------------
-*** Silver Channels
+### Live Output  #########################################
+### Silver Channels
         Description: Manage of Output silver channels
         Path: /live/output/silver
         Method: GET
@@ -1225,7 +1220,7 @@ Live Output  -----------------------------------------
             }
 
 
-*** Gold Channels
+### Gold Channels
         Description: Manage of Output gold channels
         Path: /live/output/gold
         Method: GET
@@ -1257,7 +1252,7 @@ Live Output  -----------------------------------------
             }
 
 
-*** Channels Logo  
+### Channels Logo  
         Description: Manage of channels Logo 
         Path: /live/logo
         Method: GET
@@ -1285,9 +1280,8 @@ Live Output  -----------------------------------------
         Path: /live/logo/{id}
         Method: DELET
 
-Launcher --------------------------------------------- 
-*** Setting
-        ------------------------------------------
+### Launcher ############################################# 
+### Setting
         Description: Manage of Launchers
         Path: /launcher/default
         Method: GET
@@ -1321,7 +1315,7 @@ Launcher ---------------------------------------------
                 "testUserId": int,
                 "defaultChannel": int 
             }
-        ------------------------------------------
+        ##########################################
         Description: Manage of launcher background
         Path: /launcher/background/{id}
         Method: GET
@@ -1329,7 +1323,7 @@ Launcher ---------------------------------------------
         Method: PUT, POST
         RequestBody: background image file
         Method: DELETE
-        ------------------------------------------
+        ##########################################
         Description: Manage of launcher logo
         Path: /launcher/logo/{id}
         Method: GET
@@ -1340,7 +1334,7 @@ Launcher ---------------------------------------------
         RequestBody: background image file
         Method: DELETE
 
-*** Components 
+### Components 
         Description: Types of components like: LiveTV, LiveRadio, VoD, AoD, Picture, ..
         Path: /launcher/components/types
         Method: GET
@@ -1355,7 +1349,7 @@ Launcher ---------------------------------------------
                         },
                  ]
             }
-        ------------------------------------------
+        ##########################################
         Description: Manage of components
         Path: /launcher/components/info
         Method: GET
@@ -1401,8 +1395,7 @@ Launcher ---------------------------------------------
         Method: DELETE
         Parameters: launcher=int
 
-*** Components Arrange
-        ------------------------------------------
+### Components Arrange
         Description: Manage of Launcher's Menu
         Path: /launcher/menu
         Method: GET
@@ -1436,8 +1429,8 @@ Launcher ---------------------------------------------
         Path: /launcher/menu/{id}
         Method: DELETE 
 
-Users ------------------------------------------------
-*** User Groups
+### Users ################################################
+### User Groups
         Description: Manage of Users's groups
         Path: /users/group
         Method: GET
@@ -1466,7 +1459,7 @@ Users ------------------------------------------------
         Path: /users/group/{id}
         Method: DELETE 
 
-*** Profile(ExpireTime&Date,)     
+### Profile(ExpireTime&Date,)     
         Description: Manage of Users
         Path: /users/user
         Method: GET
@@ -1503,7 +1496,7 @@ Users ------------------------------------------------
         Path: /users/user/{id}
         Method: DELETE 
 
-*** Messaging  
+### Messaging  
         Description: Message to message
         Path: /users/message/to/{userid}
         Method: GET
@@ -1570,8 +1563,8 @@ Users ------------------------------------------------
         Path: /users/message/broadcast/{msg_id}
         Method: DELETE 
 
-Tools -----------------------------------------------
-*** FileManager
+### Tools ###############################################
+### FileManager
         Description: List contents of dir
         Path: /storage/fm/list
         Method: GET
