@@ -30,5 +30,7 @@ class Mongo {
         static std::string find_id(std::string col, int id);
         static std::string find_id_range(std::string col, 
                                     int begin, int end);
+        static std::string find_time_id_range(std::string col,long stime, long etime, 
+                                    int begin, int end);
         static void info();
 };

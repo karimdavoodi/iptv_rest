@@ -1,6 +1,10 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <served/served.hpp>
+#define PNG        ".png"
+#define ZIP        ".zip"
+#define ICON_PATH  "date/icons/"
+#define MEDIA_PATH "data/media/"
 
 #define CHECK_AUTH                                                  \
     do{                                                             \
@@ -128,4 +132,125 @@
     do{                                                             \
         res << Mongo::find_id(col, 1);                              \
         res.set_status(200);                                        \
+    }while(false)                       
+
+#define GET_TIME_ID_COL(col)                                        \
+    do{                                                             \
+        int id;                                                     \
+        auto [from, to] = req_range(req);                           \
+        auto stime = req.params.get("start-time");                  \
+        auto etime = req.params.get("end-time");                    \
+        if(stime.size() == 0 || etime.size() == 0){                 \
+            ERRORSEND(res, 400, 1002, "Param 'start-time' or 'end-time' not exists!");\
+        }                                                           \
+        res << Mongo::find_time_id_range(col,                       \
+                std::stol(stime), std::stol(etime), from, to);      \
+        res.set_status(200);                                        \
+    }while(false)                       
+
+#define FILE_NAME_ID(path, prefix, postfix)                         \
+        std::string id;                                             \
+        if(!get_id(req, id)){                                       \
+            ERRORSEND(res, 400, 1003, "Invalid file id!");          \
+        }                                                           \
+        std::string fname = std::string(path) +                     \
+                            prefix + "_" + id + postfix;          
+
+#define SEND_ID_FILE(path, prefix, postfix)                         \
+    do{                                                             \
+        FILE_NAME_ID(path, prefix, postfix)                         \
+        if(!send_file(res, req, fname)){                            \
+            ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
+        }                                                           \
+    }while(false)          
+
+#define RECV_ID_FILE(path, prefix, postfix)                         \
+    do{                                                             \
+        FILE_NAME_ID(path, prefix, postfix)                         \
+        CHECK_PATH(path);                                           \
+        if(!save_file(res, req, fname)){                            \
+            ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
+        }                                                           \
+    }while(false)                       
+
+#define DEL_ID_FILE(path, prefix, postfix)                          \
+    do{                                                             \
+        FILE_NAME_ID(path, prefix, postfix)                         \
+        if(std::filesystem::exists(fname)){                         \
+            std::filesystem::remove(fname);                         \
+            res.set_status(200);                                    \
+        }else{                                                      \
+            ERRORSEND(res, 400, 1006, "File not found!");           \
+        }                                                           \
+    }while(false)                       
+
+#define FILE_NAME_ID_LANG(path, prefix, postfix)                    \
+        std::string id;                                             \
+        if(!get_id(req, id)){                                       \
+            ERRORSEND(res, 400, 1003, "Invalid file id!");          \
+        }                                                           \
+        std::string lang = req.query.get("launcher");               \
+        if(lang.size() < 1){                                        \
+            ERRORSEND(res, 400, 1003, "Invalid lang id!");          \
+        }                                                           \
+        std::string fname = std::string(path) +                     \
+                prefix + "_" + id + "_" + lang + postfix;             
+
+#define SEND_ID_LANG_FILE(path, prefix, postfix)                    \
+    do{                                                             \
+        FILE_NAME_ID_LANG(path, prefix, postfix)                    \
+        if(!send_file(res, req, fname)){                            \
+            ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
+        }                                                           \
+    }while(false)          
+
+#define RECV_ID_LANG_FILE(path, prefix, postfix)                    \
+    do{                                                             \
+        FILE_NAME_ID_LANG(path, prefix, postfix)                    \
+        CHECK_PATH(path);                                           \
+        if(!save_file(res, req, fname)){                            \
+            ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
+        }                                                           \
+    }while(false)                       
+
+#define DEL_ID_LANG_FILE(path, prefix, postfix)                     \
+    do{                                                             \
+        FILE_NAME_ID_LANG(path, prefix, postfix)                    \
+        if(std::filesystem::exists(fname)){                         \
+            std::filesystem::remove(fname);                         \
+            res.set_status(200);                                    \
+        }else{                                                      \
+            ERRORSEND(res, 400, 1006, "File not found!");           \
+        }                                                           \
+    }while(false)                       
+
+#define SEND_FILE(path, prefix, postfix)                            \
+    do{                                                             \
+        std::string fname = std::string(path) +                     \
+                prefix + postfix;                                   \
+        if(!send_file(res, req, fname)){                            \
+            ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
+        }                                                           \
+    }while(false)          
+
+#define RECV_FILE(path, prefix, postfix)                            \
+    do{                                                             \
+        std::string fname = std::string(path) +                     \
+                prefix + postfix;                                   \
+        CHECK_PATH(path);                                           \
+        if(!save_file(res, req, fname)){                            \
+            ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
+        }                                                           \
+    }while(false)                       
+
+#define DEL_FILE(path, prefix, postfix)                             \
+    do{                                                             \
+        std::string fname = std::string(path) +                     \
+                prefix + postfix;                                   \
+        if(std::filesystem::exists(fname)){                         \
+            std::filesystem::remove(fname);                         \
+            res.set_status(200);                                    \
+        }else{                                                      \
+            ERRORSEND(res, 400, 1006, "File not found!");           \
+        }                                                           \
     }while(false)                       

@@ -195,3 +195,38 @@ std::string Mongo::find_id_range(std::string col, int begin, int end)
         return "";
     }
 }
+std::string Mongo::find_time_id_range(std::string col, 
+        long stime, long etime, int begin, int end)
+{
+    auto dB = client[db_name];     
+   
+    BOOST_LOG_TRIVIAL(trace) << __func__ << " begin:" << begin << " end:" << end;
+    try{
+        auto result = dB[col].find(
+                make_document(kvp("time", 
+                       make_document(kvp("$gt", stime), kvp("$lt", etime))
+                        )));
+        std::string result_str = "";
+        int total = 0;
+        for(auto e : result){
+            if(e.find("_id") == e.end()){
+                BOOST_LOG_TRIVIAL(trace) << " _id not found!" ;
+                continue;
+            }
+            int id = e["_id"].get_int32();
+            total++;
+            if(id >= begin && id <= end){
+                result_str += bsoncxx::to_json(e) + ","; 
+            }
+        }
+        if(result_str.size() > 0)
+            result_str.pop_back();
+        result_str =  "{ total: " + std::to_string(total) + 
+                         ", content:[" + result_str + "] }";
+        return result_str;
+
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
+        return "";
+    }
+}

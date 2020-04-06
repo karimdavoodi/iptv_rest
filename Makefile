@@ -231,33 +231,6 @@ src/main.cpp.s:
 	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-src/main_storage.o: src/main_storage.cpp.o
-
-.PHONY : src/main_storage.o
-
-# target to build an object file
-src/main_storage.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main_storage.cpp.o
-.PHONY : src/main_storage.cpp.o
-
-src/main_storage.i: src/main_storage.cpp.i
-
-.PHONY : src/main_storage.i
-
-# target to preprocess a source file
-src/main_storage.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main_storage.cpp.i
-.PHONY : src/main_storage.cpp.i
-
-src/main_storage.s: src/main_storage.cpp.s
-
-.PHONY : src/main_storage.s
-
-# target to generate assembly for a file
-src/main_storage.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main_storage.cpp.s
-.PHONY : src/main_storage.cpp.s
-
 src/mongo_driver.o: src/mongo_driver.cpp.o
 
 .PHONY : src/mongo_driver.o
@@ -468,9 +441,6 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... src/main_storage.o"
-	@echo "... src/main_storage.i"
-	@echo "... src/main_storage.s"
 	@echo "... src/mongo_driver.o"
 	@echo "... src/mongo_driver.i"
 	@echo "... src/mongo_driver.s"

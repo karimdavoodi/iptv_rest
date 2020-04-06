@@ -1,34 +1,35 @@
 #include "auth.hpp"
+#include "mongo_driver.hpp"
+#include "util.hpp"
 #include "report.hpp"
 
-extern MainStorage st;
-void report_user(served::response &res, const served::request &req)
+void report_user_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start report_user";
 	CHECK_AUTH;
+    GET_TIME_ID_COL("report_user");
 }
-void report_system(served::response &res, const served::request &req)
+void report_system_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start report_system";
 	CHECK_AUTH;
+    GET_TIME_ID_COL("report_system");
 }
-void report_live(served::response &res, const served::request &req)
+void report_live_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start report_live";
 	CHECK_AUTH;
+    GET_TIME_ID_COL("report_live");
 }
-void report_vod(served::response &res, const served::request &req)
+void report_vod_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start report_vod";
 	CHECK_AUTH;
+    GET_TIME_ID_COL("report_vod");
 }
-void report_component(served::response &res, const served::request &req)
+void report_component_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start report_component";
 	CHECK_AUTH;
+    GET_TIME_ID_COL("report_component");
 }
-void report_system_user(served::response &res, const served::request &req)
+void report_system_user_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start report_system_user";
 	CHECK_AUTH;
+    GET_TIME_ID_COL("report_system_user");
 }

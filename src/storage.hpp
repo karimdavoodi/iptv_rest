@@ -1,19 +1,45 @@
 #pragma once
-#include <nlohmann/json.hpp>
 #include <served/served.hpp>
-#include "main_storage.hpp"
 
-void storage_setting(served::response &, const served::request &);
-void storage_timeshift_setting(served::response &, const served::request &);
-void storage_timeshift_files(served::response &, const served::request &);
-void storage_npvr_setting(served::response &, const served::request &);
-void storage_npvr_files(served::response &, const served::request &);
-void storage_avod_import(served::response &, const served::request &);
-void storage_avod_files(served::response &, const served::request &);
-void storage_audio_book_import(served::response &, const served::request &);
-void storage_audio_book_files(served::response &, const served::request &);
-void storage_book_import(served::response &, const served::request &);
-void storage_book_files(served::response &, const served::request &);
-void storage_advertize_import(served::response &, const served::request &);
-void storage_advertize_files(served::response &, const served::request &);
-void storage_advertize_files_id(served::response &, const served::request &);
+void storage_setting_get(served::response &, const served::request &);
+void storage_setting_put(served::response &, const served::request &);
+
+void storage_contents_types_get(served::response &, const served::request &);
+void storage_contents_types_put(served::response &, const served::request &);
+void storage_contents_types_post(served::response &, const served::request &);
+void storage_contents_types_del(served::response &, const served::request &);
+
+void storage_platforms_get(served::response &, const served::request &);
+void storage_platforms_put(served::response &, const served::request &);
+void storage_platforms_post(served::response &, const served::request &);
+void storage_platforms_del(served::response &, const served::request &);
+
+void storage_categories_get(served::response &, const served::request &);
+void storage_categories_put(served::response &, const served::request &);
+void storage_categories_post(served::response &, const served::request &);
+void storage_categories_del(served::response &, const served::request &);
+
+void storage_info_get(served::response &, const served::request &);
+void storage_info_put(served::response &, const served::request &);
+void storage_info_post(served::response &, const served::request &);
+void storage_info_del(served::response &, const served::request &);
+
+void storage_media_get(served::response &, const served::request &);
+void storage_media_put(served::response &, const served::request &);
+void storage_media_post(served::response &, const served::request &);
+void storage_media_del(served::response &, const served::request &);
+
+void storage_poster_get(served::response &, const served::request &);
+void storage_poster_put(served::response &, const served::request &);
+void storage_poster_post(served::response &, const served::request &);
+void storage_poster_del(served::response &, const served::request &);
+
+void storage_subtitle_get(served::response &, const served::request &);
+void storage_subtitle_put(served::response &, const served::request &);
+void storage_subtitle_post(served::response &, const served::request &);
+void storage_subtitle_del(served::response &, const served::request &);
+
+void storage_advertize_get(served::response &, const served::request &);
+void storage_advertize_put(served::response &, const served::request &);
+void storage_advertize_post(served::response &, const served::request &);
+void storage_advertize_del(served::response &, const served::request &);

@@ -1,25 +1,51 @@
 #pragma once
-#include <nlohmann/json.hpp>
 #include <served/served.hpp>
-#include "main_storage.hpp"
 
-void system_location(served::response &, const served::request &);
-void system_system_logo(served::response &, const served::request &);
-void system_subtitle_logo(served::response &, const served::request &);
-void system_network(served::response &, const served::request &);
-void system_users(served::response &, const served::request &);
-void system_users_id(served::response &, const served::request &);
-void system_pms(served::response &, const served::request &);
-void system_vod_account(served::response &, const served::request &);
-void system_vod_account_id(served::response &, const served::request &);
-void system_permission(served::response &, const served::request &);
-void system_permission_id(served::response &, const served::request &);
-void system_weektime(served::response &, const served::request &);
-void system_weektime_id(served::response &, const served::request &);
-void system_backup(served::response &, const served::request &);
-void system_license(served::response &, const served::request &);
-void system_firmware(served::response &, const served::request &);
-void system_restart(served::response &, const served::request &);
-void system_stop(served::response &, const served::request &);
-void system_reboot(served::response &, const served::request &);
-void system_logout(served::response &, const served::request &);
+void system_location_get(served::response &, const served::request &);
+void system_location_put(served::response &, const served::request &);
+void system_location_post(served::response &, const served::request &);
+
+void system_system_logo_get(served::response &, const served::request &);
+void system_system_logo_put(served::response &, const served::request &);
+void system_subtitle_logo_get(served::response &, const served::request &);
+void system_subtitle_logo_put(served::response &, const served::request &);
+
+void system_network_get(served::response &, const served::request &);
+void system_network_put(served::response &, const served::request &);
+
+void system_users_get(served::response &, const served::request &);
+void system_users_put(served::response &, const served::request &);
+void system_users_del(served::response &, const served::request &);
+void system_users_post(served::response &, const served::request &);
+void system_users_me_get(served::response &, const served::request &);
+
+void system_pms_get(served::response &, const served::request &);
+void system_pms_put(served::response &, const served::request &);
+
+
+void system_vod_account_get(served::response &, const served::request &);
+void system_vod_account_put(served::response &, const served::request &);
+void system_vod_account_del(served::response &, const served::request &);
+void system_vod_account_post(served::response &, const served::request &);
+
+void system_permission_get(served::response &, const served::request &);
+void system_permission_put(served::response &, const served::request &);
+void system_permission_post(served::response &, const served::request &);
+void system_permission_del(served::response &, const served::request &);
+
+void system_weektime_get(served::response &, const served::request &);
+void system_weektime_put(served::response &, const served::request &);
+void system_weektime_del(served::response &, const served::request &);
+void system_weektime_post(served::response &, const served::request &);
+
+void system_backup_get(served::response &, const served::request &);
+void system_backup_put(served::response &, const served::request &);
+    
+void system_license_get(served::response &, const served::request &);
+void system_license_put(served::response &, const served::request &);
+void system_firmware_put(served::response &, const served::request &);
+
+void system_restart_get(served::response &, const served::request &);
+void system_stop_get(served::response &, const served::request &);
+void system_reboot_get(served::response &, const served::request &);
+void system_logout_get(served::response &, const served::request &);

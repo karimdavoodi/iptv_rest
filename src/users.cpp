@@ -1,4 +1,3 @@
-#include <nlohmann/json.hpp>
 #include <utility>
 #include "auth.hpp"
 #include "mongo_driver.hpp"

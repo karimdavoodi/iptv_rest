@@ -1,7 +1,10 @@
 
 ChangLog:
     2.1: April 4, 2020
-        - 
+        - change 'id' to '_id' to be compatible by MongoDB
+        - change some APIs
+        - add or remove some APIs
+
     2.0: March 28, 2020
         - review all APIs.
         - simplify Contents API (VOD/BOOK/PICTURES/...)
@@ -15,7 +18,7 @@ ChangLog:
 
 #######################################################
 HTTP Code:
-    switch(Response Code){
+    - switch(Response Code):
         case 200(OK):
                 Return Response in GET and empty in other methods
                 break
@@ -27,7 +30,7 @@ HTTP Code:
                         "errorCode": int,
                         "errorMessage": string
                     }
-    }
+    
 #######################################################
 Methods:
     PUT:    => add an item           -> Dosen't have ResponseBody
@@ -36,9 +39,9 @@ Methods:
     GET:    => get one or more items -> Dosen't have ResponseBody
 #######################################################
 Authentication:  Basic Auth 
-    Any API must sent Base64 of 'user:pass' with 'Authorization' header
-    like: Authorization: Basic 'Base64 of user:pass'  
-    example: curl ##user user:pass  https://server/
+    - Any API must sent Base64 of 'user:pass' with 'Authorization' header
+      #like: Authorization: Basic 'Base64 of user:pass'  
+      #example: curl ##user user:pass  https://server/
 
 #######################################################
 ##########            API       #######################
@@ -52,6 +55,7 @@ Authentication:  Basic Auth
         Method: GET
         ResponseBody: 
             {
+                "_id": 1,
                 "Running": boolean,
                 "Owner": string,
                 "LicenseExpire": string,
@@ -72,12 +76,16 @@ Authentication:  Basic Auth
         Description: Get CPU & MEM current stat
         Path: /status/cpu_mem
         Method: GET
-        Parameters: from=epochtime&to=epochtime
+        Parameters: 
+                    [from=int&to=int&]
+                    start-time=epochtime&
+                    end-time=epochtime
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                    "_id": int,
                     "time": epochtime,
                     "cpuLoad":float,
                     "cpuCoreNum": int,
@@ -92,12 +100,16 @@ Authentication:  Basic Auth
         Description: Get Network current stat
         Path: /status/network
         Method: GET
-        Parameters: from=epochtime&to=epochtime
+        Parameters: 
+                    [from=int&to=int&]
+                    start-time=epochtime&
+                    end-time=epochtime
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                        "_id": int,
                         "time": epochtime,
                         "interfaces":[
                             {
@@ -118,12 +130,16 @@ Authentication:  Basic Auth
         Description: Get Storage current stat
         Path: /status/storage
         Method: GET
-        Parameters: from=epochtime&to=epochtime
+        Parameters: 
+                    [from=int&to=int&]
+                    start-time=epochtime&
+                    end-time=epochtime
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                        "_id": int,
                         "time": epochtime,
                         "mounts":[
                             {
@@ -143,12 +159,16 @@ Authentication:  Basic Auth
         Description: Get DVB current stat
         Path: /status/dvb
         Method: GET
-        Parameters: from=epochtime&to=epochtime
+        Parameters: 
+                    [from=int&to=int&]
+                    start-time=epochtime&
+                    end-time=epochtime
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                        "_id": int,
                         "time": epochtime,
                         "inputDVBs":[
                             {
@@ -175,14 +195,14 @@ Authentication:  Basic Auth
         Description: Get Input channels list
         Path: /status/channels/input
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int&]
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
                     "_id": int,
-                    "type": string,       //DVB, NET, HDD 
+                    "type": string,     #DVB, NET, HDD 
                     "name": string,
                     "health": boolean,
                     },
@@ -199,8 +219,8 @@ Authentication:  Basic Auth
                 "total":int,
                 "content":[
                     {
-                    "status": boolean,
                     "_id": int,
+                    "status": boolean,
                     "type": string
                     "name": string,
                     "rf": boolean,
@@ -259,12 +279,16 @@ Authentication:  Basic Auth
         Description: Get error list
         Path: /status/errors
         Method: GET
-        Parameters: from=epochtime&to=epochtime
+        Parameters: 
+        Parameters: [from=int&to=int]
+                    start-time=epochtime&
+                    end-time=epochtime
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                    "_id": int,
                     "time": epochtime,
                     "error": string,
                     "priority": int
@@ -277,9 +301,9 @@ Authentication:  Basic Auth
         Description: Get log of users activity. 'user' and 'activityType' are optional 
         Path: /report/user
         Method: GET
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
+        Parameters: [from=int&to=int]
+                    start-time=epochtime&
+                    end-time=epochtime
                     user=string&
                     activityType=string
         ResponseBody: 
@@ -287,6 +311,7 @@ Authentication:  Basic Auth
                 "total":int,
                 "content":[
                     {
+                    "_id": int,
                     "time": epochtime,
                     "user": string,
                     "activity": string  
@@ -297,87 +322,92 @@ Authentication:  Basic Auth
         Description: Get log of system activity. 'activityType' is optional 
         Path: /report/system
         Method: GET
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
+        Parameters: [from=int&to=int]
+                    start-time=epochtime&
+                    end-time=epochtime
                     activityType=string
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                      {
+                    "_id": int,
                     "time": epochtime,
                     "activity": string
                     },
                 ]
             }
 ### Live Usage
-        Description: Get log of Live channels activity. 'channel' is optional 
+        Description: Get log of Live channels activity.
         Path: /report/live
         Method: GET
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
-                    channel=string
+        Parameters: [from=int&to=int]
+                    start-time=epochtime&
+                    end-time=epochtime
+                    [channel=string]
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                    "_id": int,
                     "time": epochtime,
                     "activity": string
                     },
                 ]
             }
 ### VOD Usage
-        Description: Get log of VOD activity. 'media' is optional 
+        Description: Get log of VOD activity.
         Path: /report/vod
         Method: GET
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
-                    media=string
+        Parameters: [from=int&to=int]
+                    start-time=epochtime&
+                    end-time=epochtime
+                    [media=string]
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                    "_id": int,
                     "time": epochtime,
                     "activity": string
                     },
                 ]
             }
 ### Components Usage
-        Description: Get log of Components activity. 'component' is optional 
+        Description: Get log of Components activity.
         Path: /report/component
         Method: GET
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
-                    component=string
+        Parameters: [from=int&to=int]
+                    start-time=epochtime&
+                    end-time=epochtime
+                    [component=string]
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                    "_id": int,
                     "time": epochtime,
                     "activity": string
                     },
                 ]
             }
 ### System Users Activity
-        Description: Get log of System users. 'user' is optional 
+        Description: Get log of System users.
         Path: /report/system_user
         Method: GET
-        Parameters: 
-                    from=epochtime&
-                    to=epochtime&
-                    user=string
+        Parameters: [from=int&to=int]
+                    start-time=epochtime&
+                    end-time=epochtime
+                    [user=string]
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
+                    "_id": int,
                     "time": epochtime,
                     "activity": string
                     },
@@ -390,22 +420,26 @@ Authentication:  Basic Auth
         Method: GET
         ResponseBody: same as 'PUT' RequestBody
 
-        Method: PUT
+        Method: PUT, POST
         RequestBody: 
             {
+                    "_id": 1,
                     "name": string,
                     "weatherLocation": string,
                     "pryerTime": string,
                     "timeZone": string,
                     "systemTime": epochtime,
                     "gamaryShift": int
+                    "subtitleLogo":{
+                        "isLeft": boolean,
+                        "components":[int, ...]
+                     }
             }
 ### Logo
         Description: Manage of system Logo 
         Path: /system/system_logo
         Method: GET
         ResponseBody: logo image file 
-
         Method: POST
         RequestBody: logo image file
 
@@ -416,17 +450,6 @@ Authentication:  Basic Auth
         Method: POST
         RequestBody: logo image file
 
-        Description: Manage of subtitle Logo Config
-        Path: /system/subtitle_logo_config
-        Method: GET
-        ResponseBody:
-            {
-                "isLeft": boolean,
-                "Components": [string, string, .. ]
-            }
-        Method: POST
-        RequestBody: same as GET ResponseBody
-
 ### Network
         Description: Manage network setting
         Path: /system/network
@@ -436,6 +459,7 @@ Authentication:  Basic Auth
         Method: PUT,POST
         RequestBody: 
             {
+                "_id": 1,
                 "interfaces":[
                     {
                     "_id": int,
@@ -473,11 +497,7 @@ Authentication:  Basic Auth
             }
 
         Path: /system/users/{id}
-        Method: GET
-        ResponseBody: same as 'PUT'
-
-        Path: /system/users/{id}
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -498,9 +518,6 @@ Authentication:  Basic Auth
                 "pass": string,
             }
 
-        Path: /system/users/{id}
-        Method: DELETE 
-
 ### Software Integration(PMS)
         Description: Manage PMS setting
         Path: /system/pms
@@ -510,11 +527,12 @@ Authentication:  Basic Auth
         Method: PUT, POST  
         RequestBody: 
             {
-                    "active": boolean,
-                    "name": string,
-                    "address": string,
-                    "user": string,
-                    "pass": string,   
+                "_id": 1,
+                "active": boolean,
+                "name": string,
+                "address": string,
+                "user": string,
+                "pass": string,   
             }
 
 ### VOD Accounts
@@ -557,7 +575,7 @@ Authentication:  Basic Auth
             }
 
         Path: /system/permission/{id}
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -565,8 +583,6 @@ Authentication:  Basic Auth
                 "name": string 
             }
 
-        Path: /system/permission/{id}
-        Method: DELETE 
 
 ### Week Times
         Description: Manage of Week Times
@@ -581,7 +597,8 @@ Authentication:  Basic Auth
                 ]
             }
 
-        Method: PUT, POST 
+        Path: /system/weektime/{id}
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -598,8 +615,53 @@ Authentication:  Basic Auth
                 ]
             }
 
-        Path: /system/weektime/{id}
-        Method: DELETE 
+### Backup/Restore
+        Description: Backup Setting
+        Path: /system/backup
+        Method: GET
+        ResponseBody: application/gzip file
+
+        Description: Restor Setting
+        Path: /system/backup
+        Method: PUT  
+        RequestBody: application/gzip file
+
+### Update
+        Description: Get license
+        Path: /system/license
+        Method: GET
+        ResponseBody: 
+            {
+                "_id"
+                "license":{    
+                    ...
+                }
+            }
+
+        Description: Set of license
+        Path: /system/license
+        Method: PUT, POST  
+        RequestBody: application/octet-stream file
+
+        Description: Update Software
+        Path: /system/firmware
+        Method: PUT  
+        RequestBody: application/octet-stream file
+
+### Start/Stop/Reboot/Shotdown/Logout
+        Description: Operation on system
+
+        Path: /system/restart
+        Method: GET
+
+        Path: /system/stop
+        Method: GET
+
+        Path: /system/reboot
+        Method: GET
+
+        Path: /system/logout
+        Method: GET
 
 ### Storage ###############################
 ### Setting 
@@ -608,6 +670,7 @@ Authentication:  Basic Auth
         Method: GET
         ResponseBody: 
             {
+                "_id": 1,
                 "root": string,
                 "partitions":{
                         "vod": int,
@@ -645,6 +708,10 @@ Authentication:  Basic Auth
                     },
                  ]
             }
+        Path: /storage/contents/types/{id}
+        Method: GET, PUT, POST, DELETE
+        RequestBody: same as GET ResponsBody 
+
         Description: Get list of platforms like: samsung, lg, android, amino
         Path: /storage/contents/platforms
         Method: GET
@@ -659,6 +726,10 @@ Authentication:  Basic Auth
                     },
                  ]
             }
+        Path: /storage/contents/platforms/{id}
+        Method: GET, PUT, POST, DELETE
+        RequestBody: same as GET ResponsBody 
+
         Description: Get list of categories
         Path: /storage/contents/categories
         Method: GET
@@ -673,14 +744,10 @@ Authentication:  Basic Auth
                     },
                  ]
             }
-        Method: PUT, POST
-        ResponseBody: 
-            {
-                "_id":int,
-                "name":string,
-            }
-        Method: DELETE
+
         Path: /storage/contents/categories/{id}
+        Method: GET, PUT, POST, DELETE
+        RequestBody: same as GET ResponsBody 
 
         Description: Contents list
         Path: /storage/contents/info
@@ -718,43 +785,29 @@ Authentication:  Basic Auth
                 ]
             }
 
-        Method: PUT, POST
-        RequestBody: same as content in 'GET' ResponsBody 
-
         Path: /storage/contents/info/{id}
-        Method: DELETE
+        Method: GET, PUT, POST, DELETE
+        RequestBody: same as content in 'GET' ResponsBody 
 
         Path: /storage/contents/media/{id}
         Method: GET
         ResponseBody: media file
-
-        Path: /storage/contents/media/{id}
-        Method: POST, PUT
+        Method: PUT, POST
         RequestBody: media file
-
-        Path: /storage/contents/media/{id}
         Method: DELETE
-        ###############################################
+
         Path: /storage/contents/poster/{id}
         Method: GET
         ResponseBody: poster file
-
-        Path: /storage/contents/poster/{id}
         Method: POST, PUT
         RequestBody: poster file
-
-        Path: /storage/contents/poster/{id}
         Method: DELETE
-        ###############################################
+
         Path: /storage/contents/subtitle/{id}
         Method: GET
         ResponseBody: subtitle file
-
-        Path: /storage/contents/subtitle/{id}
         Method: POST, PUT
         RequestBody: subtitle file
-
-        Path: /storage/contents/subtitle/{id}
         Method: DELETE
     
 ### Advertising
@@ -768,7 +821,7 @@ Authentication:  Basic Auth
                 "content":[
                         {
                             "_id": int,
-                            "contentId": int,
+                            "content": int,
                             "name": string,
                             "weektime": [int, ...],
                             "expire": epochtime,
@@ -777,58 +830,10 @@ Authentication:  Basic Auth
                     ]
             }
         Path: /storage/advertize/{id}
-        Method: PUT, POST
+        Method: GET, PUT, POST
         RequestBody: same as content in 'GET' ResponsBody 
-
-        Path: /storage/advertize/{id}
         Method: DELETE
 
-### Backup/Restore
-        Description: Backup Setting
-        Path: /system/backup
-        Method: GET
-        ResponseBody: application/gzip file
-
-        Description: Restor Setting
-        Path: /system/backup
-        Method: PUT  
-        RequestBody: application/gzip file
-
-### Update
-        Description: Get license
-        Path: /system/license
-        Method: GET
-        ResponseBody: 
-            {
-                "license":{    
-                    ...
-                }
-            }
-
-        Description: Set of license
-        Path: /system/license
-        Method: POST  
-        RequestBody: application/octet-stream file
-
-        Description: Update Software
-        Path: /system/firmware
-        Method: POST  
-        RequestBody: application/octet-stream file
-
-### Start/Stop/Reboot/Shotdown/Logout
-        Description: Operation on system
-
-        Path: /system/restart
-        Method: GET
-
-        Path: /system/stop
-        Method: GET
-
-        Path: /system/reboot
-        Method: GET
-
-        Path: /system/logout
-        Method: GET
  
 ### Media Server #########################################
 ### Tuners(Scan,Enable,Disable)
@@ -893,6 +898,7 @@ Authentication:  Basic Auth
                 "total":int,
                 "content":[
                     {
+                        "_id": int,
                         "name": string, 
                         "dvb_id": int, 
                         "is_dvbt": boolean, 
@@ -912,6 +918,7 @@ Authentication:  Basic Auth
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
+                "_id": 1,
                 "dvbs": [int, int, ], 
                 "dvbt": [int, int, ], 
                 "mode_s": string, 
@@ -1327,11 +1334,11 @@ Authentication:  Basic Auth
         Description: Manage of launcher logo
         Path: /launcher/logo/{id}
         Method: GET
-        Parameters: language=string
+        Parameters: language=int
         ResponseBody: image file
         Method: POST
-        Parameters: language=string
-        RequestBody: background image file
+        Parameters: language=int
+        RequestBody: image file
         Method: DELETE
 
 ### Components 

@@ -1,104 +1,197 @@
+#include <filesystem>
 #include "auth.hpp"
+#include "mongo_driver.hpp"
+#include "util.hpp"
 #include "system.hpp"
 
-extern MainStorage st;
-void system_location(served::response &res, const served::request &req)
+void system_location_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_location";
 	CHECK_AUTH;
+    GET_ID1_COL("system_location");
 }
-void system_system_logo(served::response &res, const served::request &req)
+void system_location_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_system_logo";
 	CHECK_AUTH;
+    PUT_ID1_COL("system_location");
 }
-void system_subtitle_logo(served::response &res, const served::request &req)
+
+void system_system_logo_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_subtitle_logo";
 	CHECK_AUTH;
+    SEND_ID_FILE(ICON_PATH, "system_logo", PNG);	
 }
-void system_network(served::response &res, const served::request &req)
+void system_system_logo_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_network";
 	CHECK_AUTH;
+    RECV_ID_FILE(ICON_PATH, "system_logo", PNG);	
 }
-void system_users(served::response &res, const served::request &req)
+void system_subtitle_logo_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_users";
 	CHECK_AUTH;
+    SEND_ID_FILE(ICON_PATH, "subtitle_logo", PNG);	
 }
-void system_users_id(served::response &res, const served::request &req)
+void system_subtitle_logo_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_users_id";
 	CHECK_AUTH;
+    RECV_ID_FILE(ICON_PATH, "subtitle_logo", PNG);	
 }
-void system_pms(served::response &res, const served::request &req)
+
+void system_network_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_pms";
 	CHECK_AUTH;
+    GET_ID1_COL("system_network");
 }
-void system_vod_account(served::response &res, const served::request &req)
+void system_network_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_vod_account";
 	CHECK_AUTH;
+    PUT_ID1_COL("system_network");
 }
-void system_vod_account_id(served::response &res, const served::request &req)
+void system_users_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_vod_account_id";
 	CHECK_AUTH;
+    GET_ID_COL("system_users");
 }
-void system_permission(served::response &res, const served::request &req)
+void system_users_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_permission";
 	CHECK_AUTH;
+    PUT_ID_COL("system_users");
 }
-void system_permission_id(served::response &res, const served::request &req)
+void system_users_post(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_permission_id";
 	CHECK_AUTH;
+    POST_ID_COL("system_users");
 }
-void system_weektime(served::response &res, const served::request &req)
+void system_users_del(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_weektime";
 	CHECK_AUTH;
+    DEL_ID_COL("system_users");
 }
-void system_weektime_id(served::response &res, const served::request &req)
+
+void system_users_me_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_weektime_id";
 	CHECK_AUTH;
+    auto auth = req.header("Authorization");
+    // TODO : get user from Base64 ... by boost/beast/core/detail/base64.hpp 
+    std::string user = "test";
+    res << Mongo::find("system_users","{\"user\": \"" + user + "\"}");
 }
-void system_backup(served::response &res, const served::request &req)
+
+void system_pms_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_backup";
 	CHECK_AUTH;
+    GET_ID1_COL("system_pms");
 }
-void system_license(served::response &res, const served::request &req)
+void system_pms_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_license";
 	CHECK_AUTH;
+    PUT_ID1_COL("system_pms");
 }
-void system_firmware(served::response &res, const served::request &req)
+
+void system_vod_account_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_firmware";
 	CHECK_AUTH;
+    GET_ID_COL("system_vod_account");
 }
-void system_restart(served::response &res, const served::request &req)
+void system_vod_account_put(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_restart";
 	CHECK_AUTH;
+    PUT_ID_COL("system_vod_account");
 }
-void system_stop(served::response &res, const served::request &req)
+void system_vod_account_post(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_stop";
 	CHECK_AUTH;
+    POST_ID_COL("system_vod_account");
 }
-void system_reboot(served::response &res, const served::request &req)
+void system_vod_account_del(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_reboot";
 	CHECK_AUTH;
+    DEL_ID_COL("system_vod_account");
 }
-void system_logout(served::response &res, const served::request &req)
+void system_permission_get(served::response &res, const served::request &req)
 {
-	BOOST_LOG_TRIVIAL(trace) << "Start system_logout";
 	CHECK_AUTH;
+    GET_ID_COL("system_permission");
 }
+void system_permission_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    PUT_ID_COL("system_permission");
+}
+void system_permission_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("system_permission");
+}
+void system_permission_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("system_permission");
+}
+
+void system_weektime_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID_COL("system_weektime");
+}
+void system_weektime_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    PUT_ID_COL("system_weektime");
+}
+void system_weektime_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("system_weektime");
+}
+void system_weektime_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("system_weektime");
+}
+void system_backup_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    SEND_FILE(ICON_PATH, "backup", ZIP);	
+}
+void system_backup_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    RECV_FILE(ICON_PATH, "backup", ZIP);	
+}
+
+void system_license_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID1_COL("system_license");
+}
+void system_license_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    RECV_FILE(ICON_PATH, "license", ZIP);	
+}
+void system_firmware_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    RECV_FILE(ICON_PATH, "firmware", ZIP);	
+}
+void system_logout_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    // TODO : do nothing...
+}
+void system_restart_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    // TODO : restart system
+}
+void system_stop_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    // TODO : stop system
+}
+void system_reboot_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    // TODO : reboot system
+}
+
