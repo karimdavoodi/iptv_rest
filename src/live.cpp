@@ -28,7 +28,6 @@ void live_tuners_input_scan_get(served::response &res, const served::request &re
     if(tuner.size() == 0 ){
         ERRORSEND(res, 400, 1002, "Invalid tuner!");
     }
-    
     res << Hardware::scan_input_tuner(tuner);
     res.set_status(200);
 }

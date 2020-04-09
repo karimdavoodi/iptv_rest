@@ -6,7 +6,7 @@
 #include <exception>
 #include <string>
 #include <utility>
-#define db_name "iptv"
+#define DB_NAME "iptv"
 
 static mongocxx::instance inst{};
 static mongocxx::client client{mongocxx::uri{}};
@@ -16,7 +16,7 @@ using bsoncxx::builder::basic::kvp;
 
 void Mongo::fill_defauls(){
     try{
-        auto db = client[db_name];     
+        auto db = client[DB_NAME];     
         if(!exists_id("components_types", 1)){
             db["components_types"].insert_one(
                     make_document(kvp("_id", 1), kvp("name", "LiveTV")));
@@ -47,7 +47,7 @@ void Mongo::info()
 }
 bool Mongo::exists(std::string col_name, std::string doc)
 {
-    auto db = client[db_name];     
+    auto db = client[DB_NAME];     
     
     BOOST_LOG_TRIVIAL(trace) << __func__ ;
     auto result = db[col_name].count_documents(bsoncxx::from_json(doc));
@@ -57,7 +57,7 @@ bool Mongo::exists(std::string col_name, std::string doc)
 bool Mongo::exists_id(std::string col_name, int id)
 {
     BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
-    auto db = client[db_name];     
+    auto db = client[DB_NAME];     
     
     auto result = db[col_name].count_documents(make_document(kvp("_id", id)));
     if(result > 0) return true;
@@ -67,7 +67,7 @@ bool Mongo::insert(std::string col, std::string doc)
 {
     BOOST_LOG_TRIVIAL(trace) << __func__ ;
     try{
-        auto dB = client[db_name];
+        auto dB = client[DB_NAME];
         auto ret = dB[col].insert_one(bsoncxx::from_json(doc));
         return ret.value().inserted_id().get_int64() >= 0;
     }catch(...){
@@ -78,7 +78,7 @@ bool Mongo::remove(std::string col, std::string doc)
 {
     BOOST_LOG_TRIVIAL(trace) << __func__ ;
     try{
-        auto dB = client[db_name];
+        auto dB = client[DB_NAME];
         auto ret = dB[col].delete_one(bsoncxx::from_json(doc));
         return ret.value().deleted_count() > 0;
     }catch(...){
@@ -90,7 +90,7 @@ bool Mongo::remove_by_id(std::string col, int id)
 {
     BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
     try{
-        auto dB = client[db_name];
+        auto dB = client[DB_NAME];
         auto ret = dB[col].delete_one(make_document(kvp("_id", id)));
         return ret.value().deleted_count() > 0;
     }catch(...){
@@ -102,7 +102,7 @@ bool Mongo::replace(std::string col, std::string filter, std::string doc)
 {
     BOOST_LOG_TRIVIAL(trace) << __func__ ;
     try{
-        auto dB = client[db_name];
+        auto dB = client[DB_NAME];
         auto ret = dB[col].replace_one(bsoncxx::from_json(filter) ,bsoncxx::from_json(doc));
         return ret.value().modified_count() > 0;
     }catch(...){
@@ -115,7 +115,7 @@ bool Mongo::replace_by_id(std::string col, int id, std::string doc)
 {
     BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
     try{
-        auto dB = client[db_name];
+        auto dB = client[DB_NAME];
         auto ret = dB[col].replace_one(make_document(kvp("_id", id)) ,
                                        bsoncxx::from_json(doc));
         return ret.value().modified_count() > 0;
@@ -127,7 +127,7 @@ bool Mongo::replace_by_id(std::string col, int id, std::string doc)
 }
 std::string Mongo::find( std::string col, std::string doc)
 {
-    auto dB = client[db_name];     
+    auto dB = client[DB_NAME];     
     
     BOOST_LOG_TRIVIAL(trace) << __func__;
     auto result = dB[col].find(bsoncxx::from_json(doc));
@@ -146,7 +146,7 @@ std::string Mongo::find( std::string col, std::string doc)
 }
 std::string Mongo::find_id(std::string col, int id)
 {
-    auto dB = client[db_name];     
+    auto dB = client[DB_NAME];     
    
     BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
     try{
@@ -165,7 +165,7 @@ std::string Mongo::find_id(std::string col, int id)
 }
 std::string Mongo::find_id_range(std::string col, int begin, int end)
 {
-    auto dB = client[db_name];     
+    auto dB = client[DB_NAME];     
    
     BOOST_LOG_TRIVIAL(trace) << __func__ << " begin:" << begin << " end:" << end;
     try{
@@ -198,7 +198,7 @@ std::string Mongo::find_id_range(std::string col, int begin, int end)
 std::string Mongo::find_time_id_range(std::string col, 
         long stime, long etime, int begin, int end)
 {
-    auto dB = client[db_name];     
+    auto dB = client[DB_NAME];     
    
     BOOST_LOG_TRIVIAL(trace) << __func__ << " begin:" << begin << " end:" << end;
     try{

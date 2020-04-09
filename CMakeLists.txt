@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(main)
+project(iptv_api)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(QT_QMAKE_EXECUTABLE "/usr/bin/qmake")
 

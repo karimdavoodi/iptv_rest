@@ -85,7 +85,7 @@ void users_message_from_del(served::response &res, const served::request &req)
 void users_message_from_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("users_message_from");
+    GET_ID_COL("users_message_from");
 }
 
 void users_message_broadcast_put(served::response &res, const served::request &req)

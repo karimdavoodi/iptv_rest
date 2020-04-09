@@ -2,9 +2,26 @@
 #include <fstream>
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
+#include <sstream>
 
 #include "util.hpp"
 
+void test(served::response &res, const served::request &req)
+{
+    std::stringstream s;
+    s << "Authorization:" << req.header("Authorization") << "\n";
+    s << "User-Agent:" << req.header("User-Agent")  << "\n";
+    s << "Content-type: "<< req.header("Content-type")  << "\n";
+    s << "Content-Length: "<< req.header("Content-length")  << "\n";
+    s << "Param:";
+    for(const auto p : req.params) s << p.first << "->" << p.second << " ";
+    s << "\nQuery:" << req.query.get("id") << "\n";
+    for(const auto q : req.query) s << q.first << "->" << q.second << " ";
+    s << "\nSourcs: " << req.source() << "\n";
+    s << "Body size:" << req.body().size() << "\n";
+    BOOST_LOG_TRIVIAL(trace) << s.str();
+
+}
 bool get_id(const served::request &req, std::string& id)
 {
     id = req.params.get("id");

@@ -3,7 +3,7 @@
 #include <served/served.hpp>
 #define PNG        ".png"
 #define ZIP        ".zip"
-#define ICON_PATH  "date/icons/"
+#define ICON_PATH  "data/icons/"
 #define MEDIA_PATH "data/media/"
 
 #define CHECK_AUTH                                                  \
@@ -31,6 +31,7 @@
     do{                                                         \
         if(!std::filesystem::exists(path)){                     \
             std::filesystem::create_directory(path);            \
+            BOOST_LOG_TRIVIAL(trace) << "Create " << path;      \
         }                                                       \
     }while(false)  
 
@@ -54,9 +55,11 @@
             ERRORSEND(res, 400, 1002, "Invalid id!");               \
         }                                                           \
         if(Mongo::exists_id(col, id)){                              \
-            ERRORSEND(res, 400, 1002, "Not insert, exists by _id!");\
+            Mongo::replace_by_id(col, id, req.body());              \
+            BOOST_LOG_TRIVIAL(trace) << "Warning: replace id "<< id << " in " << col;  \
+        }else{                                                      \
+            Mongo::insert(col, req.body());                         \
         }                                                           \
-        Mongo::insert(col, req.body());                             \
         res.set_status(200);                                        \
     }while(false)                       
 
@@ -64,9 +67,11 @@
     do{                                                             \
         CHECK_BODY_ID;                                              \
         if(Mongo::exists_id(col, 1)){                               \
-            ERRORSEND(res, 400, 1002, "Not insert, exists id 1!");  \
+            Mongo::replace_by_id(col, 1, req.body());               \
+            BOOST_LOG_TRIVIAL(trace) << "Warning: replace id 1 in " << col;  \
+        }else{                                                      \
+            Mongo::insert(col, req.body());                         \
         }                                                           \
-        Mongo::insert(col, req.body());                             \
         res.set_status(200);                                        \
     }while(false)                       
 
@@ -78,19 +83,23 @@
             ERRORSEND(res, 400, 1002, "Invalid id!");               \
         }                                                           \
         if(!Mongo::exists_id(col, id)){                             \
-            ERRORSEND(res, 400, 1002, "Not update, not exists by _id!");    \
+            Mongo::insert(col, req.body());                         \
+            BOOST_LOG_TRIVIAL(trace) << "Warning: insert id " << id << " in " << col;  \
+        }else{                                                      \
+            Mongo::replace_by_id(col, id, req.body());              \
         }                                                           \
-        Mongo::replace_by_id(col, id, req.body());                  \
         res.set_status(200);                                        \
     }while(false)                       
 
 #define POST_ID1_COL(col)                                           \
     do{                                                             \
-        CHECK_BODY_ID;                                               \
+        CHECK_BODY_ID;                                              \
         if(!Mongo::exists_id(col, 1)){                              \
-            ERRORSEND(res, 400, 1002, "Not update, not exists by 1!");    \
+            Mongo::insert(col, req.body());                         \
+            BOOST_LOG_TRIVIAL(trace) << "Warning: insert id 1 in " << col;  \
+        }else{                                                      \
+            Mongo::replace_by_id(col, 1, req.body());               \
         }                                                           \
-        Mongo::replace_by_id(col, 1, req.body());                   \
         res.set_status(200);                                        \
     }while(false)                       
 
@@ -138,8 +147,8 @@
     do{                                                             \
         int id;                                                     \
         auto [from, to] = req_range(req);                           \
-        auto stime = req.params.get("start-time");                  \
-        auto etime = req.params.get("end-time");                    \
+        auto stime = req.query.get("start-time");                  \
+        auto etime = req.query.get("end-time");                    \
         if(stime.size() == 0 || etime.size() == 0){                 \
             ERRORSEND(res, 400, 1002, "Param 'start-time' or 'end-time' not exists!");\
         }                                                           \
@@ -189,7 +198,7 @@
         if(!get_id(req, id)){                                       \
             ERRORSEND(res, 400, 1003, "Invalid file id!");          \
         }                                                           \
-        std::string lang = req.query.get("launcher");               \
+        std::string lang = req.query.get("language");               \
         if(lang.size() < 1){                                        \
             ERRORSEND(res, 400, 1003, "Invalid lang id!");          \
         }                                                           \

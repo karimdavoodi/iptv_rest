@@ -6,6 +6,7 @@
 #define  QUERY_SIZE 10
 using json = nlohmann::json;
 
+void test(served::response &res, const served::request &req);
 bool get_id(const served::request &req, std::string& id);
 bool get_id(const served::request &req, int& id);
 int get_id_from_body_and_url(const served::request &req);

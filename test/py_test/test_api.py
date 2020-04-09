@@ -1,581 +1,147 @@
 import unittest
 import requests
 
-class TestLive(unittest.TestCase):
-    
-    defAuth = requests.auth.HTTPBasicAuth('test','test')
+base = "http://localhost:8139"
+defAuth = requests.auth.HTTPBasicAuth('test','test')
 
-    def check_status_code(self, res):
-        if res.status_code != 200: #print "##### Error #####"
-            print res.request.method,":",res.status_code," -> ", res.url
-            if res.text != None: print res.text
-        #self.assertEqual(res.status_code, 200, "statuc code != 200 ")
+def check_status_code(res):
+    if res.status_code != 200: #print "##### Error #####"
+        print "\t",res.request.method,":",res.status_code,":",res.text
+    #if res.text != None: print res.text
 
-    def test_users_message_broadcast_put(self):
-        res = requests.put(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "group": [ 1,3 ],
-                "time": 15800000,
-                "weektime": [ 1,2 ],
-                "expire": 15800000,
-                "subject": "", 
-                "body": "",
-                }
-                )
-        self.check_status_code(res)
-    def test_users_message_broadcast_post(self):
-        res = requests.post(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "group": [ 1,3 ],
-                "time": 15800000,
-                "weektime": [ 1,2 ],
-                "expire": 15800000,
-                "subject": "", 
-                "body": "",
-                }
-                )
-        self.check_status_code(res)
+def test_url(url, jdata, rdata, param, methods):
+    print url
+    if jdata != None:
+        if "put" in methods:
+            res = requests.put(base + url,
+                    auth = defAuth,
+                    params = param,
+                    json = jdata)
+            check_status_code(res)
+        if "post" in methods:
+            res = requests.post(base + url,
+                    auth = defAuth,
+                    params = param,
+                    json = jdata)
+            check_status_code(res)
+    else:
+        #fdata = open('data/bg.png', 'rb').read()
+        if "put" in methods:
+            res = requests.put(base + url,
+                    auth = defAuth,
+                    headers = {
+                        'content-type': 'application/octet-stream',
+                        'content-length': str(len(rdata)),
+                        },
+                    params = param,
+                    data = rdata)
+            check_status_code(res)
 
-    def xtest_users_message_broadcast_del(self):
-        res = requests.delete(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth
+        #fdata = open('data/bg.png', 'rb').read()
+        if "post" in methods:
+            res = requests.post(base + url,
+                    auth = defAuth,
+                    headers = {
+                        'content-type': 'application/octet-stream',
+                        'content-length': str(len(rdata)),
+                        },
+                    params = param,
+                    data = rdata)
+            check_status_code(res)
+    if "get" in methods:
+        res = requests.get(base + url,
+                auth = defAuth,
+                params = param,
                 )
-        self.check_status_code(res)
-    def test_users_message_broadcast_get(self):
-        res = requests.get(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        res = requests.get(
-                "http://localhost:8139/users/message/broadcast",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-"""
-class TestUsers(unittest.TestCase):
-    
-    defAuth = requests.auth.HTTPBasicAuth('test','test')
+        check_status_code(res)
 
-    def check_status_code(self, res):
-        if res.status_code != 200: #print "##### Error #####"
-            print res.request.method,":",res.status_code," -> ", res.url
-            if res.text != None: print res.text
-        #self.assertEqual(res.status_code, 200, "statuc code != 200 ")
+    if "del11" in methods:
+        res = requests.delete(base + url,
+                auth = defAuth,
+                params = param,
+                )
+        check_status_code(res)
 
-    def test_users_message_broadcast_put(self):
-        res = requests.put(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "group": [ 1,3 ],
-                "time": 15800000,
-                "weektime": [ 1,2 ],
-                "expire": 15800000,
-                "subject": "", 
-                "body": "",
-                }
-                )
-        self.check_status_code(res)
-    def test_users_message_broadcast_post(self):
-        res = requests.post(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "group": [ 1,3 ],
-                "time": 15800000,
-                "weektime": [ 1,2 ],
-                "expire": 15800000,
-                "subject": "", 
-                "body": "",
-                }
-                )
-        self.check_status_code(res)
+fdata = open('data/bg.png', 'rb').read()
+test_url("/launcher/background/2", None,fdata,None,"get put post del")
+test_url("/launcher/components/info", {"_id":2}, None, None, "get put post del")
+test_url("/launcher/components/info/2", {"_id":2}, None, None, "get put post del")
+test_url("/launcher/components/logo/2", None, fdata, {"language":2}, "get put post del")
+test_url("/launcher/components/types", {"_id":2}, None, None, "get put post del")
+test_url("/launcher/default", {"_id":2}, None, None, "get put post del")
+test_url("/launcher/logo/2", None, fdata, {"language":2}, "get put post del")
+test_url("/launcher/menu", {"_id":2}, None, None, "get put post del")
+test_url("/launcher/menu/2", {"_id":2}, None, None, "get put post del")
 
-    def xtest_users_message_broadcast_del(self):
-        res = requests.delete(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-    def test_users_message_broadcast_get(self):
-        res = requests.get(
-                "http://localhost:8139/users/message/broadcast/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        res = requests.get(
-                "http://localhost:8139/users/message/broadcast",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-        #########################################
-    def test_users_message_from_put(self):
-        res = requests.put(
-                "http://localhost:8139/users/message/from/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "time": 1580000,
-                "subject": "string", 
-                "body": "string",
-                }
-                )
-        self.check_status_code(res)
-    def test_users_message_from_post(self):
-        res = requests.post(
-                "http://localhost:8139/users/message/from/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "time": 1580000,
-                "subject": "string", 
-                "body": "string",
-                }
-                )
-        self.check_status_code(res)
+test_url("/live/input/dvb", {"_id":2}, None, None, "get put post del")
+test_url("/live/input/dvb/2", {"_id":2}, None, None, "get put post del")
+test_url("/live/tuners/hardware/input", {"_id":2}, None, None, "get")
+test_url("/live/tuners/hardware/output", {"_id":2}, None, None, "get")
+test_url("/live/tuners/input", {"_id":2}, None, None, "get put post del")
+test_url("/live/tuners/scan/2", {"_id":2}, None, None, "get")
+test_url("/live/tuners/input/2", {"_id":2}, None, None, "get put post del")
+test_url("/live/tuners/output", {"_id":2}, None, None, "get put post del")
 
-    def xtest_users_message_from_del(self):
-        res = requests.delete(
-                "http://localhost:8139/users/message/from/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-    def test_users_message_from_get(self):
-        res = requests.get(
-                "http://localhost:8139/users/message/from/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        res = requests.get(
-                "http://localhost:8139/users/message/from/1",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-        #########################################
-    def test_users_message_to_put(self):
-        res = requests.put(
-                "http://localhost:8139/users/message/to/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "time": 1580000,
-                "subject": "string", 
-                "body": "string",
-                }
-                )
-        self.check_status_code(res)
-    def test_users_message_to_post(self):
-        res = requests.post(
-                "http://localhost:8139/users/message/to/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "time": 1580000,
-                "subject": "string", 
-                "body": "string",
-                }
-                )
-        self.check_status_code(res)
+test_url("/report/component", {"_id":2}, None, {"start-time":"0", "end-time":"2"}, "get")
+test_url("/report/live", {"_id":2}, None, {"start-time":"0", "end-time":"2"}, "get")
+test_url("/report/system", {"_id":2}, None, {"start-time":"0", "end-time":"2"}, "get")
+test_url("/report/system_user", {"_id":2}, None, {"start-time":0, "end-time":2}, "get")
+test_url("/report/user", {"_id":2}, None, {"start-time":0, "end-time":2}, "get")
+test_url("/report/vod", {"_id":2}, None, {"start-time":0, "end-time":2}, "get")
 
-    def xtest_users_message_to_del(self):
-        res = requests.delete(
-                "http://localhost:8139/users/message/to/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-    def test_users_message_to_get(self):
-        res = requests.get(
-                "http://localhost:8139/users/message/to/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        res = requests.get(
-                "http://localhost:8139/users/message/to/1",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-        #########################################
-    def test_users_user_put(self):
-        res = requests.put(
-                "http://localhost:8139/users/user/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": True,
-                "name": "string", 
-                "group": [1, 2 ],
-                "connections": 1, 
-                "ipaddress": "string", 
-                "language": "string", 
-                "launcher": 1, 
-                "user": "string", 
-                "pass": "string", 
-                "vod_id": 1,
-                "npvr": 1,
-                "expire": 15800000,
-                }
-                )
-        self.check_status_code(res)
-    def test_users_user_post(self):
-        res = requests.post(
-                "http://localhost:8139/users/user/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": True,
-                "name": "string", 
-                "group": [1, 2 ],
-                "connections": 1, 
-                "ipaddress": "string", 
-                "language": "string", 
-                "launcher": 1, 
-                "user": "string", 
-                "pass": "string", 
-                "vod_id": 1,
-                "npvr": 1,
-                "expire": 15800000,
-                }
-                )
-        self.check_status_code(res)
-    def xtest_users_user_del(self):
-        res = requests.delete(
-                "http://localhost:8139/users/user/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-    def test_users_user_get(self):
-        res = requests.get(
-                "http://localhost:8139/users/user/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        res = requests.get(
-                "http://localhost:8139/users/user/1",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-    def test_users_group_put(self):
-        res = requests.put(
-                "http://localhost:8139/users/group/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": True,
-                "name": "string", 
-                "permission": [1, 2],
-                "weektime": [1, 2] 
-                }
-                )
-        self.check_status_code(res)
-    def test_users_group_post(self):
-        res = requests.post(
-                "http://localhost:8139/users/group/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": False,
-                "name": "string", 
-                "permission": [1, 2],
-                "weektime": [1, 2] 
-                }
-                )
-        self.check_status_code(res)
-    def xtest_users_group_del(self):
-        res = requests.delete(
-                "http://localhost:8139/users/group/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-    def test_users_group_get(self):
-        res = requests.get(
-                "http://localhost:8139/users/group/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        res = requests.get(
-                "http://localhost:8139/users/group/1",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-    def xtest_all_del_methods(self):
-        self.xtest_users_message_to_del()
-        self.xtest_users_user_del()
-        self.xtest_users_group_del()
-        self.xtest_users_message_from_del()
-        self.xtest_users_message_broadcast_del()
-class TestLauncher(unittest.TestCase):
-    
-    defAuth = requests.auth.HTTPBasicAuth('test','test')
+test_url("/status/channels_input", {"_id":2}, None, None, "get ")
+test_url("/status/channels_output", {"_id":2}, None, None, "get ")
+test_url("/status/channels_output_view", {"_id":2}, None, None, "get ")
+test_url("/status/channels_output_view/2", {"_id":2}, None, None, "get ")
+test_url("/status/cpu_mem", {"_id":2}, None, {"start-time":0, "end-time":2}, "get ")
+test_url("/status/dvb", {"_id":2}, None, {"start-time":0, "end-time":2}, "get ")
+test_url("/status/error", {"_id":2}, None, {"start-time":0, "end-time":2}, "get ")
+test_url("/status/information", {"_id":2}, None, None, "get ")
+test_url("/status/network", {"_id":2}, None, {"start-time":0, "end-time":2}, "get ")
+test_url("/status/storage", {"_id":2}, None, {"start-time":0, "end-time":2}, "get ")
+test_url("/status/users", {"_id":2}, None, {"start-time":0, "end-time":2}, "get ")
 
-    def check_status_code(self, res):
-        if res.status_code != 200:
-            print res.status_code," --> ", res.url
-            if res.text != None: print res.text
+test_url("/storage/advertize", {"_id":2}, None, None, "get put post del")
+test_url("/storage/advertize/2", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/categories", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/categories/2", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/info", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/info/2", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/media/2", None, fdata, None, "get put post del")
+test_url("/storage/contents/platforms", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/platforms/2", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/poster/2", None, fdata, None, "get put post del")
+test_url("/storage/contents/subtitle/2", None, fdata, None, "get put post del")
+test_url("/storage/contents/types", {"_id":2}, None, None, "get put post del")
+test_url("/storage/contents/types/2", {"_id":2}, None, None, "get put post del")
+test_url("/storage/setting", {"_id":2}, None, None, "get put post del")
 
-        self.assertEqual(res.status_code, 200, "statuc code != 200 ")
-
-    def test_post_default(self):
-        res = requests.post(
-                "http://localhost:8139/launcher/default",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "launcher": "string",
-                "font":{
-                    "en": "string",
-                    "fa": "string",
-                    "ar": "string"
-                    },
-                "welcome":{
-                    "en": "string",
-                    "fa": "string",
-                    "ar": "string"
-                    },
-                "user":{
-                    "en": "string",
-                    "fa": "string",
-                    "ar": "string"
-                    },
-                "language": "string",
-                "welcomeClip": True,
-                "uiStartup": "string",
-                "unitName": "string",
-                "clientHotspot": "string",
-                "testUserId": "int",
-                "defaultChannel": "int" 
-                }
-                )
-        self.check_status_code(res)
-
-    def test_get_default(self):
-        res = requests.get(
-                "http://localhost:8139/launcher/default",
-                auth = self.defAuth,
-                params = {}
-                )
-        
-        self.check_status_code(res)
-        self.assertEqual(res.json()['launcher'], 'string', "OK")
-
-
-    def test_post_background(self):
-        fdata = open('data/bg.png', 'rb').read()
-        assert( len(fdata) > 1000 )
-        res = requests.post(
-                "http://localhost:8139/launcher/background/1",
-                auth = self.defAuth,
-                #params = { 'launcher': 'main' },
-                headers={'Content-Type': 'application/octet-stream'},
-                data = fdata
-                )
-        self.check_status_code(res)
-    def test_put_background(self):
-            self.test_post_background()
-    def test_get_background(self):
-        res = requests.get(
-                "http://localhost:8139/launcher/background/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        assert( len(res.content) > 1000 )
-
-    def xtest_del_background(self):
-        res = requests.delete(
-                "http://localhost:8139/launcher/background/1",
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-
-    def test_post_logo(self):
-        fdata = open('data/bg.png', 'rb').read()
-        assert( len(fdata) > 1000 )
-        res = requests.post(
-                "http://localhost:8139/launcher/logo/1",
-                auth = self.defAuth,
-                params = { 'language': 'en' },
-                headers={'Content-Type': 'application/octet-stream'},
-                data = fdata
-                )
-        self.check_status_code(res)
-    def test_put_logo(self):
-        fdata = open('data/bg.png', 'rb').read()
-        assert( len(fdata) > 1000 )
-        res = requests.put(
-                "http://localhost:8139/launcher/logo/1",
-                auth = self.defAuth,
-                params = { 'language': 'en' },
-                headers={'Content-Type': 'application/octet-stream'},
-                data = fdata
-                )
-        self.check_status_code(res)
-    def test_get_logo(self):
-        res = requests.get(
-                "http://localhost:8139/launcher/logo/1",
-                params = { 'language': 'en' },
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        assert( len(res.content) > 1000 )
-
-    def xtest_del_logo(self):
-        res = requests.delete(
-                "http://localhost:8139/launcher/logo/1",
-                params = { 'language': 'en' },
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-
-    def test_get_components_types(self):
-        res = requests.get(
-                "http://localhost:8139/launcher/components/types",
-                auth = self.defAuth,
-                )
-        
-        self.check_status_code(res)
-
-    def test_post_components_logo(self):
-        fdata = open('data/bg.png', 'rb').read()
-        assert( len(fdata) > 1000 )
-        res = requests.post(
-                "http://localhost:8139/launcher/components/logo/1",
-                auth = self.defAuth,
-                params = { 'launcher': '1' },
-                headers={'Content-Type': 'application/octet-stream'},
-                data = fdata
-                )
-        self.check_status_code(res)
-    def test_put_components_logo(self):
-        fdata = open('data/bg.png', 'rb').read()
-        assert( len(fdata) > 1000 )
-        res = requests.put(
-                "http://localhost:8139/launcher/logo/1",
-                auth = self.defAuth,
-                params = { 'language': 'en' },
-                headers={'Content-Type': 'application/octet-stream'},
-                data = fdata
-                )
-        self.check_status_code(res)
-    def test_get_components_logo(self):
-        res = requests.get(
-                "http://localhost:8139/launcher/components/logo/1",
-                params = { 'launcher': '1' },
-                auth = self.defAuth
-                )
-        self.check_status_code(res)
-        assert( len(res.content) > 1000 )
-    def test_get_components_info(self):
-        res = requests.get(
-                "http://localhost:8139/launcher/components/info/1",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-    def xtest_put_components_info(self):
-        res = requests.put(
-                "http://localhost:8139/launcher/components/info/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": True,
-                "type": 1,
-                "name":{
-                    "en": "string",
-                    "fa": "string",
-                    "ar": "string"
-                    }, 
-                "logo": 1,
-                "contentType": 1,
-                "contentCategories":[1, 2, 3, 4]
-               }
-                )
-        self.check_status_code(res)
-    def test_post_components_info(self):
-        res = requests.post(
-                "http://localhost:8139/launcher/components/info",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": True,
-                "type": 1,
-                "name":{
-                    "en": "string",
-                    "fa": "string",
-                    "ar": "string"
-                    }, 
-                "logo": 1,
-                "contentType": 1,
-                "contentCategories":[1, 2, 3, 4]
-               }
-             )
-        self.check_status_code(res)
-
-    def test_get_launcher_menu(self):
-        res = requests.get(
-                "http://localhost:8139/launcher/menu",
-                auth = self.defAuth,
-                params = { 'from': 1, 'to':10 },
-                )
-        self.check_status_code(res)
-        res = requests.get(
-                "http://localhost:8139/launcher/menu/1",
-                auth = self.defAuth,
-                )
-        self.check_status_code(res)
-    def xtest_put_launcher_menu(self):
-        res = requests.put(
-                "http://localhost:8139/launcher/menu/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": True,
-                "name":{
-                    "en": "string",
-                    "fa": "string",
-                    "ar": "string"
-                    }, 
-                "icon": 1,
-                "permission": 1,
-                "components": [1,2,3 ]
-               }
-                )
-        self.check_status_code(res)
-    def test_post_launcher_menu(self):
-        res = requests.post(
-                "http://localhost:8139/launcher/menu/1",
-                auth = self.defAuth,
-                json =  {
-                "_id": 1,
-                "active": True,
-                "type": 3,
-                "name":{
-                    "en": "string",
-                    "fa": "string",
-                    "ar": "string"
-                    }, 
-                "logo": 1,
-                "contentType": 1,
-                "contentCategories":[1, 2, 3, 4]
-               }
-             )
-        self.check_status_code(res)
-
-"""
-if __name__ == "__main__":
-    unittest.main()
-     
+test_url("/system/backup", None, fdata, None, "get put")
+test_url("/system/firmware", None, fdata, None, "put")
+test_url("/system/license", None, fdata, None, "get put")
+test_url("/system/location", {"_id":2}, None, None, "get put post del")
+test_url("/system/network", {"_id":2}, None, None, "get put post del")
+test_url("/system/permission", {"_id":2}, None, None, "get put post del")
+test_url("/system/permission/2", {"_id":2}, None, None, "get put post del")
+test_url("/system/pms", {"_id":2}, None, None, "get put post del")
+test_url("/system/reboot", {"_id":2}, None, None, "get ")
+test_url("/system/logout", {"_id":2}, None, None, "get ")
+test_url("/system/restart", {"_id":2}, None, None, "get ")
+test_url("/system/stop", {"_id":2}, None, None, "get ")
+test_url("/system/subtitle_logo", None,fdata, None, "get put post del")
+test_url("/system/system_logo", None, fdata, None, "get put post del")
+test_url("/system/users", {"_id":2}, None, None, "get put post del")
+test_url("/system/users/me", {"_id":2}, None, None, "get put post del")
+test_url("/system/users/2", {"_id":2}, None, None, "get put post del")
+test_url("/system/vod_account", {"_id":2}, None, None, "get put post del")
+test_url("/system/vod_account/2", {"_id":2}, None, None, "get put post del")
+test_url("/system/weektime", {"_id":2}, None, None, "get put post del")
+test_url("/system/weektime/2", {"_id":2}, None, None, "get put post del")
+test_url("/users/group", {"_id":2}, None, None, "get put post del")
+test_url("/users/group/2", {"_id":2}, None, None, "get put post del")
+test_url("/users/message/broadcast", {"_id":2}, None, None, "get put post del")
+test_url("/users/message/broadcast/2", {"_id":2}, None, None, "get put post del")
+test_url("/users/message/from/2", {"_id":2}, None, None, "get put post del")
+test_url("/users/message/to/2", {"_id":2}, None, None, "get put post del")
+test_url("/users/user", {"_id":2}, None, None, "get put post del")
+test_url("/users/user/2", {"_id":2}, None, None, "get put post del")

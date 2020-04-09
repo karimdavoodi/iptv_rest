@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named iptv_api
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 main
-.PHONY : main
+iptv_api: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 iptv_api
+.PHONY : iptv_api
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+iptv_api/fast:
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/build
+.PHONY : iptv_api/fast
 
 src/hardware.o: src/hardware.cpp.o
 
@@ -129,7 +129,7 @@ src/hardware.o: src/hardware.cpp.o
 
 # target to build an object file
 src/hardware.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/hardware.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/hardware.cpp.o
 .PHONY : src/hardware.cpp.o
 
 src/hardware.i: src/hardware.cpp.i
@@ -138,7 +138,7 @@ src/hardware.i: src/hardware.cpp.i
 
 # target to preprocess a source file
 src/hardware.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/hardware.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/hardware.cpp.i
 .PHONY : src/hardware.cpp.i
 
 src/hardware.s: src/hardware.cpp.s
@@ -147,7 +147,7 @@ src/hardware.s: src/hardware.cpp.s
 
 # target to generate assembly for a file
 src/hardware.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/hardware.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/hardware.cpp.s
 .PHONY : src/hardware.cpp.s
 
 src/launcher.o: src/launcher.cpp.o
@@ -156,7 +156,7 @@ src/launcher.o: src/launcher.cpp.o
 
 # target to build an object file
 src/launcher.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/launcher.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/launcher.cpp.o
 .PHONY : src/launcher.cpp.o
 
 src/launcher.i: src/launcher.cpp.i
@@ -165,7 +165,7 @@ src/launcher.i: src/launcher.cpp.i
 
 # target to preprocess a source file
 src/launcher.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/launcher.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/launcher.cpp.i
 .PHONY : src/launcher.cpp.i
 
 src/launcher.s: src/launcher.cpp.s
@@ -174,7 +174,7 @@ src/launcher.s: src/launcher.cpp.s
 
 # target to generate assembly for a file
 src/launcher.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/launcher.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/launcher.cpp.s
 .PHONY : src/launcher.cpp.s
 
 src/live.o: src/live.cpp.o
@@ -183,7 +183,7 @@ src/live.o: src/live.cpp.o
 
 # target to build an object file
 src/live.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/live.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/live.cpp.o
 .PHONY : src/live.cpp.o
 
 src/live.i: src/live.cpp.i
@@ -192,7 +192,7 @@ src/live.i: src/live.cpp.i
 
 # target to preprocess a source file
 src/live.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/live.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/live.cpp.i
 .PHONY : src/live.cpp.i
 
 src/live.s: src/live.cpp.s
@@ -201,7 +201,7 @@ src/live.s: src/live.cpp.s
 
 # target to generate assembly for a file
 src/live.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/live.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/live.cpp.s
 .PHONY : src/live.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -210,7 +210,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -219,7 +219,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -228,7 +228,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/main.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 src/mongo_driver.o: src/mongo_driver.cpp.o
@@ -237,7 +237,7 @@ src/mongo_driver.o: src/mongo_driver.cpp.o
 
 # target to build an object file
 src/mongo_driver.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/mongo_driver.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/mongo_driver.cpp.o
 .PHONY : src/mongo_driver.cpp.o
 
 src/mongo_driver.i: src/mongo_driver.cpp.i
@@ -246,7 +246,7 @@ src/mongo_driver.i: src/mongo_driver.cpp.i
 
 # target to preprocess a source file
 src/mongo_driver.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/mongo_driver.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/mongo_driver.cpp.i
 .PHONY : src/mongo_driver.cpp.i
 
 src/mongo_driver.s: src/mongo_driver.cpp.s
@@ -255,7 +255,7 @@ src/mongo_driver.s: src/mongo_driver.cpp.s
 
 # target to generate assembly for a file
 src/mongo_driver.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/mongo_driver.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/mongo_driver.cpp.s
 .PHONY : src/mongo_driver.cpp.s
 
 src/report.o: src/report.cpp.o
@@ -264,7 +264,7 @@ src/report.o: src/report.cpp.o
 
 # target to build an object file
 src/report.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/report.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/report.cpp.o
 .PHONY : src/report.cpp.o
 
 src/report.i: src/report.cpp.i
@@ -273,7 +273,7 @@ src/report.i: src/report.cpp.i
 
 # target to preprocess a source file
 src/report.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/report.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/report.cpp.i
 .PHONY : src/report.cpp.i
 
 src/report.s: src/report.cpp.s
@@ -282,7 +282,7 @@ src/report.s: src/report.cpp.s
 
 # target to generate assembly for a file
 src/report.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/report.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/report.cpp.s
 .PHONY : src/report.cpp.s
 
 src/status.o: src/status.cpp.o
@@ -291,7 +291,7 @@ src/status.o: src/status.cpp.o
 
 # target to build an object file
 src/status.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/status.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/status.cpp.o
 .PHONY : src/status.cpp.o
 
 src/status.i: src/status.cpp.i
@@ -300,7 +300,7 @@ src/status.i: src/status.cpp.i
 
 # target to preprocess a source file
 src/status.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/status.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/status.cpp.i
 .PHONY : src/status.cpp.i
 
 src/status.s: src/status.cpp.s
@@ -309,7 +309,7 @@ src/status.s: src/status.cpp.s
 
 # target to generate assembly for a file
 src/status.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/status.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/status.cpp.s
 .PHONY : src/status.cpp.s
 
 src/storage.o: src/storage.cpp.o
@@ -318,7 +318,7 @@ src/storage.o: src/storage.cpp.o
 
 # target to build an object file
 src/storage.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/storage.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/storage.cpp.o
 .PHONY : src/storage.cpp.o
 
 src/storage.i: src/storage.cpp.i
@@ -327,7 +327,7 @@ src/storage.i: src/storage.cpp.i
 
 # target to preprocess a source file
 src/storage.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/storage.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/storage.cpp.i
 .PHONY : src/storage.cpp.i
 
 src/storage.s: src/storage.cpp.s
@@ -336,7 +336,7 @@ src/storage.s: src/storage.cpp.s
 
 # target to generate assembly for a file
 src/storage.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/storage.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/storage.cpp.s
 .PHONY : src/storage.cpp.s
 
 src/system.o: src/system.cpp.o
@@ -345,7 +345,7 @@ src/system.o: src/system.cpp.o
 
 # target to build an object file
 src/system.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/system.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/system.cpp.o
 .PHONY : src/system.cpp.o
 
 src/system.i: src/system.cpp.i
@@ -354,7 +354,7 @@ src/system.i: src/system.cpp.i
 
 # target to preprocess a source file
 src/system.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/system.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/system.cpp.i
 .PHONY : src/system.cpp.i
 
 src/system.s: src/system.cpp.s
@@ -363,7 +363,7 @@ src/system.s: src/system.cpp.s
 
 # target to generate assembly for a file
 src/system.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/system.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/system.cpp.s
 .PHONY : src/system.cpp.s
 
 src/users.o: src/users.cpp.o
@@ -372,7 +372,7 @@ src/users.o: src/users.cpp.o
 
 # target to build an object file
 src/users.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/users.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/users.cpp.o
 .PHONY : src/users.cpp.o
 
 src/users.i: src/users.cpp.i
@@ -381,7 +381,7 @@ src/users.i: src/users.cpp.i
 
 # target to preprocess a source file
 src/users.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/users.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/users.cpp.i
 .PHONY : src/users.cpp.i
 
 src/users.s: src/users.cpp.s
@@ -390,7 +390,7 @@ src/users.s: src/users.cpp.s
 
 # target to generate assembly for a file
 src/users.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/users.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/users.cpp.s
 .PHONY : src/users.cpp.s
 
 src/util.o: src/util.cpp.o
@@ -399,7 +399,7 @@ src/util.o: src/util.cpp.o
 
 # target to build an object file
 src/util.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/util.cpp.o
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/util.cpp.o
 .PHONY : src/util.cpp.o
 
 src/util.i: src/util.cpp.i
@@ -408,7 +408,7 @@ src/util.i: src/util.cpp.i
 
 # target to preprocess a source file
 src/util.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/util.cpp.i
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/util.cpp.i
 .PHONY : src/util.cpp.i
 
 src/util.s: src/util.cpp.s
@@ -417,7 +417,7 @@ src/util.s: src/util.cpp.s
 
 # target to generate assembly for a file
 src/util.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/src/util.cpp.s
+	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/util.cpp.s
 .PHONY : src/util.cpp.s
 
 # Help Target
@@ -427,7 +427,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... main"
+	@echo "... iptv_api"
 	@echo "... edit_cache"
 	@echo "... src/hardware.o"
 	@echo "... src/hardware.i"

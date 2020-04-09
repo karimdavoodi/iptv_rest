@@ -18,22 +18,22 @@ void system_location_put(served::response &res, const served::request &req)
 void system_system_logo_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    SEND_ID_FILE(ICON_PATH, "system_logo", PNG);	
+    SEND_FILE(ICON_PATH, "system_logo", PNG);	
 }
 void system_system_logo_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(ICON_PATH, "system_logo", PNG);	
+    RECV_FILE(ICON_PATH, "system_logo", PNG);	
 }
 void system_subtitle_logo_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    SEND_ID_FILE(ICON_PATH, "subtitle_logo", PNG);	
+    SEND_FILE(ICON_PATH, "subtitle_logo", PNG);	
 }
 void system_subtitle_logo_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(ICON_PATH, "subtitle_logo", PNG);	
+    RECV_FILE(ICON_PATH, "subtitle_logo", PNG);	
 }
 
 void system_network_get(served::response &res, const served::request &req)

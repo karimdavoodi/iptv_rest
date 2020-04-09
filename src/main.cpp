@@ -41,17 +41,6 @@ void init_log(){
     );
 #endif
 }
-void test(served::response &res, const served::request &req)
-{
-    res << req.header("Authorization") << "\n";
-    res << req.header("User-Agent")  << "\n";
-    res << "Param:" << req.params.get("par") << "\n";
-    res << "Query:" << req.query.get("id") << "\n";
-    res << "Sourcs: " << req.source() << "\n";
-    res << "Body:" << req.body() << "\n";
-    res.set_status(200);
-
-}
 int main(int argc, char *argv[])
 {
 //    init_log();
@@ -76,7 +65,9 @@ int main(int argc, char *argv[])
 
             #include "routes.hpp"
 
-            BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/{APIs}";
+            mux.handle("/help").get(mux.get_endpoint_list_handler_YAML());
+            
+            BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/help";
             served::net::server server("0.0.0.0", PORT, mux);
             server.run(); 
             break;
