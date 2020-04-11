@@ -2,16 +2,16 @@ cmake_minimum_required(VERSION 3.10)
 project(iptv_api)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(QT_QMAKE_EXECUTABLE "/usr/bin/qmake")
-#set(Boost_USE_STATIC_LIBS ON)
-#set(Boost_USE_MULTITHREADED ON)
-#set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions( 
                 #-fdiagnostics-color=always 
                  -fdiagnostics-show-location=every-line
-                 -fdiagnostics-generate-patch )
+                 -fdiagnostics-generate-patch 
+                 -DBOOST_LOG_DYN_LINK=1
+                 -g
+                 )
 
 #Check Json Include file
 include(CheckIncludeFile)
@@ -22,17 +22,18 @@ endif()
 
 aux_source_directory(src SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_include_directories(${PROJECT_NAME} PUBLIC ../served/src/served)
+target_include_directories(${PROJECT_NAME} PUBLIC 
+    /usr/local/include # for served, libmongo*
+    )
 
 target_link_libraries(${PROJECT_NAME} 
-    ${PROJECT_SOURCE_DIR}/../served/lib/libserved.a 
+     /usr/local/lib/libserved.a
     -lpthread
     -ldl
     )
 # Check Boost
 find_package(Boost COMPONENTS system log REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} )
-add_definitions(-DBOOST_LOG_DYN_LINK=1)
 
 set(CMAKE_MODULE_PATH /usr/local/lib/cmake )
 find_package(LIBMONGOCXX REQUIRED)

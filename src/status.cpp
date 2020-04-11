@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <fstream>
 #include <utility>
 #include "auth.hpp"
@@ -49,7 +48,7 @@ void status_channels_output_view_get(served::response &res, const served::reques
     auto [from, to] = req_range(req);                  
     if(get_id(req, id)){                               
         std::string view = "data/screen_shots/" + id + ".jpg";
-        if(std::filesystem::exists(view)){
+        if(boost::filesystem::exists(view)){
             send_file(res, req, view);
         }else{
             ERRORSEND(res, 400, 1002, "View not exists!");

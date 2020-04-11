@@ -1,4 +1,3 @@
-#include <filesystem>
 #include "auth.hpp"
 #include "mongo_driver.hpp"
 #include "util.hpp"

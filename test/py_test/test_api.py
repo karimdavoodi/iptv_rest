@@ -1,6 +1,7 @@
 import unittest
 import requests
 
+#base = "http://data.moojafzar.com:8139"
 base = "http://localhost:8139"
 defAuth = requests.auth.HTTPBasicAuth('test','test')
 
@@ -63,11 +64,11 @@ def test_url(url, jdata, rdata, param, methods):
         check_status_code(res)
 
 fdata = open('data/bg.png', 'rb').read()
-test_url("/launcher/background/2", None,fdata,None,"get put post del")
 test_url("/launcher/components/info", {"_id":2}, None, None, "get put post del")
 test_url("/launcher/components/info/2", {"_id":2}, None, None, "get put post del")
 test_url("/launcher/components/logo/2", None, fdata, {"language":2}, "get put post del")
 test_url("/launcher/components/types", {"_id":2}, None, None, "get put post del")
+test_url("/launcher/background/2", None,fdata,None,"get put post del")
 test_url("/launcher/default", {"_id":2}, None, None, "get put post del")
 test_url("/launcher/logo/2", None, fdata, {"language":2}, "get put post del")
 test_url("/launcher/menu", {"_id":2}, None, None, "get put post del")

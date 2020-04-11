@@ -1,6 +1,7 @@
 #pragma once
 #include <nlohmann/json.hpp>
 #include <served/served.hpp>
+#include <boost/filesystem.hpp>
 #define PNG        ".png"
 #define ZIP        ".zip"
 #define ICON_PATH  "data/icons/"
@@ -29,8 +30,8 @@
 
 #define CHECK_PATH(path)                                        \
     do{                                                         \
-        if(!std::filesystem::exists(path)){                     \
-            std::filesystem::create_directory(path);            \
+        if(!boost::filesystem::exists(path)){                     \
+            boost::filesystem::create_directory(path);            \
             BOOST_LOG_TRIVIAL(trace) << "Create " << path;      \
         }                                                       \
     }while(false)  
@@ -185,8 +186,8 @@
 #define DEL_ID_FILE(path, prefix, postfix)                          \
     do{                                                             \
         FILE_NAME_ID(path, prefix, postfix)                         \
-        if(std::filesystem::exists(fname)){                         \
-            std::filesystem::remove(fname);                         \
+        if(boost::filesystem::exists(fname)){                         \
+            boost::filesystem::remove(fname);                         \
             res.set_status(200);                                    \
         }else{                                                      \
             ERRORSEND(res, 400, 1006, "File not found!");           \
@@ -225,8 +226,8 @@
 #define DEL_ID_LANG_FILE(path, prefix, postfix)                     \
     do{                                                             \
         FILE_NAME_ID_LANG(path, prefix, postfix)                    \
-        if(std::filesystem::exists(fname)){                         \
-            std::filesystem::remove(fname);                         \
+        if(boost::filesystem::exists(fname)){                         \
+            boost::filesystem::remove(fname);                         \
             res.set_status(200);                                    \
         }else{                                                      \
             ERRORSEND(res, 400, 1006, "File not found!");           \
@@ -256,8 +257,8 @@
     do{                                                             \
         std::string fname = std::string(path) +                     \
                 prefix + postfix;                                   \
-        if(std::filesystem::exists(fname)){                         \
-            std::filesystem::remove(fname);                         \
+        if(boost::filesystem::exists(fname)){                         \
+            boost::filesystem::remove(fname);                         \
             res.set_status(200);                                    \
         }else{                                                      \
             ERRORSEND(res, 400, 1006, "File not found!");           \
