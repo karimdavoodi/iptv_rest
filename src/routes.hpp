@@ -13,8 +13,6 @@ mux.handle("/launcher/logo/{id}")
         .del(launcher_logo_del)
         .put(launcher_logo_put)
         .post(launcher_logo_post);
-mux.handle("/launcher/components/types")
-        .get(launcher_components_types_get);
 mux.handle("/launcher/components/logo/{id}")
         .get(launcher_components_logo_get)
         .del(launcher_components_logo_del)
@@ -32,8 +30,6 @@ mux.handle("/launcher/menu/{id}")
         .put (launcher_menu_put)
         .post(launcher_menu_post)
         .del (launcher_menu_del);
-mux.handle("/launcher/menu")
-        .get (launcher_menu_get);
 ////////////////////// USERS //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /users/* ALL_METHODS";
 mux.handle("/users/group/{id}")
@@ -41,15 +37,11 @@ mux.handle("/users/group/{id}")
         .put (users_group_put)
         .post(users_group_post)
         .del (users_group_del);
-mux.handle("/users/group")
-        .get (users_group_get);
 mux.handle("/users/user/{id}")
         .get (users_user_get)
         .put (users_user_put)
         .post(users_user_post)
         .del (users_user_del);
-mux.handle("/users/user")
-        .get (users_user_get);
 mux.handle("/users/message/to/{id}")
         .get (users_message_to_get)
         .put (users_message_to_put)
@@ -65,8 +57,6 @@ mux.handle("/users/message/broadcast/{id}")
         .put (users_message_broadcast_put)
         .post(users_message_broadcast_post)
         .del (users_message_broadcast_del);
-mux.handle("/users/message/broadcast")
-        .get (users_message_broadcast_get);
 ////////////////////// LIVE //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /live/* ALL_METHODS";
 mux.handle("/live/tuners/input/{id}")
@@ -74,8 +64,6 @@ mux.handle("/live/tuners/input/{id}")
         .put (live_tuners_input_put)
         .post(live_tuners_input_post)
         .del (live_tuners_input_del);
-mux.handle("/live/tuners/input")
-        .get (live_tuners_input_get);
 mux.handle("/live/tuners/output")
         .get (live_tuners_output_get)
         .put (live_tuners_output_put)
@@ -86,8 +74,66 @@ mux.handle("/live/input/dvb/{id}")
         .put (live_input_dvb_put)
         .post(live_input_dvb_post)
         .del (live_input_dvb_del);
-mux.handle("/live/input/dvb")
-        .get (live_input_dvb_get);
+mux.handle("/live/input/archive/{id}")
+        .get (live_input_archive_get)
+        .put (live_input_archive_put)
+        .post(live_input_archive_post)
+        .del (live_input_archive_del);
+mux.handle("/live/input/network/{id}")
+        .get (live_input_network_get)
+        .put (live_input_network_put)
+        .post(live_input_network_post)
+        .del (live_input_network_del);
+mux.handle("/live/input/iptv/{id}")
+        .get (live_input_iptv_get)
+        .put (live_input_iptv_put)
+        .post(live_input_iptv_post)
+        .del (live_input_iptv_del);
+mux.handle("/live/input/virtual_net/{id}")
+        .get (live_input_virtual_net_get)
+        .put (live_input_virtual_net_put)
+        .post(live_input_virtual_net_post)
+        .del (live_input_virtual_net_del);
+mux.handle("/live/input/virtual_dvb/{id}")
+        .get (live_input_virtual_dvb_get)
+        .put (live_input_virtual_dvb_put)
+        .post(live_input_virtual_dvb_post)
+        .del (live_input_virtual_dvb_del);
+mux.handle("/live/transcode/{id}")
+        .get (live_transcode_get)
+        .put (live_transcode_put)
+        .post(live_transcode_post)
+        .del (live_transcode_del);
+mux.handle("/live/cccam/{id}")
+        .get (live_cccam_get)
+        .put (live_cccam_put)
+        .post(live_cccam_post)
+        .del (live_cccam_del);
+mux.handle("/live/unscramble/{id}")
+        .get (live_unscramble_get)
+        .put (live_unscramble_put)
+        .post(live_unscramble_post)
+        .del (live_unscramble_del);
+mux.handle("/live/scramble/{id}")
+        .get (live_scramble_get)
+        .put (live_scramble_put)
+        .post(live_scramble_post)
+        .del (live_scramble_del);
+mux.handle("/live/output_silver/{id}")
+        .get (live_output_silver_get)
+        .put (live_output_silver_put)
+        .post(live_output_silver_post)
+        .del (live_output_silver_del);
+mux.handle("/live/output_gold/{id}")
+        .get (live_output_gold_get)
+        .put (live_output_gold_put)
+        .post(live_output_gold_post)
+        .del (live_output_gold_del);
+mux.handle("/live/icons/{id}")
+        .get (live_icons_get)
+        .put (live_icons_put)
+        .post(live_icons_post)
+        .del (live_icons_del);
 mux.handle("/live/tuners/hardware/input")
         .get (live_tuners_hardware_input_get);
 mux.handle("/live/tuners/hardware/output")
@@ -103,7 +149,6 @@ mux.handle("/status/storage").get(status_storage_get);
 mux.handle("/status/dvb").get(status_dvb_get);
 mux.handle("/status/channels_input").get(status_channels_input_get);
 mux.handle("/status/channels_output").get(status_channels_output_get);
-mux.handle("/status/channels_output_view").get(status_channels_output_view_get);
 mux.handle("/status/channels_output_view/{id}").get(status_channels_output_view_get);
 mux.handle("/status/users").get(status_users_get);
 mux.handle("/status/error").get(status_errors_get);
@@ -133,8 +178,6 @@ mux.handle("/system/network")
             .get (system_network_get)
             .put (system_network_put)
             .post(system_network_put);
-mux.handle("/system/users")
-            .get (system_users_get);
 mux.handle("/system/users/{id}")
             .get (system_users_get)
             .put (system_users_put)
@@ -146,22 +189,16 @@ mux.handle("/system/pms")
             .get (system_pms_get)
             .put (system_pms_put)
             .post(system_pms_put);
-mux.handle("/system/vod_account")
-            .get (system_vod_account_get);
 mux.handle("/system/vod_account/{id}")
             .get (system_vod_account_get)
             .put (system_vod_account_put)
             .del (system_vod_account_del)
             .post(system_vod_account_post);
-mux.handle("/system/permission")
-            .get (system_permission_get);
 mux.handle("/system/permission/{id}")
             .get (system_permission_get)
             .put (system_permission_put)
             .del (system_permission_del)
             .post(system_permission_post);
-mux.handle("/system/weektime")
-            .get (system_weektime_get);
 mux.handle("/system/weektime/{id}")
             .get (system_weektime_get)
             .put (system_weektime_put)
@@ -191,29 +228,21 @@ mux.handle("/storage/setting")
             .get (storage_setting_get)
             .put (storage_setting_put)
             .post(storage_setting_put);
-mux.handle("/storage/contents/types")
-            .get (storage_contents_types_get);
 mux.handle("/storage/contents/types/{id}")
             .get (storage_contents_types_get)
             .put (storage_contents_types_put)
             .del (storage_contents_types_del)
             .post(storage_contents_types_post);
-mux.handle("/storage/contents/platforms")
-            .get (storage_platforms_get);
 mux.handle("/storage/contents/platforms/{id}")
             .get (storage_platforms_get)
             .put (storage_platforms_put)
             .del (storage_platforms_del)
             .post(storage_platforms_post);
-mux.handle("/storage/contents/categories")
-            .get (storage_categories_get);
 mux.handle("/storage/contents/categories/{id}")
             .get (storage_categories_get)
             .put (storage_categories_put)
             .del (storage_categories_del)
             .post(storage_categories_post);
-mux.handle("/storage/contents/info")
-            .get (storage_info_get);
 mux.handle("/storage/contents/info/{id}")
             .get (storage_info_get)
             .put (storage_info_put)
@@ -234,8 +263,6 @@ mux.handle("/storage/contents/subtitle/{id}")
             .put (storage_subtitle_put)
             .del (storage_subtitle_del)
             .post(storage_subtitle_post);
-mux.handle("/storage/advertize")
-            .get (storage_advertize_get);
 mux.handle("/storage/advertize/{id}")
             .get (storage_advertize_get)
             .put (storage_advertize_put)

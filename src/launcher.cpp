@@ -67,7 +67,7 @@ void launcher_logo_del(served::response &res, const served::request &req)
 void launcher_components_types_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("components_types");
+    GET_ID_COL("launcher_components_types");
 }
 void launcher_components_logo_get(served::response &res, const served::request &req)
 {

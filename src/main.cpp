@@ -21,8 +21,9 @@ using namespace std;
 void signal_handler(int signum)
 {
     signal(signum, SIG_DFL);
-    //boost::stacktrace::safe_dump_to(DUMP_FILE);
-    BOOST_LOG_TRIVIAL(info) << boost::stacktrace::stacktrace(); 
+    string fname = DUMP_FILE + to_string( rand()%10000 );
+    boost::stacktrace::safe_dump_to(static_cast<const char*>(fname.c_str()));
+    //BOOST_LOG_TRIVIAL(info) << boost::stacktrace::stacktrace(); 
     raise(SIGABRT);
 }
 void init_log(){

@@ -30,8 +30,11 @@ bool get_id(const served::request &req, std::string& id)
 }
 bool get_id(const served::request &req, int& id)
 {
+    id = 0;
     auto sid = req.params.get("id");
     if(sid.size() < 1) return false;
+    for(auto c : sid)
+        if(!isdigit(c)) return false;
     id = std::stoi(sid);
     return true;
 }

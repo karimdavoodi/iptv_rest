@@ -36,62 +36,62 @@ void storage_contents_types_del(served::response &res, const served::request &re
 void storage_platforms_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_platforms");
+    GET_ID_COL("storage_contents_platforms");
 }
 void storage_platforms_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    PUT_ID_COL("storage_platforms");
+    PUT_ID_COL("storage_contents_platforms");
 }
 void storage_platforms_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("storage_platforms");
+    POST_ID_COL("storage_contents_platforms");
 }
 void storage_platforms_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("storage_platforms");
+    DEL_ID_COL("storage_contents_platforms");
 }
 void storage_categories_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_categories");
+    GET_ID_COL("storage_contents_categories");
 }
 void storage_categories_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    PUT_ID_COL("storage_categories");
+    PUT_ID_COL("storage_contents_categories");
 }
 void storage_categories_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("storage_categories");
+    POST_ID_COL("storage_contents_categories");
 }
 void storage_categories_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("storage_categories");
+    DEL_ID_COL("storage_contents_categories");
 }
 void storage_info_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_info");
+    GET_ID_COL("storage_contents_info");
 }
 void storage_info_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    PUT_ID_COL("storage_info");
+    PUT_ID_COL("storage_contents_info");
 }
 void storage_info_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("storage_info");
+    POST_ID_COL("storage_contents_info");
 }
 void storage_info_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("storage_info");
+    DEL_ID_COL("storage_contents_info");
 }
 void storage_media_get(served::response &res, const served::request &req)
 {
