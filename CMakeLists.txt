@@ -2,10 +2,14 @@ cmake_minimum_required(VERSION 3.10)
 project(iptv_api)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(QT_QMAKE_EXECUTABLE "/usr/bin/qmake")
+#set(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_MULTITHREADED ON)
+#set(Boost_USE_STATIC_RUNTIME OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-add_definitions(#-fdiagnostics-color=always 
+add_definitions( 
+                #-fdiagnostics-color=always 
                  -fdiagnostics-show-location=every-line
                  -fdiagnostics-generate-patch )
 
