@@ -129,7 +129,8 @@ std::string Mongo::find( std::string col, std::string doc)
 {
     auto dB = client[DB_NAME];     
     
-    BOOST_LOG_TRIVIAL(trace) << __func__;
+    BOOST_LOG_TRIVIAL(trace) <<  __func__;
+
     auto result = dB[col].find(bsoncxx::from_json(doc));
     std::string result_str = "";
     int count = 0;

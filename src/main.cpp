@@ -2,6 +2,8 @@
 #include <exception>
 #include <iostream>
 #include <fstream>
+#include <served/request.hpp>
+#include <served/response.hpp>
 #include <served/served.hpp>
 #include <csignal>
 #include <boost/stacktrace.hpp>
@@ -10,8 +12,10 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
+#include "auth.hpp"
 #include "includes.hpp"
 #include "mongo_driver.hpp"
+
 
 #define PORT "8139"
 #define THREADS 1
@@ -67,8 +71,13 @@ int main(int argc, char *argv[])
             #include "routes.hpp"
 
             mux.handle("/help").get(mux.get_endpoint_list_handler_YAML());
-            
             BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/help";
+            
+            mux.use_before([](served::response& res, served::request& req){
+                    // Run before any request;
+                    res.set_header("Access-Control-Allow-Origin","*");
+                    });
+
             served::net::server server("0.0.0.0", PORT, mux);
             server.run(THREADS); 
             break;
