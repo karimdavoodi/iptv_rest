@@ -9,7 +9,7 @@ std::string Hardware::input_tuners()
                     {
                     "_id": 1,
                     "name": "", 
-                    "is_dvbt": True, 
+                    "is_dvbt": true, 
                     }
                  ]
             }
@@ -25,7 +25,7 @@ std::string Hardware::output_tuners()
                     {
                     "_id": 1,
                     "name": "", 
-                    "is_dvbt": True, 
+                    "is_dvbt": true, 
                     }
                  ]
             }
@@ -38,16 +38,16 @@ std::string Hardware::scan_input_tuner(const std::string& tuner_json)
                 "total":1,
                 "content":[    
                     {
-                        "name": string, 
-                        "dvb_id": int, 
-                        "is_dvbt": boolean, 
-                        "sid": int, 
-                        "aid": int, 
-                        "vid": int,
-                        "freq": int, 
-                        "pol": int, 
-                        "scramble": boolean, 
-                        "symb": int
+                        "name": "string", 
+                        "dvb_id": 1, 
+                        "is_dvbt": true, 
+                        "sid": 1, 
+                        "aid": 1, 
+                        "vid": 1,
+                        "freq": 1, 
+                        "pol": 1, 
+                        "scramble": true, 
+                        "symb": 1
                     }
                  ]
             }

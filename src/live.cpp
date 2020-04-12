@@ -8,12 +8,14 @@
 void live_tuners_hardware_input_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    res.set_header("Content-type", "application/json");     
     res << Hardware::input_tuners();
     res.set_status(200);
 }
 void live_tuners_hardware_output_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    res.set_header("Content-type", "application/json");     
     res << Hardware::output_tuners();
     res.set_status(200);
 }
@@ -28,6 +30,7 @@ void live_tuners_input_scan_get(served::response &res, const served::request &re
     if(tuner.size() == 0 ){
         ERRORSEND(res, 400, 1002, "Invalid tuner!");
     }
+    res.set_header("Content-type", "application/json");     
     res << Hardware::scan_input_tuner(tuner);
     res.set_status(200);
 }
