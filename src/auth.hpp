@@ -22,7 +22,9 @@
         json jerror;                                            \
         jerror["errorCode"] = errorCode;                        \
         jerror["errorMessage"] = errorMessage;                  \
-        res << jerror.dump(4);                                  \
+        std::string result = jerror.dump(4);                    \
+        res.set_header("Content-type", "application/json");     \
+        res << result;                                          \
         res.set_status(httpCode);                               \
         BOOST_LOG_TRIVIAL(trace) << "Error: " << errorMessage;  \
         return;                                                 \
@@ -30,8 +32,8 @@
 
 #define CHECK_PATH(path)                                        \
     do{                                                         \
-        if(!boost::filesystem::exists(path)){                     \
-            boost::filesystem::create_directory(path);            \
+        if(!boost::filesystem::exists(path)){                   \
+            boost::filesystem::create_directory(path);          \
             BOOST_LOG_TRIVIAL(trace) << "Create " << path;      \
         }                                                       \
     }while(false)  
@@ -130,17 +132,23 @@
     do{                                                             \
         int id;                                                     \
         auto [from, to] = req_range(req);                           \
+        std::string result;                                         \
         if(get_id(req, id)){                                        \
-            res << Mongo::find_id(col, id);                         \
+            result = Mongo::find_id(col, id);                       \
         }else{                                                      \
-            res << Mongo::find_id_range(col, from, to);             \
+            result = Mongo::find_id_range(col, from, to);           \
         }                                                           \
+        res.set_header("Content-type", "application/json");         \
+        res << result;                                              \
         res.set_status(200);                                        \
     }while(false)                       
 
 #define GET_ID1_COL(col)                                            \
     do{                                                             \
-        res << Mongo::find_id(col, 1);                              \
+        std::string result;                                         \
+        result = Mongo::find_id(col, 1);                            \
+        res.set_header("Content-type", "application/json");         \
+        res << result;                                              \
         res.set_status(200);                                        \
     }while(false)                       
 

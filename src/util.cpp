@@ -86,7 +86,7 @@ bool send_file(served::response &res, const served::request &req, const std::str
                     (std::istreambuf_iterator<char>()    )
                     ));
         res.set_header("Content-type", "image/png");
-        res.set_header("Content-Lenght", std::to_string(res.body_size()));
+        //res.set_header("Content-Lenght", std::to_string(res.body_size()));
         res.set_status(200);
         return true;
     }

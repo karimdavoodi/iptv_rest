@@ -14,7 +14,7 @@
 #include "mongo_driver.hpp"
 
 #define PORT "8139"
-#define THREADS 2
+#define THREADS 1
 using namespace std;
 
 #define DUMP_FILE "/tmp/iptv_rest.dump"
@@ -44,7 +44,7 @@ void init_log(){
 }
 int main(int argc, char *argv[])
 {
-//    init_log();
+    init_log();
     BOOST_LOG_TRIVIAL(info) << "Start Main";
     Mongo::fill_defauls();
     signal(SIGSEGV, &signal_handler);
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
             
             BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/help";
             served::net::server server("0.0.0.0", PORT, mux);
-            server.run(); 
+            server.run(THREADS); 
             break;
         }catch(std::exception& e){
             BOOST_LOG_TRIVIAL(info) << "Exception " << e.what();
