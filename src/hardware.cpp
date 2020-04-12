@@ -1,5 +1,4 @@
 #include "hardware.hpp"
-
 std::string Hardware::input_tuners()
 {
     return R"( 

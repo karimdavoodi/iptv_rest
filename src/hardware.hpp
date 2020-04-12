@@ -1,5 +1,4 @@
 #include <iostream>
-
 class Hardware {
     public:
         static std::string input_tuners();
