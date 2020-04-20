@@ -16,25 +16,9 @@ using bsoncxx::builder::basic::kvp;
 
 void Mongo::fill_defauls(){
     try{
-        auto db = client[DB_NAME];     
-        if(!exists_id("launcher_components_types", 1)){
-            db["launcher_components_types"].insert_one(
-                    make_document(kvp("_id", 1), kvp("name", "LiveTV")));
-            db["launcher_components_types"].insert_one(
-                    make_document(kvp("_id", 2), kvp("name", "LiveRadio")));
-            db["launcher_components_types"].insert_one(
-                    make_document(kvp("_id", 3), kvp("name", "VoD")));
-            db["launcher_components_types"].insert_one(
-                    make_document(kvp("_id", 4), kvp("name", "AoD")));
-            db["launcher_components_types"].insert_one(
-                    make_document(kvp("_id", 5), kvp("name", "Picture")));
-            db["launcher_components_types"].insert_one(
-                    make_document(kvp("_id", 6), kvp("name", "Map")));
-        }
     }catch(std::exception& e){
         std::cout << e.what() << '\n';
     }
-    
 }
 void Mongo::info()
 {

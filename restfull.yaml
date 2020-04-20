@@ -1,5 +1,9 @@
 
 ChangLog:
+    2.2: April 12, 2020
+        - remove fm APIs
+        - change archive API
+
     2.1: April 4, 2020
         - change 'id' to '_id' to be compatible by MongoDB
         - change some APIs
@@ -61,10 +65,10 @@ Authentication:  Basic Auth
                 "LicenseExpire": string,
                 "Serial": string,
                 "Version": string,
-                "Uptime": string,
-                "LastReset": string,
+                "Uptime": epochtime,
+                "LastReset": epochtime,
                 "SystemIP": string,
-                "SystemDate": string,
+                "SystemDate": epochtime,
                 "SystemInternet": boolean,
                 "Manufacturer": string,
                 "Model": string,
@@ -114,14 +118,10 @@ Authentication:  Basic Auth
                         "interfaces":[
                             {
                             "name": string,
-                            "ip": string,
-                            "mask": string,
                             "sendAve": int,
                             "receiveAve": int
                             },
-                        ],
-                        "dns": string,
-                        "gateway": string
+                        ]
                     },
                 ]
             }
@@ -204,6 +204,8 @@ Authentication:  Basic Auth
                     "_id": int,
                     "type": string,     #DVB, NET, HDD 
                     "name": string,
+                    "epg": string,
+                    "epg_percent": int,
                     "health": boolean,
                     },
                 ]
@@ -425,11 +427,12 @@ Authentication:  Basic Auth
             {
                     "_id": 1,
                     "name": string,
+                    "debug": int,
                     "weatherLocation": string,
                     "pryerTime": string,
                     "timeZone": string,
                     "systemTime": epochtime,
-                    "gamaryShift": int
+                    "gamaryShift": int,
                     "subtitleLogo":{
                         "isLeft": boolean,
                         "components":[int, ...]
@@ -504,6 +507,7 @@ Authentication:  Basic Auth
                 "name": string,
                 "locationName": string,
                 "creatorId": int, 
+                "description": string,
                 "active": boolean,
                 "start": epochtime,
                 "end": epochtime,
@@ -672,20 +676,13 @@ Authentication:  Basic Auth
             {
                 "_id": 1,
                 "root": string,
-                "partitions":{
-                        "vod": int,
-                        "aod": int,
-                        "timeshift": int,
-                        "npvr": int,
-                        "audiobook": int,
-                        "book": int,
-                        "photo": int,
-                    },
                 "timeShift":{
+                    "maxSizeGB":int,
                     "recordDuration": int,
                     "EPGnaming": boolean,
                     },
                 "NPVR":{
+                    "maxSizeGB":int,
                     "perUser": int
                 }
             }
@@ -928,6 +925,20 @@ Authentication:  Basic Auth
 
 
 ### Live Inputs ################################
+        Path: /live/inputs/types
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    {
+                    "_id": int,
+                    "name": string,
+                    },
+                ]
+            }
+
 ### DVB Channels
         Description: Manage of DVB channels
         Path: /live/inputs/dvb
@@ -978,10 +989,18 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                 "_id": int,
-                "dir": [ string, .. ]
-                "is_tv": boolean, 
                 "name": string,
-                "active": boolean
+                "active": boolean,
+                "isTV": boolean, 
+                "manualSchedule": boolean,
+                "contents": [ 
+                        {
+                        "content": int,
+                        "weekday": int,
+                        "time": int,
+                        }
+                    ],
+                
             }
 
 ### Network Channels
@@ -1089,7 +1108,7 @@ Authentication:  Basic Auth
 
 ### Transcoding    
         Description: Manage of transcodec channels
-        Path: /live/transcode
+        Path: /live/transcode_profile
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -1100,14 +1119,13 @@ Authentication:  Basic Auth
                  ]
             }
 
-        Path: /live/transcode/{id}
+        Path: /live/transcode_profile/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
                 "active": boolean,
-                "input": string, 
-                "output": string, 
+                "name": string, 
                 "preset": string,
                 "videoCodec": string, 
                 "videoSize": string, 
@@ -1115,7 +1133,32 @@ Authentication:  Basic Auth
                 "videoFps": string, 
                 "videoProfile": string, 
                 "audioCodec": string, 
-                "audioRate": string 
+                "audioRate": string, 
+                "extra": string 
+            }
+
+        Description: Manage of transcodec channels
+        Path: /live/inputs/transcode
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    ... same as 'PUT' RequestBody
+                 ]
+            }
+
+        Path: /live/inputs/transcode/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: 
+            {
+                "_id": int,
+                "active": boolean,
+                "name": string, 
+                "input": int, 
+                "inputType": int, 
+                "profile": int,
             }
 
 
@@ -1164,9 +1207,9 @@ Authentication:  Basic Auth
             {
                 "_id": int,
                 "active": boolean,
-                "channel": string, 
-                "use_bsskey": boolean,
-                "use_cccam": boolean
+                "channel": int, 
+                "bssKey": string,
+                "cccam": int
             }
 
 
@@ -1215,11 +1258,12 @@ Authentication:  Basic Auth
             {
                 "_id": int,
                 "active": boolean,
+                "input": "DVBS1",      # DVBT, DVBS, NET, HDD, IPTV 
                 "name": string, 
                 "permission": int,
                 "freq": int, 
                 "sid": int, 
-                "record": boolean,
+                "recordTime": int,
                 "udp": boolean,
                 "http": boolean,
                 "rtsp": boolean,
@@ -1246,9 +1290,9 @@ Authentication:  Basic Auth
             {
                 "_id": int,
                 "active": boolean,
-                "userId": int, 
+                "user": int, 
                 "iptvAccount": string,
-                "tunerId": int,
+                "tuner": int,
                 "satellites":[ 
                     {
                         "name": string,
@@ -1270,7 +1314,7 @@ Authentication:  Basic Auth
                 "content":[
                     {
                         "_id":int,
-                        "channelName":string
+                        "name":string
                     },
                 ]
             }
@@ -1298,7 +1342,7 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                 "_id": int,
-                "launcher": string,
+                "launcher": int,
                 "font":{
                     "en": string,
                     "fa": string,
@@ -1316,7 +1360,11 @@ Authentication:  Basic Auth
                     },
                 "language": string,
                 "welcomeClip": boolean,
-                "uiStartup": string,
+                "welcomeClipMedia": {
+                            "en":int,
+                            "fa":int,
+                            "ar":int
+                            },
                 "unitName": string,
                 "clientHotspot": string,
                 "testUserId": int,
@@ -1488,16 +1536,24 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string, 
+                "description": string,
                 "group": [int, ... ],
                 "connections": int, 
-                "ipaddress": string, 
+                "ipAddress": string, 
+                "macAddress": string, 
                 "language": string, 
                 "launcher": int, 
                 "user": string, 
                 "pass": string, 
-                "vod_id": int,
+                "ssidUser": string,
+                "ssidPass": string,
+                "vodId": int,
                 "npvr": int,
                 "expire": epochtime,
+                "stats":{
+                    "timer":{},
+                    "npvr":[]
+                }
             }
 
         Path: /users/user/{id}
@@ -1521,6 +1577,7 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                 "_id": int,
+                "user": int,
                 "time": epochtime,
                 "subject": string, 
                 "body": string,
@@ -1538,6 +1595,7 @@ Authentication:  Basic Auth
                 "content":[    
                     {   
                     "_id": int,
+                    "user": int,
                     "time": epochtime,
                     "subject": string, 
                     "body": string,
@@ -1574,29 +1632,4 @@ Authentication:  Basic Auth
             }
         Path: /users/message/broadcast/{msg_id}
         Method: DELETE 
-
-### Tools ###############################################
-### FileManager
-        Description: List contents of dir
-        Path: /storage/fm/list
-        Method: GET
-        Parameters: path=string&[from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "name":string,
-                    "isDir":boolean
-                    },
-                 ]
-            }
-
-        Path: /storage/fm/mkdir
-        Method: PUT
-        Parameters: path=string
-
-        Path: /storage/fm/remove
-        Method: DELETE
-        Parameters: path=string
 
