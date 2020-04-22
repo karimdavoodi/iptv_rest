@@ -427,6 +427,7 @@ Authentication:  Basic Auth
             {
                     "_id": 1,
                     "name": string,
+                    "logo": int,
                     "debug": int,
                     "weatherLocation": string,
                     "pryerTime": string,
@@ -434,24 +435,11 @@ Authentication:  Basic Auth
                     "systemTime": epochtime,
                     "gamaryShift": int,
                     "subtitleLogo":{
+                        "logo": int,
                         "isLeft": boolean,
                         "components":[int, ...]
                      }
             }
-### Logo
-        Description: Manage of system Logo 
-        Path: /system/system_logo
-        Method: GET
-        ResponseBody: logo image file 
-        Method: POST
-        RequestBody: logo image file
-
-        Description: Manage of subtitle Logo
-        Path: /system/subtitle_logo
-        Method: GET
-        ResponseBody: logo image file 
-        Method: POST
-        RequestBody: logo image file
 
 ### Network
         Description: Manage network setting
@@ -1260,7 +1248,9 @@ Authentication:  Basic Auth
                 "active": boolean,
                 "input": "DVBS1",      # DVBT, DVBS, NET, HDD, IPTV 
                 "name": string, 
+                "logo": int,
                 "permission": int,
+                "category": [int],
                 "freq": int, 
                 "sid": int, 
                 "recordTime": int,
@@ -1302,35 +1292,6 @@ Authentication:  Basic Auth
                 ] 
             }
 
-
-### Channels Logo  
-        Description: Manage of channels Logo 
-        Path: /live/logo
-        Method: GET
-        Parameters: [from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                        "_id":int,
-                        "name":string
-                    },
-                ]
-            }
-
-        Path: /live/logo/{id}
-        Method: GET
-        ResponseBody: logo file
-
-        Path: /live/logo/{id}
-        Method: PUT, POST
-        Parameters: channelName=string
-        RequestBody: logo image file
-
-        Path: /live/logo/{id}
-        Method: DELET
-
 ### Launcher ############################################# 
 ### Setting
         Description: Manage of Launchers
@@ -1371,24 +1332,6 @@ Authentication:  Basic Auth
                 "defaultChannel": int 
             }
         ##########################################
-        Description: Manage of launcher background
-        Path: /launcher/background/{id}
-        Method: GET
-        ResponseBody: image file
-        Method: PUT, POST
-        RequestBody: background image file
-        Method: DELETE
-        ##########################################
-        Description: Manage of launcher logo
-        Path: /launcher/logo/{id}
-        Method: GET
-        Parameters: language=int
-        ResponseBody: image file
-        Method: POST
-        Parameters: language=int
-        RequestBody: image file
-        Method: DELETE
-
 ### Components 
         Description: Types of components like: LiveTV, LiveRadio, VoD, AoD, Picture, ..
         Path: /launcher/components/types
@@ -1432,23 +1375,11 @@ Authentication:  Basic Auth
                     "ar": string
                     }, 
                 "logo": int,
-                "contentType": int,
-                "contentCategories":[int, ...]
+                "category":[int, ...]
             }
 
         Path: /launcher/components/info/{id}
         Method: DELETE 
-
-        Description: Manage of components icons
-        Path: /launcher/components/logo/{id}
-        Method: GET
-        Parameters: launcher=int
-        ResponseBody: image file
-        Method: POST
-        Parameters: launcher=int
-        RequestBody: image file
-        Method: DELETE
-        Parameters: launcher=int
 
 ### Components Arrange
         Description: Manage of Launcher's Menu
@@ -1476,7 +1407,7 @@ Authentication:  Basic Auth
                     "fa": string,
                     "ar": string
                     }, 
-                "icon": int,
+                "logo": int,
                 "permission": int,
                 "components": [int, ... ]
             }
@@ -1484,6 +1415,38 @@ Authentication:  Basic Auth
         Path: /launcher/menu/{id}
         Method: DELETE 
 
+        Description: Manage of Launcher's Config
+        Path: /launcher/setting
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    ... same as 'PUT' RequestBody
+                 ]
+            }
+
+        Path: /launcher/setting/{id}
+        Method: GET
+        RequestBody: same as 'PUT' RequestBody 
+        Method: PUT, POST 
+        RequestBody: 
+            {
+                "_id": int,
+                "active": boolean,
+                "name": string,
+                "background": int,
+                "logo": {
+                    "en": int,
+                    "fa": int,
+                    "ar": int
+                    }
+                "menu": [int, ... ]
+            }
+
+        Path: /launcher/setting/{id}
+        Method: DELETE 
 ### Users ################################################
 ### User Groups
         Description: Manage of Users's groups
@@ -1551,7 +1514,7 @@ Authentication:  Basic Auth
                 "npvr": int,
                 "expire": epochtime,
                 "stats":{
-                    "timer":{},
+                    "timers":{},
                     "npvr":[]
                 }
             }
