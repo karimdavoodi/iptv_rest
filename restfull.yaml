@@ -1,5 +1,15 @@
 
 ChangLog:
+    2.3: April 22, 2020
+        - remove network info from status
+        - remove system/logo and system/subtitle_logo
+        - add live/inputs/types
+        - change archive setting
+        - add transcode profiles
+        - remove live/logo
+        - remove launcher/background and launcher/logo and launcher/components.logo
+        - add launcher/setting
+        
     2.2: April 12, 2020
         - remove fm APIs
         - change archive API
@@ -697,6 +707,24 @@ Authentication:  Basic Auth
         Method: GET, PUT, POST, DELETE
         RequestBody: same as GET ResponsBody 
 
+        Description: Get list of contents formats like mp3, mp4
+        Path: /storage/contents/formats
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    {
+                    "_id":int,
+                    "name":string,
+                    },
+                 ]
+            }
+        Path: /storage/contents/formats/{id}
+        Method: GET, PUT, POST, DELETE
+        RequestBody: same as GET ResponsBody 
+
         Description: Get list of platforms like: samsung, lg, android, amino
         Path: /storage/contents/platforms
         Method: GET
@@ -745,9 +773,10 @@ Authentication:  Basic Auth
                     {
                         "_id": int,
                         "type": int,
+                        "format": int,
                         "category":[int, ...],
-                        "group": string,
-                        "permission": int,
+                        "name": string,
+                        "permission":[int, ...],
                         "price": int,
                         "platform":[int, ...],
                         "date": epochtime,
@@ -1436,13 +1465,20 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string,
-                "background": int,
-                "logo": {
-                    "en": int,
-                    "fa": int,
-                    "ar": int
-                    }
-                "menu": [int, ... ]
+                "menu": [int, ... ],
+                "icons":{
+                    "background": int,
+                    "company":int,
+                    "net_ok":int,
+                    "net_nok":int,
+                    "lock":int,
+                    "unlock":int,
+                    "logo": {
+                        "en": int,
+                        "fa": int,
+                        "ar": int
+                        }
+                }
             }
 
         Path: /launcher/setting/{id}
