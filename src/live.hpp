@@ -15,40 +15,45 @@ void live_tuners_output_del(served::response &, const served::request &);
 void live_tuners_output_put(served::response &, const served::request &);
 void live_tuners_output_post(served::response &, const served::request &);
 
-void live_input_dvb_get(served::response &, const served::request &);
-void live_input_dvb_del(served::response &, const served::request &);
-void live_input_dvb_put(served::response &, const served::request &);
-void live_input_dvb_post(served::response &, const served::request &);
+void live_inputs_dvb_get(served::response &, const served::request &);
+void live_inputs_dvb_del(served::response &, const served::request &);
+void live_inputs_dvb_put(served::response &, const served::request &);
+void live_inputs_dvb_post(served::response &, const served::request &);
 
-void live_input_archive_get(served::response &, const served::request &);
-void live_input_archive_del(served::response &, const served::request &);
-void live_input_archive_put(served::response &, const served::request &);
-void live_input_archive_post(served::response &, const served::request &);
+void live_inputs_archive_get(served::response &, const served::request &);
+void live_inputs_archive_del(served::response &, const served::request &);
+void live_inputs_archive_put(served::response &, const served::request &);
+void live_inputs_archive_post(served::response &, const served::request &);
 
-void live_input_network_get(served::response &, const served::request &);
-void live_input_network_del(served::response &, const served::request &);
-void live_input_network_put(served::response &, const served::request &);
-void live_input_network_post(served::response &, const served::request &);
+void live_inputs_network_get(served::response &, const served::request &);
+void live_inputs_network_del(served::response &, const served::request &);
+void live_inputs_network_put(served::response &, const served::request &);
+void live_inputs_network_post(served::response &, const served::request &);
 
-void live_input_iptv_get(served::response &, const served::request &);
-void live_input_iptv_del(served::response &, const served::request &);
-void live_input_iptv_put(served::response &, const served::request &);
-void live_input_iptv_post(served::response &, const served::request &);
+void live_inputs_transcode_get(served::response &, const served::request &);
+void live_inputs_transcode_del(served::response &, const served::request &);
+void live_inputs_transcode_put(served::response &, const served::request &);
+void live_inputs_transcode_post(served::response &, const served::request &);
 
-void live_input_virtual_net_get(served::response &, const served::request &);
-void live_input_virtual_net_del(served::response &, const served::request &);
-void live_input_virtual_net_put(served::response &, const served::request &);
-void live_input_virtual_net_post(served::response &, const served::request &);
+void live_inputs_iptv_get(served::response &, const served::request &);
+void live_inputs_iptv_del(served::response &, const served::request &);
+void live_inputs_iptv_put(served::response &, const served::request &);
+void live_inputs_iptv_post(served::response &, const served::request &);
 
-void live_input_virtual_dvb_get(served::response &, const served::request &);
-void live_input_virtual_dvb_del(served::response &, const served::request &);
-void live_input_virtual_dvb_put(served::response &, const served::request &);
-void live_input_virtual_dvb_post(served::response &, const served::request &);
+void live_inputs_virtual_net_get(served::response &, const served::request &);
+void live_inputs_virtual_net_del(served::response &, const served::request &);
+void live_inputs_virtual_net_put(served::response &, const served::request &);
+void live_inputs_virtual_net_post(served::response &, const served::request &);
 
-void live_transcode_get(served::response &, const served::request &);
-void live_transcode_del(served::response &, const served::request &);
-void live_transcode_put(served::response &, const served::request &);
-void live_transcode_post(served::response &, const served::request &);
+void live_inputs_virtual_dvb_get(served::response &, const served::request &);
+void live_inputs_virtual_dvb_del(served::response &, const served::request &);
+void live_inputs_virtual_dvb_put(served::response &, const served::request &);
+void live_inputs_virtual_dvb_post(served::response &, const served::request &);
+
+void live_transcode_profile_get(served::response &, const served::request &);
+void live_transcode_profile_del(served::response &, const served::request &);
+void live_transcode_profile_put(served::response &, const served::request &);
+void live_transcode_profile_post(served::response &, const served::request &);
 
 void live_cccam_get(served::response &, const served::request &);
 void live_cccam_del(served::response &, const served::request &);

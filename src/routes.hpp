@@ -3,33 +3,26 @@ BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/* ";
 mux.handle("/launcher/default")
         .get(launcher_default_get)
         .post(launcher_default_post);
-mux.handle("/launcher/background/{id}")
-        .get(launcher_background_get)
-        .post(launcher_background_post)
-        .put(launcher_background_put)
-        .del(launcher_background_del);
-mux.handle("/launcher/logo/{id}")
-        .get(launcher_logo_get)
-        .del(launcher_logo_del)
-        .put(launcher_logo_put)
-        .post(launcher_logo_post);
-mux.handle("/launcher/components/logo/{id}")
-        .get(launcher_components_logo_get)
-        .del(launcher_components_logo_del)
-        .put(launcher_components_logo_put)
-        .post(launcher_components_logo_post);
 mux.handle("/launcher/components/info/{id}")
         .get(launcher_components_info_get)
         .del(launcher_components_info_del)
         .put(launcher_components_info_put)
         .post(launcher_components_info_post);
-mux.handle("/launcher/components/info")
-        .get(launcher_components_info_get);
+mux.handle("/launcher/components/types/{id}")
+        .get(launcher_components_types_get)
+        .del(launcher_components_types_del)
+        .put(launcher_components_types_put)
+        .post(launcher_components_types_post);
 mux.handle("/launcher/menu/{id}")
         .get (launcher_menu_get)
         .put (launcher_menu_put)
         .post(launcher_menu_post)
         .del (launcher_menu_del);
+mux.handle("/launcher/setting/{id}")
+        .get (launcher_setting_get)
+        .put (launcher_setting_put)
+        .post(launcher_setting_post)
+        .del (launcher_setting_del);
 ////////////////////// USERS //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /users/* ALL_METHODS";
 mux.handle("/users/group/{id}")
@@ -69,41 +62,46 @@ mux.handle("/live/tuners/output")
         .put (live_tuners_output_put)
         .post(live_tuners_output_post)
         .del (live_tuners_output_del);
-mux.handle("/live/input/dvb/{id}")
-        .get (live_input_dvb_get)
-        .put (live_input_dvb_put)
-        .post(live_input_dvb_post)
-        .del (live_input_dvb_del);
-mux.handle("/live/input/archive/{id}")
-        .get (live_input_archive_get)
-        .put (live_input_archive_put)
-        .post(live_input_archive_post)
-        .del (live_input_archive_del);
-mux.handle("/live/input/network/{id}")
-        .get (live_input_network_get)
-        .put (live_input_network_put)
-        .post(live_input_network_post)
-        .del (live_input_network_del);
-mux.handle("/live/input/iptv/{id}")
-        .get (live_input_iptv_get)
-        .put (live_input_iptv_put)
-        .post(live_input_iptv_post)
-        .del (live_input_iptv_del);
-mux.handle("/live/input/virtual_net/{id}")
-        .get (live_input_virtual_net_get)
-        .put (live_input_virtual_net_put)
-        .post(live_input_virtual_net_post)
-        .del (live_input_virtual_net_del);
-mux.handle("/live/input/virtual_dvb/{id}")
-        .get (live_input_virtual_dvb_get)
-        .put (live_input_virtual_dvb_put)
-        .post(live_input_virtual_dvb_post)
-        .del (live_input_virtual_dvb_del);
-mux.handle("/live/transcode/{id}")
-        .get (live_transcode_get)
-        .put (live_transcode_put)
-        .post(live_transcode_post)
-        .del (live_transcode_del);
+mux.handle("/live/inputs/dvb/{id}")
+        .get (live_inputs_dvb_get)
+        .put (live_inputs_dvb_put)
+        .post(live_inputs_dvb_post)
+        .del (live_inputs_dvb_del);
+mux.handle("/live/inputs/archive/{id}")
+        .get (live_inputs_archive_get)
+        .put (live_inputs_archive_put)
+        .post(live_inputs_archive_post)
+        .del (live_inputs_archive_del);
+mux.handle("/live/inputs/network/{id}")
+        .get (live_inputs_network_get)
+        .put (live_inputs_network_put)
+        .post(live_inputs_network_post)
+        .del (live_inputs_network_del);
+mux.handle("/live/inputs/iptv/{id}")
+        .get (live_inputs_iptv_get)
+        .put (live_inputs_iptv_put)
+        .post(live_inputs_iptv_post)
+        .del (live_inputs_iptv_del);
+mux.handle("/live/inputs/virtual_net/{id}")
+        .get (live_inputs_virtual_net_get)
+        .put (live_inputs_virtual_net_put)
+        .post(live_inputs_virtual_net_post)
+        .del (live_inputs_virtual_net_del);
+mux.handle("/live/inputs/virtual_dvb/{id}")
+        .get (live_inputs_virtual_dvb_get)
+        .put (live_inputs_virtual_dvb_put)
+        .post(live_inputs_virtual_dvb_post)
+        .del (live_inputs_virtual_dvb_del);
+mux.handle("/live/inputs/transcode/{id}")
+        .get (live_inputs_transcode_get)
+        .put (live_inputs_transcode_put)
+        .post(live_inputs_transcode_post)
+        .del (live_inputs_transcode_del);
+mux.handle("/live/transcode_profile/{id}")
+        .get (live_transcode_profile_get)
+        .put (live_transcode_profile_put)
+        .post(live_transcode_profile_post)
+        .del (live_transcode_profile_del);
 mux.handle("/live/cccam/{id}")
         .get (live_cccam_get)
         .put (live_cccam_put)
@@ -233,6 +231,11 @@ mux.handle("/storage/contents/types/{id}")
             .put (storage_contents_types_put)
             .del (storage_contents_types_del)
             .post(storage_contents_types_post);
+mux.handle("/storage/contents/formats/{id}")
+            .get (storage_contents_formats_get)
+            .put (storage_contents_formats_put)
+            .del (storage_contents_formats_del)
+            .post(storage_contents_formats_post);
 mux.handle("/storage/contents/platforms/{id}")
             .get (storage_platforms_get)
             .put (storage_platforms_put)

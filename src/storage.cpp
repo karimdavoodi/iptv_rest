@@ -173,3 +173,23 @@ void storage_advertize_del(served::response &res, const served::request &req)
 	CHECK_AUTH;
     DEL_ID_COL("storage_advertize");
 }
+void storage_contents_formats_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID_COL("storage_contents_formats");
+}
+void storage_contents_formats_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    PUT_ID_COL("storage_contents_formats");
+}
+void storage_contents_formats_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("storage_contents_formats");
+}
+void storage_contents_formats_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("storage_contents_formats");
+}

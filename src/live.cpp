@@ -76,145 +76,165 @@ void live_tuners_output_get(served::response &res, const served::request &req)
 	CHECK_AUTH;
     GET_ID1_COL("live_tuners_output");
 }
-void live_input_dvb_put(served::response &res, const served::request &req)
+void live_inputs_dvb_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_input_dvb");
+    PUT_ID_COL("live_inputs_dvb");
 }
-void live_input_dvb_post(served::response &res, const served::request &req)
+void live_inputs_dvb_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_input_dvb");
+    POST_ID_COL("live_inputs_dvb");
 }
-void live_input_dvb_del(served::response &res, const served::request &req)
+void live_inputs_dvb_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_input_dvb");
+    DEL_ID_COL("live_inputs_dvb");
 }
-void live_input_dvb_get(served::response &res, const served::request &req)
+void live_inputs_dvb_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_input_dvb");
+    GET_ID_COL("live_inputs_dvb");
 }
-void live_input_archive_put(served::response &res, const served::request &req)
+void live_inputs_archive_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_input_archive");
+    PUT_ID_COL("live_inputs_archive");
 }
-void live_input_archive_post(served::response &res, const served::request &req)
+void live_inputs_archive_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_input_archive");
+    POST_ID_COL("live_inputs_archive");
 }
-void live_input_archive_del(served::response &res, const served::request &req)
+void live_inputs_archive_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_input_archive");
+    DEL_ID_COL("live_inputs_archive");
 }
-void live_input_archive_get(served::response &res, const served::request &req)
+void live_inputs_archive_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_input_archive");
+    GET_ID_COL("live_inputs_archive");
 }
-void live_input_network_put(served::response &res, const served::request &req)
+void live_inputs_network_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_input_network");
+    PUT_ID_COL("live_inputs_network");
 }
-void live_input_network_post(served::response &res, const served::request &req)
+void live_inputs_network_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_input_network");
+    POST_ID_COL("live_inputs_network");
 }
-void live_input_network_del(served::response &res, const served::request &req)
+void live_inputs_network_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_input_network");
+    DEL_ID_COL("live_inputs_network");
 }
-void live_input_network_get(served::response &res, const served::request &req)
+void live_inputs_network_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_input_network");
+    GET_ID_COL("live_inputs_network");
 }
-void live_input_iptv_put(served::response &res, const served::request &req)
+void live_inputs_iptv_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_input_iptv");
+    PUT_ID_COL("live_inputs_iptv");
 }
-void live_input_iptv_post(served::response &res, const served::request &req)
+void live_inputs_iptv_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_input_iptv");
+    POST_ID_COL("live_inputs_iptv");
 }
-void live_input_iptv_del(served::response &res, const served::request &req)
+void live_inputs_iptv_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_input_iptv");
+    DEL_ID_COL("live_inputs_iptv");
 }
-void live_input_iptv_get(served::response &res, const served::request &req)
+void live_inputs_iptv_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_input_iptv");
+    GET_ID_COL("live_inputs_iptv");
 }
-void live_input_virtual_net_put(served::response &res, const served::request &req)
+void live_inputs_virtual_net_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_input_virtual_net");
+    PUT_ID_COL("live_inputs_virtual_net");
 }
-void live_input_virtual_net_post(served::response &res, const served::request &req)
+void live_inputs_virtual_net_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_input_virtual_net");
+    POST_ID_COL("live_inputs_virtual_net");
 }
-void live_input_virtual_net_del(served::response &res, const served::request &req)
+void live_inputs_virtual_net_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_input_virtual_net");
+    DEL_ID_COL("live_inputs_virtual_net");
 }
-void live_input_virtual_net_get(served::response &res, const served::request &req)
+void live_inputs_virtual_net_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_input_virtual_net");
+    GET_ID_COL("live_inputs_virtual_net");
 }
-void live_input_virtual_dvb_put(served::response &res, const served::request &req)
+void live_inputs_virtual_dvb_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_input_virtual_dvb");
+    PUT_ID_COL("live_inputs_virtual_dvb");
 }
-void live_input_virtual_dvb_post(served::response &res, const served::request &req)
+void live_inputs_virtual_dvb_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_input_virtual_dvb");
+    POST_ID_COL("live_inputs_virtual_dvb");
 }
-void live_input_virtual_dvb_del(served::response &res, const served::request &req)
+void live_inputs_virtual_dvb_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_input_virtual_dvb");
+    DEL_ID_COL("live_inputs_virtual_dvb");
 }
-void live_input_virtual_dvb_get(served::response &res, const served::request &req)
+void live_inputs_virtual_dvb_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_input_virtual_dvb");
+    GET_ID_COL("live_inputs_virtual_dvb");
 }
-void live_transcode_put(served::response &res, const served::request &req)
+void live_inputs_transcode_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_transcode");
+    PUT_ID_COL("live_inputs_transcode");
 }
-void live_transcode_post(served::response &res, const served::request &req)
+void live_inputs_transcode_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_transcode");
+    POST_ID_COL("live_inputs_transcode");
 }
-void live_transcode_del(served::response &res, const served::request &req)
+void live_inputs_transcode_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_transcode");
+    DEL_ID_COL("live_inputs_transcode");
 }
-void live_transcode_get(served::response &res, const served::request &req)
+void live_inputs_transcode_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_transcode");
+    GET_ID_COL("live_inputs_transcode");
+}
+void live_transcode_profile_put(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    PUT_ID_COL("live_transcode_profile");
+}
+void live_transcode_profile_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("live_transcode_profile");
+}
+void live_transcode_profile_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("live_transcode_profile");
+}
+void live_transcode_profile_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID_COL("live_transcode_profile");
 }
 void live_cccam_put(served::response &res, const served::request &req)
 {
