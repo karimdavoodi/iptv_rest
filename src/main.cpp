@@ -75,7 +75,19 @@ int main(int argc, char *argv[])
             
             mux.use_before([](served::response& res, served::request& req){
                     // Run before any request;
-                    res.set_header("Access-Control-Allow-Origin","*");
+                    vector<string> valid_origins = {
+                    "http://localhost:8000",
+                    "https://amazing-gates-315ab5.netlify.app"
+                    };
+                    auto origin =  req.header("Origin");
+                    for(auto& orig : valid_origins){
+                        if(origin.find(orig) != string::npos){
+                            res.set_header("Access-Control-Allow-Origin", origin);
+                            res.set_header("Access-Control-Allow-Credentials","true");
+                            break;
+                        }
+                    }
+
                     });
 
             served::net::server server("0.0.0.0", PORT, mux);
