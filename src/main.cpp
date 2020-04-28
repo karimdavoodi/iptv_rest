@@ -42,7 +42,7 @@ void init_log(){
 #ifndef _DEBUG
     boost::log::core::get()->set_filter
     (
-        boost::log::trivial::severity >= boost::log::trivial::info
+        boost::log::trivial::severity >= boost::log::trivial::trace
     );
 #endif
 }
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
             BOOST_LOG_TRIVIAL(info) << "Init Routes";
 
             #include "routes.hpp"
-
+            
             mux.handle("/help").get(mux.get_endpoint_list_handler_YAML());
             BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/help";
             
@@ -84,6 +84,12 @@ int main(int argc, char *argv[])
                         if(origin.find(orig) != string::npos){
                             res.set_header("Access-Control-Allow-Origin", origin);
                             res.set_header("Access-Control-Allow-Credentials","true");
+                            res.set_header("Access-Control-Allow-Methods",
+                                    "GET, POST, PUT, DELETE, OPTIONS");
+
+                            res.set_header("Access-Control-Allow-Headers",
+                                    "accept, authorization, cache-control, content-type, dnt, if-modified-since, keep-alive, origin, user-agent, x-requested-with");
+ 
                             break;
                         }
                     }

@@ -27,7 +27,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     )
 
 target_link_libraries(${PROJECT_NAME} 
-     /usr/local/lib/libserved.a
+    -lserved
     -lpthread
     -ldl
     )

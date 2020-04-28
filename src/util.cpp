@@ -25,6 +25,7 @@ void test(served::response &res, const served::request &req)
 bool get_id(const served::request &req, std::string& id)
 {
     id = req.params.get("id");
+    std::cout << "id:"<< id << std::endl;
     if(id.size() < 1) return false;
     return true;
 }
@@ -32,6 +33,7 @@ bool get_id(const served::request &req, int& id)
 {
     id = 0;
     auto sid = req.params.get("id");
+    std::cout << "id:"<< sid << std::endl;
     if(sid.size() < 1) return false;
     for(auto c : sid)
         if(!isdigit(c)) return false;
