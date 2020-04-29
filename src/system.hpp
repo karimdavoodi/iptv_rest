@@ -5,11 +5,6 @@ void system_location_get(served::response &, const served::request &);
 void system_location_put(served::response &, const served::request &);
 void system_location_post(served::response &, const served::request &);
 
-void system_system_logo_get(served::response &, const served::request &);
-void system_system_logo_put(served::response &, const served::request &);
-void system_subtitle_logo_get(served::response &, const served::request &);
-void system_subtitle_logo_put(served::response &, const served::request &);
-
 void system_network_get(served::response &, const served::request &);
 void system_network_put(served::response &, const served::request &);
 

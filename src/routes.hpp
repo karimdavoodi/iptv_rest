@@ -2,6 +2,7 @@
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/* ";
 mux.handle("/launcher/default")
         .get(launcher_default_get)
+        .put(launcher_default_post)
         .post(launcher_default_post);
 mux.handle("/launcher/components/info/{id}")
         .get(launcher_components_info_get)
@@ -115,14 +116,14 @@ mux.handle("/live/inputs/virtual_net/{id}")
         .put (live_inputs_virtual_net_put)
         .post(live_inputs_virtual_net_post)
         .del (live_inputs_virtual_net_del);
-mux.handle("/live/inputs/virtaul_net")
+mux.handle("/live/inputs/virtual_net")
         .get (live_inputs_virtual_net_get);
 mux.handle("/live/inputs/virtual_dvb/{id}")
         .get (live_inputs_virtual_dvb_get)
         .put (live_inputs_virtual_dvb_put)
         .post(live_inputs_virtual_dvb_post)
         .del (live_inputs_virtual_dvb_del);
-mux.handle("/live/inputs/virtaul_dvb")
+mux.handle("/live/inputs/virtual_dvb")
         .get (live_inputs_virtual_dvb_get);
 mux.handle("/live/inputs/transcode/{id}")
         .get (live_inputs_transcode_get)

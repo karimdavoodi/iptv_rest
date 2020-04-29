@@ -1,7 +1,9 @@
+#include <chrono>
 #include <cstdlib>
 #include <exception>
 #include <iostream>
 #include <fstream>
+#include <served/methods.hpp>
 #include <served/request.hpp>
 #include <served/response.hpp>
 #include <served/served.hpp>
@@ -12,6 +14,8 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
+#include <served/status.hpp>
+#include <thread>
 #include "auth.hpp"
 #include "includes.hpp"
 #include "mongo_driver.hpp"
@@ -42,7 +46,7 @@ void init_log(){
 #ifndef _DEBUG
     boost::log::core::get()->set_filter
     (
-        boost::log::trivial::severity >= boost::log::trivial::trace
+        boost::log::trivial::severity >= boost::log::trivial::info
     );
 #endif
 }
@@ -71,10 +75,23 @@ int main(int argc, char *argv[])
             #include "routes.hpp"
             
             mux.handle("/help").get(mux.get_endpoint_list_handler_YAML());
-            BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/help";
             
+            BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/help";
+            mux.use_after([](served::response& res, served::request& req){});
             mux.use_before([](served::response& res, served::request& req){
-                    // Run before any request;
+                    if(req.method() != served::method::OPTIONS){
+                        res.set_status(served::status_4XX::NOT_FOUND);  
+                    }else{
+                        res.set_header("Allow", "GET, POST, PUT, DELETE");
+                    }
+                    // Date header
+                    auto now1 = std::chrono::system_clock::now();
+                    auto in_time_t = std::chrono::system_clock::to_time_t(now1);
+                    std::stringstream ss;
+                    ss << std::put_time(std::localtime(&in_time_t), 
+                            "%a, %d %b %Y %H:%M:%S %Z");
+                    res.set_header("Date", ss.str());
+                    // CORS header
                     vector<string> valid_origins = {
                     "http://localhost:8000",
                     "https://amazing-gates-315ab5.netlify.app"
@@ -93,7 +110,6 @@ int main(int argc, char *argv[])
                             break;
                         }
                     }
-
                     });
 
             served::net::server server("0.0.0.0", PORT, mux);
@@ -104,6 +120,7 @@ int main(int argc, char *argv[])
         }catch(...){
             BOOST_LOG_TRIVIAL(info) << "unknown exception\n";
         }
+        std::this_thread::sleep_for(std::chrono::seconds(5));
     }
     return 0;
 

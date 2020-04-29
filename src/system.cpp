@@ -2,6 +2,7 @@
 #include "mongo_driver.hpp"
 #include "util.hpp"
 #include "system.hpp"
+#include <served/status.hpp>
 
 void system_location_get(served::response &res, const served::request &req)
 {
@@ -12,27 +13,6 @@ void system_location_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     PUT_ID1_COL("system_location");
-}
-
-void system_system_logo_get(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    SEND_FILE(ICON_PATH, "system_logo", PNG);	
-}
-void system_system_logo_put(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    RECV_FILE(ICON_PATH, "system_logo", PNG);	
-}
-void system_subtitle_logo_get(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    SEND_FILE(ICON_PATH, "subtitle_logo", PNG);	
-}
-void system_subtitle_logo_put(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    RECV_FILE(ICON_PATH, "subtitle_logo", PNG);	
 }
 
 void system_network_get(served::response &res, const served::request &req)
@@ -176,21 +156,25 @@ void system_firmware_put(served::response &res, const served::request &req)
 void system_logout_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    res.set_status(served::status_2XX::OK);
     // TODO : do nothing...
 }
 void system_restart_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    res.set_status(served::status_2XX::OK);
     // TODO : restart system
 }
 void system_stop_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    res.set_status(served::status_2XX::OK);
     // TODO : stop system
 }
 void system_reboot_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    res.set_status(served::status_2XX::OK);
     // TODO : reboot system
 }
 
