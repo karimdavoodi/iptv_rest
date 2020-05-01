@@ -3,9 +3,43 @@
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
 #include <sstream>
-
+#include "mongo_driver.hpp"
 #include "util.hpp"
 
+bool check_auth(const served::request &req)
+{
+    auto auth = req.header("Authorization").substr(6); // remove "Base "
+    auto text = base64_decode(auth);
+    auto pos = text.find(':');
+    if(pos == std::string::npos) return false;
+    auto user = text.substr(0,pos);
+    auto pass = text.substr(pos+1);
+    // FIXME: remove this code:
+    if(user == "test" && pass == "test") return true;
+    auto res  = Mongo::find("system_users",
+            "{ \"user\": \"" + user + "\", \"pass\":\"" + pass + "\" }");
+    if(res.size() < 1) return false;
+    auto j = json::parse(res);
+    if( j.count("_id") == 0 ) return false;
+    // check user expire
+    auto now = std::chrono::system_clock::now().time_since_epoch().count()/1000000000L;
+    std::cout << "now " << now << " end " << j["end"].get<int>() << std::endl;
+    if(j["end"] < now) return false;
+    // check permissions
+    auto path = req.url().path();
+    if(path == "system/user_me") return true;
+    for(auto& p : j["permission"].items()){
+        if(path == p.key()){
+            auto req_method = served::method_to_string(req.method());
+            for(auto& m : p.value()){
+                if(req_method == m){
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 void test(served::response &res, const served::request &req)
 {
     std::stringstream s;
@@ -109,4 +143,89 @@ std::pair<int,int> req_range(const served::request &req)
     }
     return std::make_pair(s, e);
 }
+/*
+std::string b64decode(const char* data, const size_t len)
+{
+    unsigned char* p = (unsigned char*)data;
+    int pad = len > 0 && (len % 4 || p[len - 1] == '=');
+    const size_t L = ((len + 3) / 4 - pad) * 4;
+    std::string str(L / 4 * 3 + pad, '\0');
+    static const int B64index[256] = { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+        0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 62, 63, 62, 62, 63, 52, 53, 54, 55,
+        56, 57, 58, 59, 60, 61,  0,  0,  0,  0,  0,  0,  0,  0,  1,  2,  3,  4,  5,  6,
+        7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,  0,
+        0,  0,  0, 63,  0, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+        41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
 
+
+    for (size_t i = 0, j = 0; i < L; i += 4)
+    {
+        int n = B64index[p[i]] << 18 | B64index[p[i + 1]] << 12 | B64index[p[i + 2]] << 6 | B64index[p[i + 3]];
+        str[j++] = n >> 16;
+        str[j++] = n >> 8 & 0xFF;
+        str[j++] = n & 0xFF;
+    }
+    if (pad)
+    {
+        int n = B64index[p[L]] << 18 | B64index[p[L + 1]] << 12;
+        str[str.size() - 1] = n >> 16;
+
+        if (len > L + 2 && p[L + 2] != '=')
+        {
+            n |= B64index[p[L + 2]] << 6;
+            str.push_back(n >> 8 & 0xFF);
+        }
+    }
+    return str;
+}
+*/
+static const std::string base64_chars =
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
+static inline bool is_base64(unsigned char c) {
+  return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+std::string base64_decode(std::string const& encoded_string) {
+  int in_len = encoded_string.size();
+  int i = 0;
+  int j = 0;
+  int in_ = 0;
+  unsigned char char_array_4[4], char_array_3[3];
+  std::string ret;
+
+  while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
+    char_array_4[i++] = encoded_string[in_]; in_++;
+    if (i ==4) {
+      for (i = 0; i <4; i++)
+        char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+      char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+      char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+      char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+      for (i = 0; (i < 3); i++)
+        ret += char_array_3[i];
+      i = 0;
+    }
+  }
+
+  if (i) {
+    for (j = i; j <4; j++)
+      char_array_4[j] = 0;
+
+    for (j = 0; j <4; j++)
+      char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+    char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+    for (j = 0; (j < i - 1); j++) ret += char_array_3[j];
+  }
+
+  return ret;
+}

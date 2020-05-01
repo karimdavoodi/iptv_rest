@@ -12,6 +12,7 @@ def check_status_code(res):
 
 def test_url(url, jdata, rdata, param, methods, no_id_get = True):
     #print url
+    """
     if jdata != None:
         if "put" in methods:
             res = requests.put(base + url,
@@ -49,6 +50,7 @@ def test_url(url, jdata, rdata, param, methods, no_id_get = True):
                     params = param,
                     data = rdata)
             check_status_code(res)
+    """
     if "get" in methods:
         res = requests.get(base + url,
                 auth = defAuth,

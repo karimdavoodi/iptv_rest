@@ -83,6 +83,10 @@ mux.handle("/live/tuners/output")
         .put (live_tuners_output_put)
         .post(live_tuners_output_post)
         .del (live_tuners_output_del);
+mux.handle("/live/inputs/types/{id}")
+        .get (live_inputs_types_get);
+mux.handle("/live/inputs/types")
+        .get (live_inputs_types_get);
 mux.handle("/live/inputs/dvb/{id}")
         .get (live_inputs_dvb_get)
         .put (live_inputs_dvb_put)
@@ -224,7 +228,7 @@ mux.handle("/system/users/{id}")
             .post(system_users_post);
 mux.handle("/system/users")
             .get (system_users_get);
-mux.handle("/system/users/me")
+mux.handle("/system/users_me")
             .get (system_users_me_get);
 mux.handle("/system/pms")
             .get (system_pms_get)
@@ -276,24 +280,24 @@ mux.handle("/storage/setting")
             .put (storage_setting_put)
             .post(storage_setting_put);
 mux.handle("/storage/contents/types/{id}")
-            .get (storage_contents_types_get)
-            .put (storage_contents_types_put)
-            .del (storage_contents_types_del)
-            .post(storage_contents_types_post);
+            .get (storage_contents_types_get);
+//            .put (storage_contents_types_put)
+//            .del (storage_contents_types_del)
+//            .post(storage_contents_types_post);
 mux.handle("/storage/contents/types")
             .get (storage_contents_types_get);
 mux.handle("/storage/contents/formats/{id}")
-            .get (storage_contents_formats_get)
-            .put (storage_contents_formats_put)
-            .del (storage_contents_formats_del)
-            .post(storage_contents_formats_post);
+            .get (storage_contents_formats_get);
+//            .put (storage_contents_formats_put)
+//            .del (storage_contents_formats_del)
+//            .post(storage_contents_formats_post);
 mux.handle("/storage/contents/formats")
             .get (storage_contents_formats_get);
 mux.handle("/storage/contents/platforms/{id}")
-            .get (storage_platforms_get)
-            .put (storage_platforms_put)
-            .del (storage_platforms_del)
-            .post(storage_platforms_post);
+            .get (storage_platforms_get);
+//            .put (storage_platforms_put)
+//            .del (storage_platforms_del)
+//            .post(storage_platforms_post);
 mux.handle("/storage/contents/platforms")
             .get (storage_platforms_get);
 mux.handle("/storage/contents/categories/{id}")

@@ -171,8 +171,8 @@ std::string Mongo::find_id_range(std::string col, int begin, int end)
         }
         if(result_str.size() > 0)
             result_str.pop_back();
-        result_str =  "{ total: " + std::to_string(total) + 
-                         ", content:[" + result_str + "] }";
+        result_str =  "{ \"total\": " + std::to_string(total) + 
+                         ", \"content\":[" + result_str + "] }";
         return result_str;
 
     }catch(std::exception& e){
@@ -206,8 +206,8 @@ std::string Mongo::find_time_id_range(std::string col,
         }
         if(result_str.size() > 0)
             result_str.pop_back();
-        result_str =  "{ total: " + std::to_string(total) + 
-                         ", content:[" + result_str + "] }";
+        result_str =  "{ \"total\": " + std::to_string(total) + 
+                         ", \"content\":[" + result_str + "] }";
         return result_str;
 
     }catch(std::exception& e){

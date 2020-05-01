@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <fstream>
 #include <iterator>
-#include <nlohmann/json.hpp>
 #include <utility>
 #include <boost/filesystem.hpp>
 #include "auth.hpp"

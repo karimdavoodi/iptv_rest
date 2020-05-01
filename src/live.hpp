@@ -15,6 +15,8 @@ void live_tuners_output_del(served::response &, const served::request &);
 void live_tuners_output_put(served::response &, const served::request &);
 void live_tuners_output_post(served::response &, const served::request &);
 
+void live_inputs_types_get(served::response &, const served::request &);
+
 void live_inputs_dvb_get(served::response &, const served::request &);
 void live_inputs_dvb_del(served::response &, const served::request &);
 void live_inputs_dvb_put(served::response &, const served::request &);

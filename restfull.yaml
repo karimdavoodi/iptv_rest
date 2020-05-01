@@ -282,7 +282,7 @@ Authentication:  Basic Auth
                     "active": boolean,
                     "online": boolean,
                     "lastActivity": string,
-                    "lastLogin": epochtime
+                    "lastActivityTime": epochtime
                     },
                 ]
             }
@@ -325,7 +325,7 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
-                    "user": string,
+                    "user": int,
                     "activity": string  
                     },
                 ]
@@ -364,6 +364,7 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
+                    "channel": string,
                     "activity": string
                     },
                 ]
@@ -375,7 +376,7 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    [media=string]
+                    [content=int]
         ResponseBody: 
             {
                 "total":int,
@@ -383,6 +384,7 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
+                    "content": int,
                     "activity": string
                     },
                 ]
@@ -394,7 +396,7 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    [component=string]
+                    [component=int]
         ResponseBody: 
             {
                 "total":int,
@@ -402,6 +404,7 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
+                    "component": int,
                     "activity": string
                     },
                 ]
@@ -413,7 +416,7 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    [user=string]
+                    [user=int]
         ResponseBody: 
             {
                 "total":int,
@@ -421,6 +424,7 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
+                    "user": int,
                     "activity": string
                     },
                 ]
@@ -481,7 +485,7 @@ Authentication:  Basic Auth
             }
 ### System Users Profile 
         Description: Get information of current user
-        Path: /system/users/me
+        Path: /system/users_me
         Method: GET
         ResponseBody: same as 'PUT' RequestBody 
 
@@ -1275,7 +1279,8 @@ Authentication:  Basic Auth
             {
                 "_id": int,
                 "active": boolean,
-                "input": "DVBS1",      # DVBT, DVBS, NET, HDD, IPTV 
+                "inputId": int,   
+                "inputType": int,   
                 "name": string, 
                 "logo": int,
                 "permission": int,

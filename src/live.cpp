@@ -1,4 +1,3 @@
-#include <nlohmann/json.hpp>
 #include "mongo_driver.hpp"
 #include "hardware.hpp"
 #include "auth.hpp"
@@ -75,6 +74,11 @@ void live_tuners_output_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     GET_ID1_COL("live_tuners_output");
+}
+void live_inputs_types_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID_COL("live_inputs_types");
 }
 void live_inputs_dvb_put(served::response &res, const served::request &req)
 {

@@ -1,7 +1,7 @@
 #pragma once
-#include <nlohmann/json.hpp>
 #include <served/served.hpp>
 #include <boost/filesystem.hpp>
+#include "../third_party/json.hpp"
 #define PNG        ".png"
 #define ZIP        ".zip"
 #define ICON_PATH  "data/icons/"
@@ -10,7 +10,7 @@
 #define CHECK_AUTH                                                  \
     do{                                                             \
        BOOST_LOG_TRIVIAL(trace) << __func__ ;                       \
-       if(req.header("Authorization") != "Basic dGVzdDp0ZXN0"){     \
+       if(check_auth(req) == false){                                \
             res.set_status(401);                                    \
             BOOST_LOG_TRIVIAL(trace) << "Feild Auth";               \
             return;                                                 \

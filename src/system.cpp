@@ -2,6 +2,8 @@
 #include "mongo_driver.hpp"
 #include "util.hpp"
 #include "system.hpp"
+#include <chrono>
+#include <served/methods.hpp>
 #include <served/status.hpp>
 
 void system_location_get(served::response &res, const served::request &req)
@@ -45,14 +47,16 @@ void system_users_del(served::response &res, const served::request &req)
 	CHECK_AUTH;
     DEL_ID_COL("system_users");
 }
-
 void system_users_me_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    auto auth = req.header("Authorization");
-    // TODO : get user from Base64 ... by boost/beast/core/detail/base64.hpp 
-    std::string user = "test";
+    auto auth = req.header("Authorization").substr(6); // remove "Base "
+    auto text = base64_decode(auth);
+    auto pos = text.find(':');
+    if(pos == std::string::npos) return;
+    auto user = text.substr(0,pos);
     res << Mongo::find("system_users","{\"user\": \"" + user + "\"}");
+    res.set_status(200);                                        \
 }
 
 void system_pms_get(served::response &res, const served::request &req)
