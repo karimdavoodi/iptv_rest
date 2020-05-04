@@ -13,13 +13,6 @@ add_definitions(
                  -g
                  )
 
-#Check Json Include file
-include(CheckIncludeFile)
-check_include_file("/usr/include/nlohmann/json.hpp" HAVE_JSON_HPP)
-if(NOT ${HAVE_JSON_HPP})
-  message( FATAL_ERROR "json.hpp Not Found, Please install nlohmann" )
-endif()
-
 aux_source_directory(src SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 target_include_directories(${PROJECT_NAME} PUBLIC 

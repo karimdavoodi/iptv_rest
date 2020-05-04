@@ -2,10 +2,6 @@
 #include <served/served.hpp>
 #include <boost/filesystem.hpp>
 #include "../third_party/json.hpp"
-#define PNG        ".png"
-#define ZIP        ".zip"
-#define ICON_PATH  "data/icons/"
-#define MEDIA_PATH "data/media/"
 
 #define CHECK_AUTH                                                  \
     do{                                                             \
@@ -38,11 +34,16 @@
         }                                                       \
     }while(false)  
 
-#define CHECK_BODY_ID                                           \
+#define CHECK_BODY                                              \
     do{                                                         \
         if(req.body().size() == 0){                             \
             ERRORSEND(res, 400, 1001, "No input!");             \
         }                                                       \
+    }while(false)  
+
+#define CHECK_BODY_ID                                           \
+    do{                                                         \
+        CHECK_BODY;                                             \
         auto j = json::parse(req.body());                       \
         if( j.count("_id") == 0 ){                              \
             ERRORSEND(res, 400, 1002, "Invalid input JSON!");   \
@@ -59,11 +60,10 @@
         }                                                           \
         if(Mongo::exists_id(col, id)){                              \
             Mongo::replace_by_id(col, id, req.body());              \
-            BOOST_LOG_TRIVIAL(trace) << "Warning: replace id "<< id << " in " << col;  \
+            res.set_status(200);                                        \
         }else{                                                      \
-            Mongo::insert(col, req.body());                         \
+            ERRORSEND(res, 400, 1003, "Exists, not insert!");       \
         }                                                           \
-        res.set_status(200);                                        \
     }while(false)                       
 
 #define PUT_ID1_COL(col)                                            \
@@ -71,38 +71,31 @@
         CHECK_BODY_ID;                                              \
         if(Mongo::exists_id(col, 1)){                               \
             Mongo::replace_by_id(col, 1, req.body());               \
-            BOOST_LOG_TRIVIAL(trace) << "Warning: replace id 1 in " << col;  \
+            res.set_status(200);                                    \
         }else{                                                      \
-            Mongo::insert(col, req.body());                         \
+            ERRORSEND(res, 400, 1003, "Exists, not insert!");       \
         }                                                           \
-        res.set_status(200);                                        \
     }while(false)                       
 
 #define POST_ID_COL(col)                                            \
     do{                                                             \
-        CHECK_BODY_ID;                                               \
-        int id = get_id_from_body_and_url(req);                     \
-        if(id < 0 ){                                                \
-            ERRORSEND(res, 400, 1002, "Invalid id!");               \
-        }                                                           \
-        if(!Mongo::exists_id(col, id)){                             \
-            Mongo::insert(col, req.body());                         \
-            BOOST_LOG_TRIVIAL(trace) << "Warning: insert id " << id << " in " << col;  \
-        }else{                                                      \
-            Mongo::replace_by_id(col, id, req.body());              \
-        }                                                           \
+        CHECK_BODY;                                                 \
+        auto j   = json::parse(req.body());                         \
+        j["_id"] = Mongo::get_uniq_id();                            \
+        Mongo::insert(col, j.dump());                               \
         res.set_status(200);                                        \
-    }while(false)                       
+    }while(false)
 
 #define POST_ID1_COL(col)                                           \
     do{                                                             \
-        CHECK_BODY_ID;                                              \
-        if(!Mongo::exists_id(col, 1)){                              \
-            Mongo::insert(col, req.body());                         \
-            BOOST_LOG_TRIVIAL(trace) << "Warning: insert id 1 in " << col;  \
+        CHECK_BODY;                                                 \
+        auto j   = json::parse(req.body());                         \
+        j["_id"] = 1;                                               \
+        if(Mongo::exists_id(col, 1)){                               \
+            Mongo::replace_by_id(col, 1, j.dump());                 \
         }else{                                                      \
-            Mongo::replace_by_id(col, 1, req.body());               \
-        }                                                           \
+            Mongo::insert(col, j.dump());                               \
+        }                                                      \
         res.set_status(200);                                        \
     }while(false)                       
 
@@ -174,66 +167,32 @@
         std::string fname = std::string(path) +                     \
                             prefix + "_" + id + postfix;          
 
-#define SEND_ID_FILE(path, prefix, postfix)                         \
-    do{                                                             \
-        FILE_NAME_ID(path, prefix, postfix)                         \
-        if(!send_file(res, req, fname)){                            \
-            ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
-        }                                                           \
-    }while(false)          
-
-#define RECV_ID_FILE(path, prefix, postfix)                         \
-    do{                                                             \
-        FILE_NAME_ID(path, prefix, postfix)                         \
-        CHECK_PATH(path);                                           \
-        if(!save_file(res, req, fname)){                            \
-            ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
-        }                                                           \
-    }while(false)                       
-
-#define DEL_ID_FILE(path, prefix, postfix)                          \
-    do{                                                             \
-        FILE_NAME_ID(path, prefix, postfix)                         \
-        if(boost::filesystem::exists(fname)){                         \
-            boost::filesystem::remove(fname);                         \
-            res.set_status(200);                                    \
-        }else{                                                      \
-            ERRORSEND(res, 400, 1006, "File not found!");           \
-        }                                                           \
-    }while(false)                       
-
-#define FILE_NAME_ID_LANG(path, prefix, postfix)                    \
-        std::string id;                                             \
+#define GET_FILE_PATH                                               \
+        int id;                                                     \
         if(!get_id(req, id)){                                       \
             ERRORSEND(res, 400, 1003, "Invalid file id!");          \
         }                                                           \
-        std::string lang = req.query.get("language");               \
-        if(lang.size() < 1){                                        \
-            ERRORSEND(res, 400, 1003, "Invalid lang id!");          \
-        }                                                           \
-        std::string fname = std::string(path) +                     \
-                prefix + "_" + id + "_" + lang + postfix;             
+        std::string fname = get_content_path(req, id);                   
 
-#define SEND_ID_LANG_FILE(path, prefix, postfix)                    \
+#define SEND_ID_FILE                                                \
     do{                                                             \
-        FILE_NAME_ID_LANG(path, prefix, postfix)                    \
+        GET_FILE_PATH                                               \
         if(!send_file(res, req, fname)){                            \
             ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
         }                                                           \
     }while(false)          
 
-#define RECV_ID_LANG_FILE(path, prefix, postfix)                    \
+#define RECV_ID_FILE                                                \
     do{                                                             \
-        FILE_NAME_ID_LANG(path, prefix, postfix)                    \
-        CHECK_PATH(path);                                           \
+        GET_FILE_PATH                                               \
         if(!save_file(res, req, fname)){                            \
             ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
         }                                                           \
     }while(false)                       
 
-#define DEL_ID_LANG_FILE(path, prefix, postfix)                     \
+#define DEL_ID_FILE                                                  \
     do{                                                             \
-        FILE_NAME_ID_LANG(path, prefix, postfix)                    \
+        GET_FILE_PATH                                               \
         if(boost::filesystem::exists(fname)){                         \
             boost::filesystem::remove(fname);                         \
             res.set_status(200);                                    \
@@ -242,29 +201,25 @@
         }                                                           \
     }while(false)                       
 
-#define SEND_FILE(path, prefix, postfix)                            \
+#define SEND_FILE(name)                                             \
     do{                                                             \
-        std::string fname = std::string(path) +                     \
-                prefix + postfix;                                   \
+        std::string fname = std::string(MEDIA_ROOT) + name;         \
         if(!send_file(res, req, fname)){                            \
             ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
         }                                                           \
     }while(false)          
 
-#define RECV_FILE(path, prefix, postfix)                            \
+#define RECV_FILE(name)                                             \
     do{                                                             \
-        std::string fname = std::string(path) +                     \
-                prefix + postfix;                                   \
-        CHECK_PATH(path);                                           \
+        std::string fname = std::string(MEDIA_ROOT) + name;         \
         if(!save_file(res, req, fname)){                            \
             ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
         }                                                           \
     }while(false)                       
 
-#define DEL_FILE(path, prefix, postfix)                             \
+#define DEL_FILE(name)                             \
     do{                                                             \
-        std::string fname = std::string(path) +                     \
-                prefix + postfix;                                   \
+        std::string fname = std::string(MEDIA_ROOT) + name;         \
         if(boost::filesystem::exists(fname)){                         \
             boost::filesystem::remove(fname);                         \
             res.set_status(200);                                    \

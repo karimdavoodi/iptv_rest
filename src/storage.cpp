@@ -96,62 +96,62 @@ void storage_info_del(served::response &res, const served::request &req)
 void storage_media_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    SEND_ID_FILE(MEDIA_PATH, "media", ZIP);
+    SEND_ID_FILE;
 }
 void storage_media_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(MEDIA_PATH, "media", ZIP);
+    RECV_ID_FILE;
 }
 void storage_media_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(MEDIA_PATH, "media", ZIP);
+    RECV_ID_FILE;
 }
 void storage_media_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_FILE(MEDIA_PATH, "media", ZIP);
+    DEL_ID_FILE;
 }
 void storage_poster_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    SEND_ID_FILE(MEDIA_PATH, "poster", ZIP);
+    SEND_ID_FILE;
 }
 void storage_poster_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(MEDIA_PATH, "poster", ZIP);
+    RECV_ID_FILE;
 }
 void storage_poster_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(MEDIA_PATH, "poster", ZIP);
+    RECV_ID_FILE;
 }
 void storage_poster_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_FILE(MEDIA_PATH, "poster", ZIP);
+    DEL_ID_FILE;
 }
 void storage_subtitle_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    SEND_ID_FILE(MEDIA_PATH, "subtitle", ZIP);
+    SEND_ID_FILE;
 }
 void storage_subtitle_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(MEDIA_PATH, "subtitle", ZIP);
+    RECV_ID_FILE;
 }
 void storage_subtitle_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_ID_FILE(MEDIA_PATH, "subtitle", ZIP);
+    RECV_ID_FILE;
 }
 void storage_subtitle_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_FILE(MEDIA_PATH, "subtitle", ZIP);
+    DEL_ID_FILE;
 }
 void storage_advertize_get(served::response &res, const served::request &req)
 {

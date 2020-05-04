@@ -12,7 +12,6 @@ def check_status_code(res):
 
 def test_url(url, jdata, rdata, param, methods, no_id_get = True):
     #print url
-    """
     if jdata != None:
         if "put" in methods:
             res = requests.put(base + url,
@@ -21,11 +20,13 @@ def test_url(url, jdata, rdata, param, methods, no_id_get = True):
                     json = jdata)
             check_status_code(res)
         if "post" in methods:
-            res = requests.post(base + url,
-                    auth = defAuth,
-                    params = param,
-                    json = jdata)
-            check_status_code(res)
+            if "/1" in url:
+                url = url[:-2]
+                res = requests.post(base + url,
+                        auth = defAuth,
+                        params = param,
+                        json = jdata)
+                check_status_code(res)
     else:
         #fdata = open('data/bg.png', 'rb').read()
         if "put" in methods:
@@ -50,7 +51,6 @@ def test_url(url, jdata, rdata, param, methods, no_id_get = True):
                     params = param,
                     data = rdata)
             check_status_code(res)
-    """
     if "get" in methods:
         res = requests.get(base + url,
                 auth = defAuth,

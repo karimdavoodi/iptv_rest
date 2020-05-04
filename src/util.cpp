@@ -6,6 +6,73 @@
 #include "mongo_driver.hpp"
 #include "util.hpp"
 
+void sys_restart()
+{
+// TODO: ... 
+
+}
+void sys_stop()
+{
+// TODO: ... 
+
+}
+void sys_reboot()
+{
+// TODO: ... 
+
+}
+void sys_backup()
+{
+// TODO: ... 
+}
+void sys_restore()
+{
+// TODO: ... 
+}
+void sys_update()
+{
+// TODO: ... 
+}
+std::string get_content_path(const served::request &req, int id)
+{
+    json content_info = json::parse(Mongo::find_id("storage_contents_info",id));
+    if(content_info["type"].is_null()){
+        BOOST_LOG_TRIVIAL(info) << "Invalid content info by id " << id;
+        return "";
+    }
+    json content_type = json::parse(Mongo::find_id("storage_contents_types",
+                content_info["type"]));
+    json content_format = json::parse(Mongo::find_id("storage_contents_formats",
+                content_info["format"]));
+    
+    auto req_path = req.url().path();
+    std::string perfix = "";
+    if(req_path.find("/storage/poster") != std::string::npos){
+        perfix = "poster_";
+    }else if(req_path.find("/storage/subtitle") != std::string::npos){
+        perfix = "subtitle_";
+    }
+    std::string path = std::string(MEDIA_ROOT);
+    path += content_type["name"];
+    path += "/";
+    path += perfix;
+    path += std::to_string(id);
+    path += ".";
+    path += content_format["name"];
+    BOOST_LOG_TRIVIAL(trace) << "Media Path:" << path;
+    return path;
+}
+bool is_path_equal(std::string path, std::string perm)
+{
+    if(perm.find("{id}") == std::string::npos) return path == perm;
+    auto id_pos_perm = perm.rfind('/');
+    auto id_pos_path = path.rfind('/');
+    if(id_pos_perm == std::string::npos || id_pos_path == std::string::npos )
+        return false;
+    auto path1 = path.substr(0,id_pos_path);
+    auto perm1 = perm.substr(0,id_pos_perm);
+    return path1 == perm1;
+}
 bool check_auth(const served::request &req)
 {
     auto auth = req.header("Authorization").substr(6); // remove "Base "
@@ -14,8 +81,7 @@ bool check_auth(const served::request &req)
     if(pos == std::string::npos) return false;
     auto user = text.substr(0,pos);
     auto pass = text.substr(pos+1);
-    // FIXME: remove this code:
-    if(user == "test" && pass == "test") return true;
+    //if(user == "test" && pass == "test") return true;
     auto res  = Mongo::find("system_users",
             "{ \"user\": \"" + user + "\", \"pass\":\"" + pass + "\" }");
     if(res.size() < 1) return false;
@@ -23,13 +89,12 @@ bool check_auth(const served::request &req)
     if( j.count("_id") == 0 ) return false;
     // check user expire
     auto now = std::chrono::system_clock::now().time_since_epoch().count()/1000000000L;
-    std::cout << "now " << now << " end " << j["end"].get<int>() << std::endl;
     if(j["end"] < now) return false;
     // check permissions
     auto path = req.url().path();
     if(path == "system/user_me") return true;
     for(auto& p : j["permission"].items()){
-        if(path == p.key()){
+        if(is_path_equal(path,p.key())){
             auto req_method = served::method_to_string(req.method());
             for(auto& m : p.value()){
                 if(req_method == m){

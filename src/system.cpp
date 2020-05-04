@@ -134,12 +134,14 @@ void system_weektime_del(served::response &res, const served::request &req)
 void system_backup_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    SEND_FILE(ICON_PATH, "backup", ZIP);	
+    sys_backup();
+    SEND_FILE("backup.zip");	
 }
 void system_backup_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_FILE(ICON_PATH, "backup", ZIP);	
+    RECV_FILE("backup.zip");	
+    sys_restore();
 }
 
 void system_license_get(served::response &res, const served::request &req)
@@ -150,12 +152,13 @@ void system_license_get(served::response &res, const served::request &req)
 void system_license_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_FILE(ICON_PATH, "license", ZIP);	
+    RECV_FILE("license.bin");	
 }
 void system_firmware_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_FILE(ICON_PATH, "firmware", ZIP);	
+    RECV_FILE("firmware.zip");	
+    sys_update();
 }
 void system_logout_get(served::response &res, const served::request &req)
 {
@@ -166,12 +169,14 @@ void system_logout_get(served::response &res, const served::request &req)
 void system_restart_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    sys_restart();
     res.set_status(served::status_2XX::OK);
     // TODO : restart system
 }
 void system_stop_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    sys_stop();
     res.set_status(served::status_2XX::OK);
     // TODO : stop system
 }
@@ -179,6 +184,7 @@ void system_reboot_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     res.set_status(served::status_2XX::OK);
+    sys_reboot();
     // TODO : reboot system
 }
 

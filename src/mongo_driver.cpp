@@ -3,6 +3,7 @@
 #include "bsoncxx/builder/basic/kvp.hpp"
 #include "bsoncxx/document/view.hpp"
 #include "bsoncxx/json.hpp"
+#include "mongocxx/options/find_one_and_update.hpp"
 #include <exception>
 #include <string>
 #include <utility>
@@ -16,6 +17,9 @@ using bsoncxx::builder::basic::kvp;
 
 void Mongo::fill_defauls(){
     try{
+        if(!exists_id("uniq_counter", 1)){    
+            insert("uniq_counter", "{ \"_id\":1, \"count\":1000 }");
+        }
     }catch(std::exception& e){
         std::cout << e.what() << '\n';
     }
@@ -146,6 +150,31 @@ std::string Mongo::find_id(std::string col, int id)
     }catch(std::exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
         return "";
+    }
+}
+int Mongo::get_uniq_id()
+{
+    auto dB = client[DB_NAME];     
+    std::string col = "uniq_counter"; 
+    int id = 1;
+    BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
+    try{
+        mongocxx::options::find_one_and_update options {};
+        options.return_document(mongocxx::options::return_document::k_after);
+        auto result = dB[col].find_one_and_update(
+                make_document(kvp("_id", id)),
+                make_document(kvp("$inc", make_document(kvp("count", 1)))),
+                options);
+        if (result && !(result->view().empty())) {
+            bsoncxx::document::view  v(result->view());
+            int newId = v["count"].get_int32(); 
+            return newId; 
+        }
+        return 1; 
+
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
+        return 1;
     }
 }
 std::string Mongo::find_id_range(std::string col, int begin, int end)

@@ -47,8 +47,8 @@ HTTP Code:
     
 #######################################################
 Methods:
-    PUT:    => add an item           -> Dosen't have ResponseBody
-    POST:   => change an item        -> Dosen't have ResponseBody
+    POST:   => add an item           -> Dosen't have ResponseBody
+    PUT:    => change an item        -> Dosen't have ResponseBody
     DELETE: => delete an item        -> Dosen't have RequestBody
     GET:    => get one or more items -> Dosen't have ResponseBody
 #######################################################
