@@ -82,7 +82,7 @@ bool check_auth(const served::request &req)
     auto user = text.substr(0,pos);
     auto pass = text.substr(pos+1);
     //if(user == "test" && pass == "test") return true;
-    auto res  = Mongo::find("system_users",
+    auto res  = Mongo::find_one("system_users",
             "{ \"user\": \"" + user + "\", \"pass\":\"" + pass + "\" }");
     if(res.size() < 1) return false;
     auto j = json::parse(res);

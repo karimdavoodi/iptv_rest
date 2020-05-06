@@ -27,7 +27,7 @@ class Mongo {
         static bool replace(std::string col, std::string filter, 
                                     std::string doc);
         static int get_uniq_id();
-        static std::string find(std::string col, std::string filter);
+        static std::string find_one(std::string col, std::string filter);
         static std::string find_id(std::string col, int id);
         static std::string find_id_range(std::string col, 
                                     int begin, int end);

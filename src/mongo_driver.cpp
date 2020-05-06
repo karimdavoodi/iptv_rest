@@ -126,7 +126,7 @@ bool Mongo::replace_by_id(std::string col, int id, std::string doc)
     return false;
 
 }
-std::string Mongo::find( std::string col, std::string doc)
+std::string Mongo::find_one( std::string col, std::string doc)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     auto dB = client[DB_NAME];     
@@ -135,15 +135,9 @@ std::string Mongo::find( std::string col, std::string doc)
 
     auto result = dB[col].find(bsoncxx::from_json(doc));
     std::string result_str = "";
-    int count = 0;
     for(auto&& e : result){
-        count++;
-        result_str += bsoncxx::to_json(e) + ","; 
-    }
-    if(result_str.size() == 0) return "";
-    result_str.pop_back();
-    if(count > 1){
-        result_str = "[ " + result_str + " ]";
+        result_str = bsoncxx::to_json(e); 
+        break;
     }
     return result_str;
 }
@@ -159,6 +153,7 @@ std::string Mongo::find_id(std::string col, int id)
         std::string result_str = "";
         for(auto e : result){
                 result_str = bsoncxx::to_json(e); 
+                break;
         }
         return result_str;
 

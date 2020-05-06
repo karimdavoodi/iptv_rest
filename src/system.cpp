@@ -55,7 +55,7 @@ void system_users_me_get(served::response &res, const served::request &req)
     auto pos = text.find(':');
     if(pos == std::string::npos) return;
     auto user = text.substr(0,pos);
-    res << Mongo::find("system_users","{\"user\": \"" + user + "\"}");
+    res << Mongo::find_one("system_users","{\"user\": \"" + user + "\"}");
     res.set_status(200);                                        \
 }
 
