@@ -75,7 +75,9 @@ bool is_path_equal(std::string path, std::string perm)
 }
 bool check_auth(const served::request &req)
 {
-    auto auth = req.header("Authorization").substr(6); // remove "Base "
+    auto auth_hdr = req.header("Authorization");
+    if(auth_hdr.size() < 10) return false;
+    auto auth = auth_hdr.substr(6); // remove 'Base '
     auto text = base64_decode(auth);
     auto pos = text.find(':');
     if(pos == std::string::npos) return false;
