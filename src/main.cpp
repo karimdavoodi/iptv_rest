@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
                     // CORS header
                     vector<string> valid_origins = {
                     "http://localhost:8000",
+                    "http://iptv2.moojafzar.com",
                     "https://amazing-gates-315ab5.netlify.app"
                     };
                     auto origin =  req.header("Origin");
