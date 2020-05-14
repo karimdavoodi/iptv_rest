@@ -33,6 +33,11 @@ find_package(LIBMONGOCXX REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${LIBMONGOCXX_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${LIBMONGOCXX_INCLUDE_DIRS})
 
+add_custom_target(copy ALL 
+    COMMAND cp -f iptv_* /opt/sms/bin
+    COMMENT "Copy to /opt/sms/bin"
+    DEPENDS ${PROJECT_NAME}
+    )
 # Check served packege
 
 #find_package(PkgConfig REQUIRED)

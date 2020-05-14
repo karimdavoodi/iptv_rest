@@ -1,9 +1,5 @@
 ///////////////  LAUNCHER    /////////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/* ";
-mux.handle("/launcher/default")
-        .get(launcher_default_get)
-        .put(launcher_default_post)
-        .post(launcher_default_post);
 mux.handle("/launcher/components/info/{id}")
         .get(launcher_components_info_get)
         .del(launcher_components_info_del)
@@ -162,18 +158,18 @@ mux.handle("/live/scramble/{id}")
 mux.handle("/live/scramble")
         .post(live_scramble_post)
         .get (live_scramble_get);
-mux.handle("/live/output_silver/{id}")
+mux.handle("/live/output/silver/{id}")
         .get (live_output_silver_get)
         .put (live_output_silver_put)
         .del (live_output_silver_del);
-mux.handle("/live/output_silver")
+mux.handle("/live/output/silver")
         .post(live_output_silver_post)
         .get (live_output_silver_get);
-mux.handle("/live/output_gold/{id}")
+mux.handle("/live/output/gold/{id}")
         .get (live_output_gold_get)
         .put (live_output_gold_put)
         .del (live_output_gold_del);
-mux.handle("/live/output_gold")
+mux.handle("/live/output/gold")
         .post(live_output_gold_post)
         .get (live_output_gold_get);
 mux.handle("/live/icons/{id}")

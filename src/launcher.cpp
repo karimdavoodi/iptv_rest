@@ -11,17 +11,6 @@
 #include "mongo_driver.hpp"
 #include "util.hpp"
 
-void launcher_default_get(served::response &res, const served::request &req)
-{
-    
-    CHECK_AUTH;
-    GET_ID1_COL("launcher_default");
-}
-void launcher_default_post(served::response &res, const served::request &req)
-{
-    CHECK_AUTH;
-    POST_ID1_COL("launcher_default");
-}
 void launcher_components_info_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;

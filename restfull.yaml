@@ -1,5 +1,11 @@
-
 ChangLog:
+    2.5: May 13, 2020
+        - remove launcher/default
+        - change fields of some APIs
+
+    2.4: May 11, 2020
+        - Add UI at the buttom of file
+
     2.3: April 22, 2020
         - remove network info from status
         - remove system/logo and system/subtitle_logo
@@ -443,8 +449,10 @@ Authentication:  Basic Auth
                     "name": string,
                     "logo": int,
                     "debug": int,
+                    "testUserId": int,
                     "weatherLocation": string,
-                    "pryerTime": string,
+                    "pryerTimeZone": string,
+                    "pryerContentId": int,
                     "timeZone": string,
                     "systemTime": epochtime,
                     "gamaryShift": int,
@@ -506,19 +514,19 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                 "_id": int,
+                "active": boolean,
                 "name": string,
+                "profileImage": int,
                 "locationName": string,
                 "creatorId": int, 
                 "description": string,
-                "active": boolean,
                 "start": epochtime,
-                "end": epochtime,
-                "expire": string,
-                "permission": [ 
+                "expire": epochtime,
+                "weektime": [int, ...],
+                "accessList": [ 
                     "/system/users":[GET,PUT,POST,DELET],
                     "/system/pms":[GET,PUT,POST,DELET],
                     ...
-
                 ],   
                 "user": string,
                 "pass": string,
@@ -680,12 +688,12 @@ Authentication:  Basic Auth
                 "root": string,
                 "timeShift":{
                     "maxSizeGB":int,
-                    "recordDuration": int,
+                    "maxPerChannel": int,
                     "EPGnaming": boolean,
                     },
                 "NPVR":{
                     "maxSizeGB":int,
-                    "perUser": int
+                    "maxPerUser": int
                 }
             }
         Method: PUT, POST
@@ -757,7 +765,12 @@ Authentication:  Basic Auth
                 "content":[    
                     {
                     "_id":int,
-                    "name":string,
+                    "name":{
+                        "en": string,
+                        "fa": string,
+                        "ar": string
+                        }, 
+                    "logo": int,
                     },
                  ]
             }
@@ -841,9 +854,10 @@ Authentication:  Basic Auth
                             "_id": int,
                             "content": int,
                             "name": string,
+                            "categories": [int,...], 
                             "weektime": [int, ...],
                             "expire": epochtime,
-                            "priority": int,
+                            "period": int,
                         },
                     ]
             }
@@ -1327,45 +1341,6 @@ Authentication:  Basic Auth
             }
 
 ### Launcher ############################################# 
-### Setting
-        Description: Manage of Launchers
-        Path: /launcher/default
-        Method: GET
-        ResponseBody: same as 'POST' RequestBody
-
-        Method: POST
-        RequestBody: 
-            {
-                "_id": int,
-                "launcher": int,
-                "font":{
-                    "en": string,
-                    "fa": string,
-                    "ar": string
-                    },
-                "welcome":{
-                    "en": string,
-                    "fa": string,
-                    "ar": string
-                    },
-                "user":{
-                    "en": string,
-                    "fa": string,
-                    "ar": string
-                    },
-                "language": string,
-                "welcomeClip": boolean,
-                "welcomeClipMedia": {
-                            "en":int,
-                            "fa":int,
-                            "ar":int
-                            },
-                "unitName": string,
-                "clientHotspot": string,
-                "testUserId": int,
-                "defaultChannel": int 
-            }
-        ##########################################
 ### Components 
         Description: Types of components like: LiveTV, LiveRadio, VoD, AoD, Picture, ..
         Path: /launcher/components/types
@@ -1483,7 +1458,32 @@ Authentication:  Basic Auth
                         "fa": int,
                         "ar": int
                         }
-                }
+                },
+                "font":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    },
+                "welcome":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    },
+                "user":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                    },
+                "language": string,
+                "welcomeClip": boolean,
+                "welcomeClipMedia": {
+                            "en":int,
+                            "fa":int,
+                            "ar":int
+                            },
+                "unitName": string,
+                "clientHotspot": string,
+                "defaultChannel": int 
             }
 
         Path: /launcher/setting/{id}
@@ -1553,6 +1553,7 @@ Authentication:  Basic Auth
                 "ssidPass": string,
                 "vodId": int,
                 "npvr": int,
+                "start": epochtime,
                 "expire": epochtime,
                 "stats":{
                     "timers":{},
@@ -1636,4 +1637,79 @@ Authentication:  Basic Auth
             }
         Path: /users/message/broadcast/{msg_id}
         Method: DELETE 
+
+#######################################################
+############   UI   ###################################
+#######################################################
+Status: 							
+        - Dashboard        
+        - Sensor0 (information)
+        - Sensor1 (CPU/MEM)		
+        - Sensor2 (Network)
+        - Sensor3 (Storage)
+        - Sensor4 (DVB)
+        - Sensor5 (Input Channels)
+        - Sensor6 (Output Channels Status)
+        - Sensor7 (Output Channels Screenshut)   	
+        - Sensor8 (Users)(All User Status,All Client Model)
+        - Sensor9 (Errors) 
+Reports:				 
+        - Users Activity
+        - System Activity
+        - Live Usage
+        - VOD Usage
+        - Components Usage
+        - System Users Activity
+System:
+        - Setting
+        - Network
+        - System Users
+        - Software Integration(PMS)
+        - VOD Accounts
+        - Contents:
+            - Type
+            - Format
+            - Category
+            - Platform
+            - Info
+            - Media
+            - Poster
+            - Subtitle
+        - Storage Setting
+        - Advertize
+        - Backup/Restore
+        - Update
+        - Start/Stop/Reboot/Shotdown/Logout
+Live Server:
+        - Tuners
+        - Live Inputs:
+            - DVB Channels
+            - Archive Channels
+            - Network Channels
+            - Web Channels
+            - Account Channels
+            - Virtual Network Channels
+            - Virtual DVB Channels
+        - Live Processed Inputs:
+            - Transcoding Config
+            - UnScramble Config
+            - Transcoded Channels
+            - UnScrambled Channels
+            - Scrambled Channels
+            - Mixed Channels
+        - Live Output:
+            - Silver Channels
+            - Gold Channels
+Launcher:
+        - Setting
+        - Components Type
+        - Components Info
+        - Launchers Menu
+        - Launchers Setting
+Users:
+        - Groups
+        - Users
+        - Messaging:
+            - From
+            - To
 

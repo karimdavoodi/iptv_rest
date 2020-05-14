@@ -123,6 +123,19 @@ iptv_api/fast:
 	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/build
 .PHONY : iptv_api/fast
 
+#=============================================================================
+# Target rules for targets named copy
+
+# Build rule for target.
+copy: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 copy
+.PHONY : copy
+
+# fast build rule for target.
+copy/fast:
+	$(MAKE) -f CMakeFiles/copy.dir/build.make CMakeFiles/copy.dir/build
+.PHONY : copy/fast
+
 src/hardware.o: src/hardware.cpp.o
 
 .PHONY : src/hardware.o
@@ -427,8 +440,9 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... iptv_api"
 	@echo "... edit_cache"
+	@echo "... iptv_api"
+	@echo "... copy"
 	@echo "... src/hardware.o"
 	@echo "... src/hardware.i"
 	@echo "... src/hardware.s"

@@ -1,11 +1,14 @@
+#include <cstdlib>
 #include <exception>
 #include <fstream>
+#include <thread>
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/filesystem.hpp>
 #include <sstream>
 #include "mongo_driver.hpp"
 #include "util.hpp"
-
+using namespace std;
 void sys_restart()
 {
 // TODO: ... 
@@ -33,41 +36,67 @@ void sys_update()
 {
 // TODO: ... 
 }
-std::string get_content_path(const served::request &req, int id)
+string get_content_path(const served::request &req, int id)
 {
-    json content_info = json::parse(Mongo::find_id("storage_contents_info",id));
-    if(content_info["type"].is_null()){
-        BOOST_LOG_TRIVIAL(info) << "Invalid content info by id " << id;
+    try{
+        string dir = "", ext = "";
+        auto req_path = req.url().path();
+        BOOST_LOG_TRIVIAL(trace) << "content path:" << req_path;
+        if(req_path.find("/storage/contents/poster") != string::npos){
+            dir = "poster/"; ext = ".jpg";
+        }else if(req_path.find("/storage/contents/subtitle") != string::npos){
+            dir = "subtitle/"; ext = ".srt";
+        }
+        if(req_path.find("/storage/contents/poster") != string::npos || 
+           req_path.find("/storage/contents/subtitle") != string::npos){
+            string path = string(MEDIA_ROOT);
+            path += dir;
+            if(!boost::filesystem::exists(path)){                   
+                boost::filesystem::create_directory(path);          
+                BOOST_LOG_TRIVIAL(trace) << "Create " << path;      
+            }                                                       
+            path += to_string(id);
+            string type = req.header("content-type");
+            path += ext;
+            BOOST_LOG_TRIVIAL(trace) << "path of poster or subtitle:" << path;
+            return path;
+        }
+        json content_info = json::parse(Mongo::find_id("storage_contents_info",id));
+        if(content_info["_id"].is_null()){
+            BOOST_LOG_TRIVIAL(info) << "Invalid content info by id " << id;
+            return "";
+        }
+        BOOST_LOG_TRIVIAL(trace) << "find content info by type " << content_info["type"];
+        json content_type = json::parse(Mongo::find_id("storage_contents_types",
+                    content_info["type"]));
+        json content_format = json::parse(Mongo::find_id("storage_contents_formats",
+                    content_info["format"]));
+        
+        if(content_type["_id"].is_null()){
+            BOOST_LOG_TRIVIAL(info) << "Invalid content info by id " << id;
+            return "";
+        }
+        string path = string(MEDIA_ROOT);
+        path += content_type["name"];
+        path += "/";
+        path += to_string(id);
+        path += ".";
+        path += content_format["name"];
+        BOOST_LOG_TRIVIAL(trace) << "Media Path:" << path;
+        return path;
+
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(error) << e.what();
         return "";
     }
-    json content_type = json::parse(Mongo::find_id("storage_contents_types",
-                content_info["type"]));
-    json content_format = json::parse(Mongo::find_id("storage_contents_formats",
-                content_info["format"]));
-    
-    auto req_path = req.url().path();
-    std::string perfix = "";
-    if(req_path.find("/storage/poster") != std::string::npos){
-        perfix = "poster_";
-    }else if(req_path.find("/storage/subtitle") != std::string::npos){
-        perfix = "subtitle_";
-    }
-    std::string path = std::string(MEDIA_ROOT);
-    path += content_type["name"];
-    path += "/";
-    path += perfix;
-    path += std::to_string(id);
-    path += ".";
-    path += content_format["name"];
-    BOOST_LOG_TRIVIAL(trace) << "Media Path:" << path;
-    return path;
 }
-bool is_path_equal(std::string path, std::string perm)
+bool is_path_equal(string path, string perm)
 {
-    if(perm.find("{id}") == std::string::npos) return path == perm;
+    //BOOST_LOG_TRIVIAL(trace) << path << " ?= " << perm;
+    if(perm.find("{id}") == string::npos) return path == perm;
     auto id_pos_perm = perm.rfind('/');
     auto id_pos_path = path.rfind('/');
-    if(id_pos_perm == std::string::npos || id_pos_path == std::string::npos )
+    if(id_pos_perm == string::npos || id_pos_path == string::npos )
         return false;
     auto path1 = path.substr(0,id_pos_path);
     auto perm1 = perm.substr(0,id_pos_perm);
@@ -80,7 +109,7 @@ bool check_auth(const served::request &req)
     auto auth = auth_hdr.substr(6); // remove 'Base '
     auto text = base64_decode(auth);
     auto pos = text.find(':');
-    if(pos == std::string::npos) return false;
+    if(pos == string::npos) return false;
     auto user = text.substr(0,pos);
     auto pass = text.substr(pos+1);
     //if(user == "test" && pass == "test") return true;
@@ -90,12 +119,13 @@ bool check_auth(const served::request &req)
     auto j = json::parse(res);
     if( j.count("_id") == 0 ) return false;
     // check user expire
-    auto now = std::chrono::system_clock::now().time_since_epoch().count()/1000000000L;
-    if(j["end"] < now) return false;
+    auto now = chrono::system_clock::now().time_since_epoch().count()/1000000000L;
+    if(j["expire"] < now) return false;
     // check permissions
     auto path = req.url().path();
-    if(path == "system/user_me") return true;
-    for(auto& p : j["permission"].items()){
+    BOOST_LOG_TRIVIAL(trace) << path;
+    if(path == "/system/users_me") return true;
+    for(auto& p : j["accessList"].items()){
         if(is_path_equal(path,p.key())){
             auto req_method = served::method_to_string(req.method());
             for(auto& m : p.value()){
@@ -105,11 +135,12 @@ bool check_auth(const served::request &req)
             }
         }
     }
+    BOOST_LOG_TRIVIAL(trace) << "Un Authorized";
     return false;
 }
 void test(served::response &res, const served::request &req)
 {
-    std::stringstream s;
+    stringstream s;
     s << "Authorization:" << req.header("Authorization") << "\n";
     s << "User-Agent:" << req.header("User-Agent")  << "\n";
     s << "Content-type: "<< req.header("Content-type")  << "\n";
@@ -123,7 +154,7 @@ void test(served::response &res, const served::request &req)
     BOOST_LOG_TRIVIAL(trace) << s.str();
 
 }
-bool get_id(const served::request &req, std::string& id)
+bool get_id(const served::request &req, string& id)
 {
     id = req.params.get("id");
     if(id.size() < 1) return false;
@@ -136,7 +167,7 @@ bool get_id(const served::request &req, int& id)
     if(sid.size() < 1) return false;
     for(auto c : sid)
         if(!isdigit(c)) return false;
-    id = std::stoi(sid);
+    id = stoi(sid);
     return true;
 }
 int get_id_from_body_and_url(const served::request &req)
@@ -159,64 +190,81 @@ int get_id_from_body_and_url(const served::request &req)
         }
         return id;
 
-    }catch(std::exception& e){
+    }catch(exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception: " << e.what();
         return -1;
     }
 }
-bool save_file(served::response &res, const served::request &req, const std::string path)
+bool save_file(served::response &res, const served::request &req, const string path)
 {
+    if(path == ""){
+        BOOST_LOG_TRIVIAL(trace) << "Path is empty ";
+        return false; 
+    }
     BOOST_LOG_TRIVIAL(trace) << "Save " << path;
-    std::ofstream bg(path, std::ios_base::binary);
+    ofstream bg(path, ios_base::binary);
     if(bg.is_open()){
-        bg.write(req.body().c_str(), req.body().size());
+        bg.write(req.body().data(), req.body().size());
         bg.close(); 
         res.set_status(200);
         BOOST_LOG_TRIVIAL(trace) << "Saved: " << path;
+        auto req_path = req.url().path();
+        if(req_path.find("/storage/contents/poster") != string::npos){
+            // TODO: convert poster to JPEG by size 512x512 
+            thread t([path](){
+                    string tmp_file = "/tmp/" + to_string(rand()%1000)+".jpg";
+                    string convert = "convert " + path + " -resize 512x512 " + tmp_file;
+                    BOOST_LOG_TRIVIAL(trace) << convert;
+                    system(convert.c_str());
+                    string copy = "mv -f " + tmp_file + " " + path;
+                    system(copy.c_str());
+                    });
+            t.detach();
+        } 
         return true;
     }
     return false;
 }
-bool send_file(served::response &res, const served::request &req, const std::string path)
+bool send_file(served::response &res, const served::request &req, const string path)
 {
     BOOST_LOG_TRIVIAL(trace) << "Send " << path;
-    std::ifstream bg(path, std::ios_base::binary);
+    ifstream bg(path, ios_base::binary);
     if(bg.is_open()){
-        res.set_body(std::string(
-                    (std::istreambuf_iterator<char>(bg) ),
-                    (std::istreambuf_iterator<char>()    )
+        res.set_body(string(
+                    (istreambuf_iterator<char>(bg) ),
+                    (istreambuf_iterator<char>()    )
                     ));
         res.set_header("Content-type", "image/png");
-        //res.set_header("Content-Lenght", std::to_string(res.body_size()));
+        //res.set_header("Content-Lenght", to_string(res.body_size()));
         res.set_status(200);
         return true;
     }
     return false;
 }
-std::pair<int,int> req_range(const served::request &req)
+pair<int,int> req_range(const served::request &req)
 {
     int s = 1;
     int e = QUERY_SIZE;
 
-    std::string from = req.query.get("from");
+    string from = req.query.get("from");
     if(from.size()>0){
-        s = std::stoi(from);
+        s = stoi(from);
     }
-    std::string to = req.query.get("to");
+    string to = req.query.get("to");
     if(to.size()>0){
-        e = std::stoi(to);
+        e = stoi(to);
     }else{
         e = s + QUERY_SIZE;
     }
-    return std::make_pair(s, e);
+    return make_pair(s, e);
 }
 /*
-std::string b64decode(const char* data, const size_t len)
+string b64decode(const char* data, const size_t len)
 {
     unsigned char* p = (unsigned char*)data;
     int pad = len > 0 && (len % 4 || p[len - 1] == '=');
     const size_t L = ((len + 3) / 4 - pad) * 4;
-    std::string str(L / 4 * 3 + pad, '\0');
+    string str(L / 4 * 3 + pad, '\0');
     static const int B64index[256] = { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 62, 63, 62, 62, 63, 52, 53, 54, 55,
@@ -247,7 +295,7 @@ std::string b64decode(const char* data, const size_t len)
     return str;
 }
 */
-static const std::string base64_chars =
+static const string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
              "0123456789+/";
@@ -256,13 +304,13 @@ static inline bool is_base64(unsigned char c) {
   return (isalnum(c) || (c == '+') || (c == '/'));
 }
 
-std::string base64_decode(std::string const& encoded_string) {
+string base64_decode(string const& encoded_string) {
   int in_len = encoded_string.size();
   int i = 0;
   int j = 0;
   int in_ = 0;
   unsigned char char_array_4[4], char_array_3[3];
-  std::string ret;
+  string ret;
 
   while (in_len-- && ( encoded_string[in_] != '=') && is_base64(encoded_string[in_])) {
     char_array_4[i++] = encoded_string[in_]; in_++;
