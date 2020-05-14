@@ -134,7 +134,7 @@ std::string Mongo::find_one( std::string col, std::string doc)
     BOOST_LOG_TRIVIAL(trace) << __func__  << " in col:" << col << " doc:" << doc;
 
     auto result = dB[col].find(bsoncxx::from_json(doc));
-    std::string result_str = "";
+    std::string result_str = "{}";
     for(auto&& e : result){
         result_str = bsoncxx::to_json(e); 
         break;
@@ -150,7 +150,7 @@ std::string Mongo::find_id(std::string col, int id)
     try{
         bsoncxx::document::view  v;
         auto result = dB[col].find(make_document(kvp("_id", id)));
-        std::string result_str = "";
+        std::string result_str = "{}";
         for(auto e : result){
                 result_str = bsoncxx::to_json(e); 
                 break;
@@ -159,7 +159,7 @@ std::string Mongo::find_id(std::string col, int id)
 
     }catch(std::exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
-        return "";
+        return "{}";
     }
 }
 int Mongo::get_uniq_id()
@@ -219,7 +219,7 @@ std::string Mongo::find_id_range(std::string col, int begin, int end)
 
     }catch(std::exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
-        return "";
+        return "[]";
     }
 }
 std::string Mongo::find_time_id_range(std::string col, 
@@ -255,6 +255,6 @@ std::string Mongo::find_time_id_range(std::string col,
 
     }catch(std::exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
-        return "";
+        return "[]";
     }
 }

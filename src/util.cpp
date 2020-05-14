@@ -66,14 +66,13 @@ string get_content_path(const served::request &req, int id)
             BOOST_LOG_TRIVIAL(info) << "Invalid content info by id " << id;
             return "";
         }
-        BOOST_LOG_TRIVIAL(trace) << "find content info by type " << content_info["type"];
         json content_type = json::parse(Mongo::find_id("storage_contents_types",
                     content_info["type"]));
         json content_format = json::parse(Mongo::find_id("storage_contents_formats",
                     content_info["format"]));
         
-        if(content_type["_id"].is_null()){
-            BOOST_LOG_TRIVIAL(info) << "Invalid content info by id " << id;
+        if(content_type["_id"].is_null() || content_format["_id"].is_null()){
+            BOOST_LOG_TRIVIAL(info) << "Invalid content type or format for id: " << id;
             return "";
         }
         string path = string(MEDIA_ROOT);
@@ -201,7 +200,7 @@ bool save_file(served::response &res, const served::request &req, const string p
         BOOST_LOG_TRIVIAL(trace) << "Path is empty ";
         return false; 
     }
-    BOOST_LOG_TRIVIAL(trace) << "Save " << path;
+    BOOST_LOG_TRIVIAL(trace) << "Try to save " << path << " size " << req.body().size();
     ofstream bg(path, ios_base::binary);
     if(bg.is_open()){
         bg.write(req.body().data(), req.body().size());
