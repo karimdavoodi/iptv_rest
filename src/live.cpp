@@ -140,25 +140,25 @@ void live_inputs_network_get(served::response &res, const served::request &req)
 	CHECK_AUTH;
     GET_ID_COL("live_inputs_network");
 }
-void live_inputs_iptv_put(served::response &res, const served::request &req)
+void live_inputs_web_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_inputs_iptv");
+    PUT_ID_COL("live_inputs_web");
 }
-void live_inputs_iptv_post(served::response &res, const served::request &req)
+void live_inputs_web_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_inputs_iptv");
+    POST_ID_COL("live_inputs_web");
 }
-void live_inputs_iptv_del(served::response &res, const served::request &req)
+void live_inputs_web_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_inputs_iptv");
+    DEL_ID_COL("live_inputs_web");
 }
-void live_inputs_iptv_get(served::response &res, const served::request &req)
+void live_inputs_web_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_inputs_iptv");
+    GET_ID_COL("live_inputs_web");
 }
 void live_inputs_virtual_net_put(served::response &res, const served::request &req)
 {
@@ -260,45 +260,45 @@ void live_cccam_get(served::response &res, const served::request &req)
 	CHECK_AUTH;
     GET_ID_COL("live_cccam");
 }
-void live_unscramble_put(served::response &res, const served::request &req)
+void live_inputs_unscramble_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_unscramble");
+    PUT_ID_COL("live_inputs_unscramble");
 }
-void live_unscramble_post(served::response &res, const served::request &req)
+void live_inputs_unscramble_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_unscramble");
+    POST_ID_COL("live_inputs_unscramble");
 }
-void live_unscramble_del(served::response &res, const served::request &req)
+void live_inputs_unscramble_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_unscramble");
+    DEL_ID_COL("live_inputs_unscramble");
 }
-void live_unscramble_get(served::response &res, const served::request &req)
+void live_inputs_unscramble_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_unscramble");
+    GET_ID_COL("live_inputs_unscramble");
 }
-void live_scramble_put(served::response &res, const served::request &req)
+void live_inputs_scramble_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("live_scramble");
+    PUT_ID_COL("live_inputs_scramble");
 }
-void live_scramble_post(served::response &res, const served::request &req)
+void live_inputs_scramble_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("live_scramble");
+    POST_ID_COL("live_inputs_scramble");
 }
-void live_scramble_del(served::response &res, const served::request &req)
+void live_inputs_scramble_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    DEL_ID_COL("live_scramble");
+    DEL_ID_COL("live_inputs_scramble");
 }
-void live_scramble_get(served::response &res, const served::request &req)
+void live_inputs_scramble_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("live_scramble");
+    GET_ID_COL("live_inputs_scramble");
 }
 void live_output_silver_put(served::response &res, const served::request &req)
 {

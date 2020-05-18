@@ -1,4 +1,8 @@
 ChangLog:
+    2.6: May 18, 2020
+        - change live/inputs/iptv to live/inputs/web
+        - change two path names
+
     2.5: May 13, 2020
         - remove launcher/default
         - change fields of some APIs
@@ -1065,7 +1069,7 @@ Authentication:  Basic Auth
 
 ### Account Channels
         Description: Manage of IPTV account channels
-        Path: /live/inputs/iptv
+        Path: /live/inputs/web
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -1076,13 +1080,12 @@ Authentication:  Basic Auth
                  ]
             }
 
-        Path: /live/inputs/iptv/{id}
+        Path: /live/inputs/web/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
                 "name": string,
-                "iptv": string,
                 "url": string, 
                 "active": boolean
             }
@@ -1225,7 +1228,7 @@ Authentication:  Basic Auth
 
 
         Description: Manage of input scrambled channels
-        Path: /live/unscramble
+        Path: /live/inputs/unscramble
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -1236,13 +1239,14 @@ Authentication:  Basic Auth
                  ]
             }
 
-        Path: /live/unscramble/{id}
+        Path: /live/inputs/unscramble/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
                 "active": boolean,
-                "channel": int, 
+                "input": int, 
+                "inputType": int, 
                 "bssKey": string,
                 "cccam": int
             }
@@ -1250,7 +1254,7 @@ Authentication:  Basic Auth
 
 ### Scrambling   
         Description: Manage of channel scrambling
-        Path: /live/scramble
+        Path: /live/inputs/scramble
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -1261,13 +1265,14 @@ Authentication:  Basic Auth
                  ]
             }
 
-        Path: /live/scramble/{id}
+        Path: /live/inputs/scramble/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
                 "active": boolean,
-                "channel": string, 
+                "input": int, 
+                "inputType": int, 
                 "crypto": string,
                 "key": string 
             }
@@ -1384,6 +1389,8 @@ Authentication:  Basic Auth
                     "ar": string
                     }, 
                 "logo": int,
+                "url":string,
+                "platform":[int,...],
                 "category":[int, ...]
             }
 

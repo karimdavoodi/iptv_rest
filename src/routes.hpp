@@ -102,13 +102,13 @@ mux.handle("/live/inputs/network/{id}")
 mux.handle("/live/inputs/network")
         .post(live_inputs_network_post)
         .get (live_inputs_network_get);
-mux.handle("/live/inputs/iptv/{id}")
-        .get (live_inputs_iptv_get)
-        .put (live_inputs_iptv_put)
-        .del (live_inputs_iptv_del);
-mux.handle("/live/inputs/iptv")
-        .post(live_inputs_iptv_post)
-        .get (live_inputs_iptv_get);
+mux.handle("/live/inputs/web/{id}")
+        .get (live_inputs_web_get)
+        .put (live_inputs_web_put)
+        .del (live_inputs_web_del);
+mux.handle("/live/inputs/web")
+        .post(live_inputs_web_post)
+        .get (live_inputs_web_get);
 mux.handle("/live/inputs/virtual_net/{id}")
         .get (live_inputs_virtual_net_get)
         .put (live_inputs_virtual_net_put)
@@ -144,20 +144,20 @@ mux.handle("/live/cccam/{id}")
 mux.handle("/live/cccam")
         .post(live_cccam_post)
         .get (live_cccam_get);
-mux.handle("/live/unscramble/{id}")
-        .get (live_unscramble_get)
-        .put (live_unscramble_put)
-        .del (live_unscramble_del);
-mux.handle("/live/unscramble")
-        .post(live_unscramble_post)
-        .get (live_unscramble_get);
-mux.handle("/live/scramble/{id}")
-        .get (live_scramble_get)
-        .put (live_scramble_put)
-        .del (live_scramble_del);
-mux.handle("/live/scramble")
-        .post(live_scramble_post)
-        .get (live_scramble_get);
+mux.handle("/live/inputs/unscramble/{id}")
+        .get (live_inputs_unscramble_get)
+        .put (live_inputs_unscramble_put)
+        .del (live_inputs_unscramble_del);
+mux.handle("/live/inputs/unscramble")
+        .post(live_inputs_unscramble_post)
+        .get (live_inputs_unscramble_get);
+mux.handle("/live/inputs/scramble/{id}")
+        .get (live_inputs_scramble_get)
+        .put (live_inputs_scramble_put)
+        .del (live_inputs_scramble_del);
+mux.handle("/live/inputs/scramble")
+        .post(live_inputs_scramble_post)
+        .get (live_inputs_scramble_get);
 mux.handle("/live/output/silver/{id}")
         .get (live_output_silver_get)
         .put (live_output_silver_put)

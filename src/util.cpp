@@ -43,9 +43,9 @@ string get_content_path(const served::request &req, int id)
         auto req_path = req.url().path();
         BOOST_LOG_TRIVIAL(trace) << "content path:" << req_path;
         if(req_path.find("/storage/contents/poster") != string::npos){
-            dir = "poster/"; ext = ".jpg";
+            dir = "Poster/"; ext = ".jpg";
         }else if(req_path.find("/storage/contents/subtitle") != string::npos){
-            dir = "subtitle/"; ext = ".srt";
+            dir = "Subtitle/"; ext = ".srt";
         }
         if(req_path.find("/storage/contents/poster") != string::npos || 
            req_path.find("/storage/contents/subtitle") != string::npos){

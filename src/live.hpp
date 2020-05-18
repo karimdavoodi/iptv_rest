@@ -37,10 +37,10 @@ void live_inputs_transcode_del(served::response &, const served::request &);
 void live_inputs_transcode_put(served::response &, const served::request &);
 void live_inputs_transcode_post(served::response &, const served::request &);
 
-void live_inputs_iptv_get(served::response &, const served::request &);
-void live_inputs_iptv_del(served::response &, const served::request &);
-void live_inputs_iptv_put(served::response &, const served::request &);
-void live_inputs_iptv_post(served::response &, const served::request &);
+void live_inputs_web_get(served::response &, const served::request &);
+void live_inputs_web_del(served::response &, const served::request &);
+void live_inputs_web_put(served::response &, const served::request &);
+void live_inputs_web_post(served::response &, const served::request &);
 
 void live_inputs_virtual_net_get(served::response &, const served::request &);
 void live_inputs_virtual_net_del(served::response &, const served::request &);
@@ -62,15 +62,15 @@ void live_cccam_del(served::response &, const served::request &);
 void live_cccam_put(served::response &, const served::request &);
 void live_cccam_post(served::response &, const served::request &);
 
-void live_unscramble_get(served::response &, const served::request &);
-void live_unscramble_del(served::response &, const served::request &);
-void live_unscramble_put(served::response &, const served::request &);
-void live_unscramble_post(served::response &, const served::request &);
+void live_inputs_unscramble_get(served::response &, const served::request &);
+void live_inputs_unscramble_del(served::response &, const served::request &);
+void live_inputs_unscramble_put(served::response &, const served::request &);
+void live_inputs_unscramble_post(served::response &, const served::request &);
 
-void live_scramble_get(served::response &, const served::request &);
-void live_scramble_del(served::response &, const served::request &);
-void live_scramble_put(served::response &, const served::request &);
-void live_scramble_post(served::response &, const served::request &);
+void live_inputs_scramble_get(served::response &, const served::request &);
+void live_inputs_scramble_del(served::response &, const served::request &);
+void live_inputs_scramble_put(served::response &, const served::request &);
+void live_inputs_scramble_post(served::response &, const served::request &);
 
 void live_output_silver_get(served::response &, const served::request &);
 void live_output_silver_del(served::response &, const served::request &);
