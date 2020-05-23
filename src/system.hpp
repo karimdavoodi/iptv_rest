@@ -12,7 +12,13 @@ void system_users_get(served::response &, const served::request &);
 void system_users_put(served::response &, const served::request &);
 void system_users_del(served::response &, const served::request &);
 void system_users_post(served::response &, const served::request &);
+
 void system_users_me_get(served::response &, const served::request &);
+
+void system_survey_get(served::response &, const served::request &);
+void system_survey_put(served::response &, const served::request &);
+void system_survey_del(served::response &, const served::request &);
+void system_survey_post(served::response &, const served::request &);
 
 void system_pms_get(served::response &, const served::request &);
 void system_pms_put(served::response &, const served::request &);

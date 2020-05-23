@@ -58,7 +58,26 @@ void system_users_me_get(served::response &res, const served::request &req)
     res << Mongo::find_one("system_users","{\"user\": \"" + user + "\"}");
     res.set_status(200);                                        \
 }
-
+void system_survey_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_ID_COL("system_survey");
+}
+void system_survey_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    PUT_ID_COL("system_survey");
+}
+void system_survey_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("system_survey");
+}
+void system_survey_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("system_survey");
+}
 void system_pms_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;

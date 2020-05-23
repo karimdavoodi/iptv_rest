@@ -224,6 +224,13 @@ mux.handle("/system/users")
             .get (system_users_get);
 mux.handle("/system/users_me")
             .get (system_users_me_get);
+mux.handle("/system/survey/{id}")
+            .get (system_survey_get)
+            .put (system_survey_put)
+            .del (system_survey_del);
+mux.handle("/system/survey")
+            .post(system_survey_post)
+            .get (system_survey_get);
 mux.handle("/system/pms")
             .get (system_pms_get)
             .put (system_pms_put)

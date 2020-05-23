@@ -465,6 +465,12 @@ Authentication:  Basic Auth
                         "isLeft": boolean,
                         "components":[int, ...]
                      }
+                    "map":{
+                        "server": string,
+                        "lat": float,
+                        "lon": float,
+                        "zoom":int
+                     }
             }
 
 ### Network
@@ -536,6 +542,30 @@ Authentication:  Basic Auth
                 "pass": string,
             }
 
+### Hotel Survey
+        Description: Manage system users
+        Path: /system/survey
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                        ...same as 'PUT' RequestBody
+                ]
+            }
+
+        Path: /system/survey/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: 
+            {
+                "_id": int,
+                "description":{
+                    "en": string,
+                    "fa": string,
+                    "ar": string
+                }
+            }
 ### Software Integration(PMS)
         Description: Manage PMS setting
         Path: /system/pms
@@ -957,9 +987,9 @@ Authentication:  Basic Auth
                 "_id": 1,
                 "dvbs": [int, int, ], 
                 "dvbt": [int, int, ], 
-                "mode_s": string, 
-                "mode_t": string, 
-                "pcr": int
+                "dvbsConfig": string, 
+                "dvbtBandwidth": float, 
+                "dvbtPcr": int
             }
 
 
@@ -1067,8 +1097,8 @@ Authentication:  Basic Auth
             }
 
 
-### Account Channels
-        Description: Manage of IPTV account channels
+### Web Channels
+        Description: Manage of Web Url channels
         Path: /live/inputs/web
         Method: GET
         Parameters: [from=int&to=int]
