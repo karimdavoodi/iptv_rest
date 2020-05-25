@@ -104,22 +104,37 @@ bool is_path_equal(string path, string perm)
 bool check_auth(const served::request &req)
 {
     auto auth_hdr = req.header("Authorization");
-    if(auth_hdr.size() < 10) return false;
+    if(auth_hdr.size() < 10){
+        BOOST_LOG_TRIVIAL(trace) << "header Authorization not found!";
+        return false;
+    } 
     auto auth = auth_hdr.substr(6); // remove 'Base '
     auto text = base64_decode(auth);
     auto pos = text.find(':');
-    if(pos == string::npos) return false;
+    if(pos == string::npos){
+        BOOST_LOG_TRIVIAL(trace) << "Authorization is invalid!";
+        return false;
+    }
     auto user = text.substr(0,pos);
     auto pass = text.substr(pos+1);
     //if(user == "test" && pass == "test") return true;
     auto res  = Mongo::find_one("system_users",
             "{ \"user\": \"" + user + "\", \"pass\":\"" + pass + "\" }");
-    if(res.size() < 1) return false;
+    if(res.size() < 1){
+        BOOST_LOG_TRIVIAL(trace) << "User not found " << user << ":" << pass;
+        return false;
+    }
     auto j = json::parse(res);
-    if( j.count("_id") == 0 ) return false;
+    if( j.count("_id") == 0 ){
+        BOOST_LOG_TRIVIAL(trace) << "Recored is invalid";
+        return false;
+    }
     // check user expire
     auto now = chrono::system_clock::now().time_since_epoch().count()/1000000000L;
-    if(j["expire"] < now) return false;
+    if(j["expire"] < now){
+        BOOST_LOG_TRIVIAL(trace) << "User has been expire!";
+        return false;
+    }
     // check permissions
     auto path = req.url().path();
     BOOST_LOG_TRIVIAL(trace) << path;
@@ -134,7 +149,7 @@ bool check_auth(const served::request &req)
             }
         }
     }
-    BOOST_LOG_TRIVIAL(trace) << "Un Authorized";
+    BOOST_LOG_TRIVIAL(trace) << "User not access to " << path;
     return false;
 }
 void test(served::response &res, const served::request &req)

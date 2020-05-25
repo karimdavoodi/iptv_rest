@@ -15,6 +15,10 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
+#include <boost/log/sinks/text_file_backend.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/attributes/current_process_name.hpp>
 #include <served/status.hpp>
 #include <thread>
 #include "auth.hpp"
@@ -36,17 +40,23 @@ void signal_handler(int signum)
     raise(SIGABRT);
 }
 void init_log(){
-    /*
-   static const std::string COMMON_FMT("[%TimeStamp%][%Severity%]:  %Message%");
-    boost::log::add_console_log(
-        std::cout,
-        boost::log::keywords::format = COMMON_FMT,
-        boost::log::keywords::auto_flush = true
-    );
-    */
-    boost::log::core::get()->set_filter
+
+    namespace logging = boost::log;
+    namespace keywords = boost::log::keywords;
+    namespace attrs = boost::log::attributes;
+    logging::add_common_attributes();
+    logging::core::get()->add_global_attribute(
+            "Process", attrs::current_process_name());
+
+    logging::add_file_log
+        (
+         keywords::file_name = "/opt/sms/tmp/log.log",
+         keywords::format = "%Process% %ThreadID%: %Message%"     
+         //%TimeStamp% %Process% %ThreadID% %Severity% %LineID% %Message%"     
+        );
+    logging::core::get()->set_filter
     (
-        boost::log::trivial::severity >= boost::log::trivial::trace
+        logging::trivial::severity >= logging::trivial::trace
     );
 }
 int main(int argc, char *argv[])
@@ -56,16 +66,6 @@ int main(int argc, char *argv[])
     Mongo::fill_defauls();
     signal(SIGSEGV, &signal_handler);
     signal(SIGABRT, &signal_handler);
-    /*
-    if (boost::filesystem::exists(DUMP_FILE)) {
-        std::ifstream ifs(DUMP_FILE);
-        boost::stacktrace::stacktrace st = boost::stacktrace::stacktrace::from_dump(ifs);
-        std::cout << "Previous run crashed:\n" << st << std::endl;
-        ifs.close();
-        boost::filesystem::remove(DUMP_FILE);
-    }
-    */
-
     while(true){
         try{
             served::multiplexer mux;

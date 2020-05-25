@@ -25,7 +25,7 @@ target_link_libraries(${PROJECT_NAME}
     -ldl
     )
 # Check Boost
-find_package(Boost COMPONENTS system log REQUIRED)
+find_package(Boost COMPONENTS system log log_setup REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES} )
 
 set(CMAKE_MODULE_PATH /usr/local/lib/cmake )
