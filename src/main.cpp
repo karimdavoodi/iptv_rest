@@ -47,11 +47,13 @@ void init_log(){
     logging::add_common_attributes();
     logging::core::get()->add_global_attribute(
             "Process", attrs::current_process_name());
-
     logging::add_file_log
         (
-         keywords::file_name = "/opt/sms/tmp/log.log",
-         keywords::format = "%Process% %ThreadID%: %Message%"     
+         keywords::file_name = "/dev/stdout",
+         //keywords::file_name = "/tmp/iptv_api.log",
+         keywords::format = "%Process% %ThreadID%: %Message%",
+         keywords::auto_flush = true,
+         keywords::open_mode = std::ios_base::app
          //%TimeStamp% %Process% %ThreadID% %Severity% %LineID% %Message%"     
         );
     logging::core::get()->set_filter
@@ -62,6 +64,10 @@ void init_log(){
 int main(int argc, char *argv[])
 {
     init_log();
+    if( geteuid() != 0 ){
+        BOOST_LOG_TRIVIAL(error) << "Must run by root";
+        return -1;
+    }
     BOOST_LOG_TRIVIAL(info) << "Start Main";
     Mongo::fill_defauls();
     signal(SIGSEGV, &signal_handler);
@@ -73,7 +79,21 @@ int main(int argc, char *argv[])
 
             #include "routes.hpp"
             
-            mux.handle("/help").get(mux.get_endpoint_list_handler_YAML());
+            mux.handle("/api_yaml").get(mux.get_endpoint_list_handler_YAML());
+            mux.handle("/api_json").get([&](served::response& res, 
+                                            const served::request& req){
+                    using nlohmann::json;
+                    res.set_header("Content-Type", "application/json");
+                    json j = json::object();
+                    auto endpoint_list = mux.get_endpoint_list();
+                    for ( const auto & endpoint : endpoint_list ){
+                        j[endpoint.first] = json::array();
+                        for ( const auto & method : std::get<1>(endpoint.second) ){
+                            j[endpoint.first].push_back(method);
+                        }
+                    }
+                    res << j.dump();
+                    });
             
             BOOST_LOG_TRIVIAL(info) << "curl http://localhost:"<< PORT << "/help";
             mux.use_after([](served::response& res, served::request& req){});
@@ -94,6 +114,7 @@ int main(int argc, char *argv[])
                     vector<string> valid_origins = {
                     "http://localhost:8000",
                     "http://iptv2.moojafzar.com",
+                    "http://91.98.142.60:4443",
                     "https://amazing-gates-315ab5.netlify.app"
                     };
                     auto origin =  req.header("Origin");

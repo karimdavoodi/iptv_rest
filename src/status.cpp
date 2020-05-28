@@ -13,32 +13,32 @@ void status_information_get(served::response &res, const served::request &req)
 void status_cpu_mem_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_TIME_ID_COL("status_cpu_mem");
+    GET_COL("status_cpu_mem");
 }
 void status_network_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_TIME_ID_COL("status_network");
+    GET_COL("status_network");
 }
 void status_storage_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_TIME_ID_COL("status_storage");
+    GET_COL("status_storage");
 }
 void status_dvb_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_TIME_ID_COL("status_dvb");
+    GET_COL("status_dvb");
 }
 void status_channels_input_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("status_channels_input");
+    GET_COL("status_channels_input");
 }
 void status_channels_output_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("status_channels_output");
+    GET_COL("status_channels_output");
 }
 void status_channels_output_view_get(served::response &res, const served::request &req)
 {
@@ -54,17 +54,17 @@ void status_channels_output_view_get(served::response &res, const served::reques
             ERRORSEND(res, 400, 1002, "View not exists!");
         }
     }else{                                             
-        res << Mongo::find_id_range(col, from, to);    
+        res << Mongo::find_range(col, from, to);    
     }                                                  
     res.set_status(200);                               
 }
 void status_users_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("status_users");
+    GET_COL("status_users");
 }
 void status_errors_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_TIME_ID_COL("status_errors");
+    GET_COL("status_errors");
 }

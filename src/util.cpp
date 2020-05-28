@@ -5,24 +5,47 @@
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/version.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/tokenizer.hpp>
 #include <sstream>
 #include "mongo_driver.hpp"
 #include "util.hpp"
 using namespace std;
-void sys_restart()
+bool send_http_cmd(const string target, const string host, const string port)
 {
-// TODO: ... 
-
-}
-void sys_stop()
-{
-// TODO: ... 
-
-}
-void sys_reboot()
-{
-// TODO: ... 
-
+    namespace beast = boost::beast; 
+    namespace http = beast::http;  
+    namespace net = boost::asio;  
+    using tcp = net::ip::tcp;    
+    try
+    {
+        int version = 10;
+        net::io_context ioc;
+        tcp::resolver resolver(ioc);
+        beast::tcp_stream stream(ioc);
+        auto const results = resolver.resolve(host, port);
+        stream.connect(results);
+        http::request<http::string_body> req{http::verb::get, target, version};
+        req.set(http::field::host, host);
+        req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+        http::write(stream, req);
+        beast::flat_buffer buffer;
+        http::response<http::dynamic_body> res;
+        http::read(stream, buffer, res);
+        std::cout << res << std::endl;
+        beast::error_code ec;
+        stream.socket().shutdown(tcp::socket::shutdown_both, ec);
+        if(ec && ec != beast::errc::not_connected)
+            throw beast::system_error{ec};
+    }catch(std::exception const& e){
+        std::cerr << "Error: " << e.what() << std::endl;
+        return false;
+    }
+    return true;
 }
 void sys_backup()
 {
@@ -36,7 +59,7 @@ void sys_update()
 {
 // TODO: ... 
 }
-string get_content_path(const served::request &req, int id)
+const string get_content_path(const served::request &req, int id)
 {
     try{
         string dir = "", ext = "";
@@ -254,6 +277,54 @@ bool send_file(served::response &res, const served::request &req, const string p
         return true;
     }
     return false;
+}
+const json parameter_int_value(const string value)
+{
+    if(value.find(',') == string::npos) return json::parse(value);
+    boost::tokenizer<boost::escaped_list_separator<char>>  tok(value);
+    json j = json::object();
+    j["$in"] = json::array();
+    for(const auto it : tok){
+        if(it.size()) j["$in"].push_back(stol(it));
+    }
+    return j;
+}
+const string  req_parameters(const served::request &req)
+{
+    try{
+        auto sid = req.query.get("start-id");
+        auto eid = req.query.get("end-id");
+        auto stime = req.query.get("start-time");
+        auto etime = req.query.get("end-time");
+        auto type = req.query.get("type");
+        auto user = req.query.get("user");
+        auto active = req.query.get("active");
+        auto category = req.query.get("category");
+        auto activityType = req.query.get("activityType");
+        auto content = req.query.get("content");
+        json j = json::object();
+        if(stime.size() && etime.size()){
+            j["time"] = json::object();
+            j["time"]["$gt"] = stol(stime);
+            j["time"]["$lt"] = stol(etime);
+        }
+        if(stime.size() && etime.size()){
+            j["_id"] = json::object();
+            j["_id"]["$gt"] = stol(stime);
+            j["_id"]["$lt"] = stol(etime);
+        }
+        if(type.size()) j["type"] = parameter_int_value(type);
+        if(user.size()) j["user"] = parameter_int_value(user);
+        if(content.size()) j["content"] = parameter_int_value(content);
+        if(category.size()) j["category"] = parameter_int_value(category);
+        if(active.size()) j["active"] = active.compare("true");
+        if(activityType.size()) j["activityType"] = parameter_int_value(activityType);
+        BOOST_LOG_TRIVIAL(trace) << j.dump(4);
+        return j.dump();
+    }catch(exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception: " << e.what();
+        return "{}";
+    }
 }
 pair<int,int> req_range(const served::request &req)
 {

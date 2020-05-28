@@ -14,7 +14,7 @@
 void launcher_components_info_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("launcher_components_info");
+    GET_COL("launcher_components_info");
 }
 void launcher_components_info_put(served::response &res, const served::request &req)
 {
@@ -34,7 +34,7 @@ void launcher_components_info_del(served::response &res, const served::request &
 void launcher_components_types_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("launcher_components_types");
+    GET_COL("launcher_components_types");
 }
 void launcher_components_types_put(served::response &res, const served::request &req)
 {
@@ -54,7 +54,7 @@ void launcher_components_types_del(served::response &res, const served::request 
 void launcher_menu_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("launcher_menu");
+    GET_COL("launcher_menu");
 }
 void launcher_menu_put(served::response &res, const served::request &req)
 {
@@ -74,7 +74,7 @@ void launcher_menu_del(served::response &res, const served::request &req)
 void launcher_setting_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    GET_ID_COL("launcher_setting");
+    GET_COL("launcher_setting");
 }
 void launcher_setting_put(served::response &res, const served::request &req)
 {

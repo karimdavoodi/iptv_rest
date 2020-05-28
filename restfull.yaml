@@ -71,6 +71,15 @@ Authentication:  Basic Auth
 ##########            API       #######################
 #######################################################
 
+#HELP   ###############################################       
+        Description: Get information of APIs
+        Path: /api_josn
+        Method: GET
+        ResponseBody: json 
+        Path: /api_yaml
+        Method: GET
+        ResponseBody: yaml 
+
 #Status ###############################################       
 ### Dashboard              
 ### Sensor0 (information)
@@ -93,7 +102,9 @@ Authentication:  Basic Auth
                 "Manufacturer": string,
                 "Model": string,
                 "CPU": string,
-                "Memory": string
+                "CoreNum": int,
+                "Storage": int,
+                "Memory": int
             }
 
 ### Sensor1 (CPU/MEM)  
@@ -111,11 +122,9 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
-                    "cpuLoad":float,
-                    "cpuCoreNum": int,
-                    "cpuPercent":float,
-                    "memTotal": int,
-                    "memFree": int,
+                    "sysLoad":float,
+                    "cpuUsage":float,
+                    "memUsage": int,
                     }
                 ]
 
@@ -166,7 +175,7 @@ Authentication:  Basic Auth
                             "name": string,
                             "partition": string,
                             "total": int,
-                            "free": int,
+                            "usage": int,
                             "readAve": int,
                             "writeAve": int
                             },
@@ -193,7 +202,7 @@ Authentication:  Basic Auth
                         "inputDVBs":[
                             {
                             "_id": int,
-                            "type": string
+                            "isDVBT": boolean,
                             "parameters": string,
                             "channelNumber": int,
                             "signal": int,
@@ -222,11 +231,8 @@ Authentication:  Basic Auth
                 "content":[
                     {
                     "_id": int,
-                    "type": string,     #DVB, NET, HDD 
                     "name": string,
-                    "epg": string,
-                    "epg_percent": int,
-                    "health": boolean,
+                    "health": int,
                     },
                 ]
             }
@@ -242,18 +248,8 @@ Authentication:  Basic Auth
                 "content":[
                     {
                     "_id": int,
-                    "status": boolean,
-                    "type": string
                     "name": string,
-                    "rf": boolean,
-                    "rfFreq": int,
-                    "rfSid": int,
-                    "permission": int,
-                    "record": boolean,
-                    "udp": boolean,
-                    "http": boolean,
-                    "rtsp": boolean,
-                    "hls": boolean
+                    "usage": int
                     },
                 ]
             }
@@ -326,8 +322,8 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    user=string&
-                    activityType=string
+                    [user=int&
+                    activityType=int]
         ResponseBody: 
             {
                 "total":int,
@@ -336,7 +332,7 @@ Authentication:  Basic Auth
                     "_id": int,
                     "time": epochtime,
                     "user": int,
-                    "activity": string  
+                    "activityType": int
                     },
                 ]
             }
@@ -347,7 +343,7 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    activityType=string
+                    [activityType=int]
         ResponseBody: 
             {
                 "total":int,
@@ -355,7 +351,7 @@ Authentication:  Basic Auth
                      {
                     "_id": int,
                     "time": epochtime,
-                    "activity": string
+                    "activityType": int
                     },
                 ]
             }
@@ -366,7 +362,9 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    [channel=string]
+                    [user=int&
+                    content=int&
+                    activityType=int]
         ResponseBody: 
             {
                 "total":int,
@@ -374,8 +372,9 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
-                    "channel": string,
-                    "activity": string
+                    "user": int,
+                    "content": int,
+                    "activityType": int
                     },
                 ]
             }
@@ -386,7 +385,9 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    [content=int]
+                    [user=int&
+                    content=int&
+                    activityType=int]
         ResponseBody: 
             {
                 "total":int,
@@ -394,8 +395,9 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
+                    "user": int,
                     "content": int,
-                    "activity": string
+                    "activityType": int
                     },
                 ]
             }
@@ -406,7 +408,8 @@ Authentication:  Basic Auth
         Parameters: [from=int&to=int]
                     start-time=epochtime&
                     end-time=epochtime
-                    [component=int]
+                    [user=int&
+                    component=int]
         ResponseBody: 
             {
                 "total":int,
@@ -414,8 +417,9 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
-                    "component": int,
-                    "activity": string
+                    "user": int,
+                    "content": int,
+                    "activityType": string
                     },
                 ]
             }
@@ -435,7 +439,7 @@ Authentication:  Basic Auth
                     "_id": int,
                     "time": epochtime,
                     "user": int,
-                    "activity": string
+                    "activityType": string
                     },
                 ]
             }
@@ -451,7 +455,6 @@ Authentication:  Basic Auth
             {
                     "_id": 1,
                     "name": string,
-                    "logo": int,
                     "debug": int,
                     "testUserId": int,
                     "weatherLocation": string,
@@ -459,9 +462,13 @@ Authentication:  Basic Auth
                     "pryerContentId": int,
                     "timeZone": string,
                     "systemTime": epochtime,
-                    "gamaryShift": int,
-                    "subtitleLogo":{
-                        "logo": int,
+                    "logo":{
+                        "ownerSmall":int,
+                        "ownerLarge":int,
+                        "manufacturerSmall":int,
+                        "manufacturerLarge":int
+                    },
+                    "subtitle":{
                         "isLeft": boolean,
                         "components":[int, ...]
                      }
@@ -533,11 +540,11 @@ Authentication:  Basic Auth
                 "start": epochtime,
                 "expire": epochtime,
                 "weektime": [int, ...],
-                "accessList": [ 
+                "accessList": { 
                     "/system/users":[GET,PUT,POST,DELET],
                     "/system/pms":[GET,PUT,POST,DELET],
                     ...
-                ],   
+            },   
                 "user": string,
                 "pass": string,
             }
@@ -904,7 +911,7 @@ Authentication:  Basic Auth
 ### Media Server #########################################
 ### Tuners(Scan,Enable,Disable)
         Description: Get Tuners from System
-        Path: /live/tuners/hadrware/input
+        Path: /live/tuners/hardware/input
         Method: GET
         ResponseBody: 
             {
@@ -917,7 +924,7 @@ Authentication:  Basic Auth
                     }
                  ]
             }
-        Path: /live/tuners/hadrware/output
+        Path: /live/tuners/hardware/output
         Method: GET
         ResponseBody: 
             {

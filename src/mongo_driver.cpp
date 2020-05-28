@@ -1,9 +1,4 @@
 #include "mongo_driver.hpp"
-#include "bsoncxx/builder/basic/document.hpp"
-#include "bsoncxx/builder/basic/kvp.hpp"
-#include "bsoncxx/document/view.hpp"
-#include "bsoncxx/json.hpp"
-#include "mongocxx/options/find_one_and_update.hpp"
 #include <exception>
 #include <string>
 #include <utility>
@@ -39,7 +34,7 @@ void Mongo::info()
         std::cout << "col:" << col << '\n';
     }
 }
-bool Mongo::exists(std::string col_name, std::string doc)
+bool Mongo::exists(const std::string col_name, const std::string doc)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     auto db = client[DB_NAME];     
@@ -49,7 +44,7 @@ bool Mongo::exists(std::string col_name, std::string doc)
     if(result > 0) return true;
     return false;
 }
-bool Mongo::exists_id(std::string col_name, int id)
+bool Mongo::exists_id(const std::string col_name, int id)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     BOOST_LOG_TRIVIAL(trace) << __func__ << " col:"<< col_name << " id:" << id;
@@ -59,7 +54,7 @@ bool Mongo::exists_id(std::string col_name, int id)
     if(result > 0) return true;
     return false;
 }
-bool Mongo::insert(std::string col, std::string doc)
+bool Mongo::insert(const std::string col, const std::string doc)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     BOOST_LOG_TRIVIAL(trace) << __func__  << " in col:" << col << " doc:" << doc;
@@ -67,11 +62,12 @@ bool Mongo::insert(std::string col, std::string doc)
         auto dB = client[DB_NAME];
         auto ret = dB[col].insert_one(bsoncxx::from_json(doc));
         return ret.value().inserted_id().get_int64() >= 0;
-    }catch(...){
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
         return false;
     }
 }
-bool Mongo::remove(std::string col, std::string doc)
+bool Mongo::remove(const std::string col, const std::string doc)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     BOOST_LOG_TRIVIAL(trace) << __func__  << " from col:" << col << " doc:" << doc;
@@ -79,12 +75,12 @@ bool Mongo::remove(std::string col, std::string doc)
         auto dB = client[DB_NAME];
         auto ret = dB[col].delete_one(bsoncxx::from_json(doc));
         return ret.value().deleted_count() > 0;
-    }catch(...){
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
         return false;
     }
-
 }
-bool Mongo::remove_by_id(std::string col, int id)
+bool Mongo::remove_by_id(const std::string col, int id)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     BOOST_LOG_TRIVIAL(trace) << __func__  << " from col:" << col << " id:" << id;
@@ -92,12 +88,12 @@ bool Mongo::remove_by_id(std::string col, int id)
         auto dB = client[DB_NAME];
         auto ret = dB[col].delete_one(make_document(kvp("_id", id)));
         return ret.value().deleted_count() > 0;
-    }catch(...){
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
         return false;
     }
-
 }
-bool Mongo::replace(std::string col, std::string filter, std::string doc)
+bool Mongo::replace(const std::string col, const std::string filter, const std::string doc)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     BOOST_LOG_TRIVIAL(trace) << __func__  << " in col:" << col << " filter:" << filter;
@@ -105,13 +101,12 @@ bool Mongo::replace(std::string col, std::string filter, std::string doc)
         auto dB = client[DB_NAME];
         auto ret = dB[col].replace_one(bsoncxx::from_json(filter) ,bsoncxx::from_json(doc));
         return ret.value().modified_count() > 0;
-    }catch(...){
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
         return false;
     }
-    return false;
-
 }
-bool Mongo::replace_by_id(std::string col, int id, std::string doc)
+bool Mongo::replace_by_id(const std::string col, int id, const std::string doc)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     BOOST_LOG_TRIVIAL(trace) << __func__ << " id:" << id;
@@ -120,47 +115,45 @@ bool Mongo::replace_by_id(std::string col, int id, std::string doc)
         auto ret = dB[col].replace_one(make_document(kvp("_id", id)) ,
                                        bsoncxx::from_json(doc));
         return ret.value().modified_count() > 0;
-    }catch(...){
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
         return false;
     }
     return false;
-
 }
-std::string Mongo::find_one( std::string col, std::string doc)
+const std::string Mongo::find_one( const std::string col, const std::string doc)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     auto dB = client[DB_NAME];     
     
-    BOOST_LOG_TRIVIAL(trace) << __func__  << " in col:" << col << " doc:" << doc;
-
-    auto result = dB[col].find(bsoncxx::from_json(doc));
-    std::string result_str = "{}";
-    for(auto&& e : result){
-        result_str = bsoncxx::to_json(e); 
-        break;
+    try{
+        BOOST_LOG_TRIVIAL(trace) << __func__  << " in col:" << col << " doc:" << doc;
+        auto result = dB[col].find_one(bsoncxx::from_json(doc));
+        if (result && !(result->view().empty())) {
+            bsoncxx::document::view  v(result->view());
+            return bsoncxx::to_json(v); 
+        }
+    }catch(std::exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
     }
-    return result_str;
+    return "{}";
 }
-std::string Mongo::find_id(std::string col, int id)
+const std::string Mongo::find_id(const std::string col, int id)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     auto dB = client[DB_NAME];     
    
     BOOST_LOG_TRIVIAL(trace) << __func__  << " in col:" << col << " id:" << id;
     try{
-        bsoncxx::document::view  v;
-        auto result = dB[col].find(make_document(kvp("_id", id)));
-        std::string result_str = "{}";
-        for(auto e : result){
-                result_str = bsoncxx::to_json(e); 
-                break;
+        auto result = dB[col].find_one(make_document(kvp("_id", id)));
+        if (result && !(result->view().empty())) {
+            bsoncxx::document::view  v(result->view());
+            return bsoncxx::to_json(v); 
         }
-        return result_str;
-
     }catch(std::exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
-        return "{}";
     }
+    return "{}";
 }
 int Mongo::get_uniq_id()
 {
@@ -188,7 +181,7 @@ int Mongo::get_uniq_id()
         return 1;
     }
 }
-std::string Mongo::find_id_range(std::string col, int begin, int end)
+const std::string Mongo::find_range(const std::string col, int begin, int end)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     auto dB = client[DB_NAME];     
@@ -196,20 +189,16 @@ std::string Mongo::find_id_range(std::string col, int begin, int end)
     BOOST_LOG_TRIVIAL(trace) << __func__  << " in col:" << col << 
         " begin:" << begin << " end:" << end;
     try{
+        mongocxx::options::find options {};
+        options.skip(begin>0 ? begin-1 : begin);
+        options.limit(end - begin);
         bsoncxx::document::view  v;
-        auto result = dB[col].find(v);
+        auto result = dB[col].find(v, options);
         std::string result_str = "";
         int total = 0;
         for(auto e : result){
-            if(e.find("_id") == e.end()){
-                BOOST_LOG_TRIVIAL(trace) << " _id not found!" ;
-                continue;
-            }
-            int id = e["_id"].get_int32();
             total++;
-            if(id >= begin && id <= end){
-                result_str += bsoncxx::to_json(e) + ","; 
-            }
+            result_str += bsoncxx::to_json(e) + ","; 
         }
         if(result_str.size() > 0)
             result_str.pop_back();
@@ -219,42 +208,35 @@ std::string Mongo::find_id_range(std::string col, int begin, int end)
 
     }catch(std::exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
-        return "[]";
+        return "{ \"total\": 0, \"content\":[] }";
     }
 }
-std::string Mongo::find_time_id_range(std::string col, 
-        long stime, long etime, int begin, int end)
+const std::string Mongo::find_filter_range(const std::string col, 
+                                    const std::string filter,
+                                    int begin, int end)
 {
     std::lock_guard<std::mutex> lo(db_mutex);
     auto dB = client[DB_NAME];     
    
-    BOOST_LOG_TRIVIAL(trace) << __func__ << " begin:" << begin << " end:" << end;
+    BOOST_LOG_TRIVIAL(trace) << __func__ << " begin:" << begin << " end:" << end
+                            << " col:" << col <<" filter:" << filter;
     try{
-        auto result = dB[col].find(
-                make_document(kvp("time", 
-                       make_document(kvp("$gt", stime), kvp("$lt", etime))
-                        )));
+        mongocxx::options::find options {};
+        options.skip(begin>0 ? begin-1 : begin);
+        options.limit(end - begin);
+        auto result = dB[col].find(bsoncxx::from_json(filter),options);
         std::string result_str = "";
         int total = 0;
         for(auto e : result){
-            if(e.find("_id") == e.end()){
-                BOOST_LOG_TRIVIAL(trace) << " _id not found!" ;
-                continue;
-            }
-            int id = e["_id"].get_int32();
             total++;
-            if(id >= begin && id <= end){
-                result_str += bsoncxx::to_json(e) + ","; 
-            }
+            result_str += bsoncxx::to_json(e) + ","; 
         }
         if(result_str.size() > 0)
             result_str.pop_back();
-        result_str =  "{ \"total\": " + std::to_string(total) + 
+        return "{ \"total\": " + std::to_string(total) + 
                          ", \"content\":[" + result_str + "] }";
-        return result_str;
-
     }catch(std::exception& e){
         BOOST_LOG_TRIVIAL(trace) << "Exception:" << e.what() ;
-        return "[]";
+        return "{ \"total\": 0, \"content\":[] }";
     }
 }

@@ -3,11 +3,14 @@
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
 #include "../third_party/json.hpp"
-#define  QUERY_SIZE 10
 #define  MEDIA_ROOT "/opt/sms/www/iptv/media/"
 using json = nlohmann::json;
 
-std::string get_content_path(const served::request &req, int id);
+bool send_http_cmd(const std::string target, 
+                    const std::string host = "127.0.0.1" , 
+                    const std::string port = "10012");
+const std::string req_parameters(const served::request &req);
+const std::string get_content_path(const served::request &req, int id);
 bool check_auth(const served::request &req);
 void test(served::response &res, const served::request &req);
 bool get_id(const served::request &req, std::string& id);

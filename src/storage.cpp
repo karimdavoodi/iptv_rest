@@ -16,7 +16,7 @@ void storage_setting_put(served::response &res, const served::request &req)
 void storage_contents_types_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_contents_types");
+    GET_COL("storage_contents_types");
 }
 void storage_contents_types_put(served::response &res, const served::request &req)
 {
@@ -36,7 +36,7 @@ void storage_contents_types_del(served::response &res, const served::request &re
 void storage_platforms_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_contents_platforms");
+    GET_COL("storage_contents_platforms");
 }
 void storage_platforms_put(served::response &res, const served::request &req)
 {
@@ -56,7 +56,7 @@ void storage_platforms_del(served::response &res, const served::request &req)
 void storage_categories_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_contents_categories");
+    GET_COL("storage_contents_categories");
 }
 void storage_categories_put(served::response &res, const served::request &req)
 {
@@ -76,7 +76,7 @@ void storage_categories_del(served::response &res, const served::request &req)
 void storage_info_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_contents_info");
+    GET_COL("storage_contents_info");
 }
 void storage_info_put(served::response &res, const served::request &req)
 {
@@ -156,7 +156,7 @@ void storage_subtitle_del(served::response &res, const served::request &req)
 void storage_advertize_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_advertize");
+    GET_COL("storage_advertize");
 }
 void storage_advertize_put(served::response &res, const served::request &req)
 {
@@ -176,7 +176,7 @@ void storage_advertize_del(served::response &res, const served::request &req)
 void storage_contents_formats_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("storage_contents_formats");
+    GET_COL("storage_contents_formats");
 }
 void storage_contents_formats_put(served::response &res, const served::request &req)
 {

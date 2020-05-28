@@ -121,18 +121,18 @@
         res.set_status(200);                                        \
     }while(false)                       
 
-#define GET_ID_COL(col)                                             \
+#define GET_COL(col)                                             \
     do{                                                             \
         int id;                                                     \
-        auto [from, to] = req_range(req);                           \
-        std::string result;                                         \
-        if(get_id(req, id)){                                        \
-            result = Mongo::find_id(col, id);                       \
-        }else{                                                      \
-            result = Mongo::find_id_range(col, from, to);           \
-        }                                                           \
         res.set_header("Content-type", "application/json");         \
-        res << result;                                              \
+        if(get_id(req, id)){                                        \
+            res << Mongo::find_id(col, id);                       \
+        }else{                                                      \
+            auto [from, to] = req_range(req);                           \
+            const std::string parameters = req_parameters(req); \
+            res << Mongo::find_filter_range(col,                       \
+                parameters , from, to);      \
+        }                                                           \
         res.set_status(200);                                        \
     }while(false)                       
 
@@ -142,20 +142,6 @@
         result = Mongo::find_id(col, 1);                            \
         res.set_header("Content-type", "application/json");         \
         res << result;                                              \
-        res.set_status(200);                                        \
-    }while(false)                       
-
-#define GET_TIME_ID_COL(col)                                        \
-    do{                                                             \
-        int id;                                                     \
-        auto [from, to] = req_range(req);                           \
-        auto stime = req.query.get("start-time");                  \
-        auto etime = req.query.get("end-time");                    \
-        if(stime.size() == 0 || etime.size() == 0){                 \
-            ERRORSEND(res, 400, 1002, "Param 'start-time' or 'end-time' not exists!");\
-        }                                                           \
-        res << Mongo::find_time_id_range(col,                       \
-                std::stol(stime), std::stol(etime), from, to);      \
         res.set_status(200);                                        \
     }while(false)                       
 

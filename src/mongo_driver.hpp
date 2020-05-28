@@ -12,26 +12,28 @@
 #include <bsoncxx/builder/basic/kvp.hpp>
 #include <bsoncxx/json.hpp>
 #include <bsoncxx/stdx/make_unique.hpp>
+#define  QUERY_SIZE 10
 
 
 class Mongo {
     public:
         static void fill_defauls();
-        static bool exists(std::string col, std::string filter);
-        static bool exists_id(std::string col, int id);
-        static bool insert(std::string col, std::string filter);
-        static bool remove(std::string col, std::string filter);
-        static bool remove_by_id(std::string col, int id);
-        static bool replace_by_id(std::string col, int id, 
-                                    std::string doc);
-        static bool replace(std::string col, std::string filter, 
-                                    std::string doc);
+        static bool exists(const std::string col, const std::string filter);
+        static bool exists_id(const std::string col, int id);
+        static bool insert(const std::string col, const std::string filter);
+        static bool remove(const std::string col, const std::string filter);
+        static bool remove_by_id(const std::string col, int id);
+        static bool replace_by_id(const std::string col, int id, 
+                                    const std::string doc);
+        static bool replace(const std::string col, const std::string filter, 
+                                    const std::string doc);
         static int get_uniq_id();
-        static std::string find_one(std::string col, std::string filter);
-        static std::string find_id(std::string col, int id);
-        static std::string find_id_range(std::string col, 
-                                    int begin, int end);
-        static std::string find_time_id_range(std::string col,long stime, long etime, 
-                                    int begin, int end);
+        static const std::string find_one(const std::string col, const std::string filter);
+        static const std::string find_id(const std::string col, int id);
+        static const std::string find_range(const std::string col, 
+                                    int begin = 0, int end = QUERY_SIZE);
+        static const std::string find_filter_range(const std::string col, 
+                                    const std::string filter,
+                                    int begin = 0, int end = QUERY_SIZE);
         static void info();
 };

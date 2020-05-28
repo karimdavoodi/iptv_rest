@@ -30,7 +30,7 @@ void system_network_put(served::response &res, const served::request &req)
 void system_users_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("system_users");
+    GET_COL("system_users");
 }
 void system_users_put(served::response &res, const served::request &req)
 {
@@ -61,7 +61,7 @@ void system_users_me_get(served::response &res, const served::request &req)
 void system_survey_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("system_survey");
+    GET_COL("system_survey");
 }
 void system_survey_put(served::response &res, const served::request &req)
 {
@@ -92,7 +92,7 @@ void system_pms_put(served::response &res, const served::request &req)
 void system_vod_account_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("system_vod_account");
+    GET_COL("system_vod_account");
 }
 void system_vod_account_put(served::response &res, const served::request &req)
 {
@@ -112,7 +112,7 @@ void system_vod_account_del(served::response &res, const served::request &req)
 void system_permission_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("system_permission");
+    GET_COL("system_permission");
 }
 void system_permission_put(served::response &res, const served::request &req)
 {
@@ -133,7 +133,7 @@ void system_permission_del(served::response &res, const served::request &req)
 void system_weektime_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID_COL("system_weektime");
+    GET_COL("system_weektime");
 }
 void system_weektime_put(served::response &res, const served::request &req)
 {
@@ -172,11 +172,20 @@ void system_license_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     RECV_FILE("license.bin");	
+    std::string from = std::string(MEDIA_ROOT) + "license.bin";
+    if(boost::filesystem::exists(from)){
+        boost::filesystem::copy_file(from, "/opt/sms/lic.bin");
+    }
 }
 void system_firmware_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_FILE("firmware.zip");	
+    RECV_FILE("firmware.deb");	
+    std::string deb = std::string(MEDIA_ROOT) + "firmware.deb";
+    if(boost::filesystem::exists(deb)){
+        auto cmd = std::string("dpkg -i ") + deb;
+        std::system(cmd.c_str());
+    }
     sys_update();
 }
 void system_logout_get(served::response &res, const served::request &req)
@@ -188,22 +197,25 @@ void system_logout_get(served::response &res, const served::request &req)
 void system_restart_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    sys_restart();
-    res.set_status(served::status_2XX::OK);
-    // TODO : restart system
+    if(send_http_cmd("/start"))
+        res.set_status(served::status_2XX::OK);
+    else
+        res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
 }
 void system_stop_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    sys_stop();
-    res.set_status(served::status_2XX::OK);
-    // TODO : stop system
+    if(send_http_cmd("/stop"))
+        res.set_status(served::status_2XX::OK);
+    else
+        res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
 }
 void system_reboot_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    res.set_status(served::status_2XX::OK);
-    sys_reboot();
-    // TODO : reboot system
+    if(send_http_cmd("/reboot"))
+        res.set_status(served::status_2XX::OK);
+    else
+        res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
 }
 
