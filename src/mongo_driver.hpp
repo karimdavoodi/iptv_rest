@@ -14,26 +14,29 @@
 #include <bsoncxx/stdx/make_unique.hpp>
 #define  QUERY_SIZE 10
 
-
-class Mongo {
-    public:
-        static void fill_defauls();
-        static bool exists(const std::string col, const std::string filter);
-        static bool exists_id(const std::string col, int id);
-        static bool insert(const std::string col, const std::string filter);
-        static bool remove(const std::string col, const std::string filter);
-        static bool remove_by_id(const std::string col, int id);
-        static bool replace_by_id(const std::string col, int id, 
-                                    const std::string doc);
-        static bool replace(const std::string col, const std::string filter, 
-                                    const std::string doc);
-        static int get_uniq_id();
-        static const std::string find_one(const std::string col, const std::string filter);
-        static const std::string find_id(const std::string col, int id);
-        static const std::string find_range(const std::string col, 
-                                    int begin = 0, int end = QUERY_SIZE);
-        static const std::string find_filter_range(const std::string col, 
-                                    const std::string filter,
-                                    int begin = 0, int end = QUERY_SIZE);
-        static void info();
+namespace Mongo {
+    void fill_defauls();
+    bool exists(const std::string col, const std::string filter);
+    bool exists_id(const std::string col, int id);
+    bool insert(const std::string col, const std::string filter);
+    bool insert_id(const std::string col, int id, 
+            const std::string doc);
+    bool remove_mony(const std::string col, const std::string filter);
+    bool remove_id(const std::string col, int id);
+    bool replace_id(const std::string col, int id, 
+            const std::string doc);
+    bool insert_or_replace_id(const std::string col, int id, 
+            const std::string doc);
+    bool replace(const std::string col, const std::string filter, 
+            const std::string doc);
+    int get_uniq_id();
+    const std::string find_one(const std::string col, const std::string filter);
+    const std::string find_mony(const std::string col, const std::string filter);
+    const std::string find_id(const std::string col, int id);
+    const std::string find_range(const std::string col, 
+            int begin = 0, int end = QUERY_SIZE);
+    const std::string find_filter_range(const std::string col, 
+            const std::string filter,
+            int begin = 0, int end = QUERY_SIZE);
+    void info();
 };

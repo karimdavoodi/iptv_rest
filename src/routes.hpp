@@ -8,12 +8,13 @@ mux.handle("/launcher/components/info")
         .get(launcher_components_info_get)
         .post(launcher_components_info_post);
 mux.handle("/launcher/components/types/{id}")
-        .get(launcher_components_types_get)
-        .del(launcher_components_types_del)
-        .put(launcher_components_types_put);
+        .get(launcher_components_types_get);
 mux.handle("/launcher/components/types")
-        .get(launcher_components_types_get)
-        .post(launcher_components_types_post);
+        .get(launcher_components_types_get);
+mux.handle("/launcher/components/fonts/{id}")
+        .get(launcher_components_fonts_get);
+mux.handle("/launcher/components/fonts")
+        .get(launcher_components_fonts_get);
 mux.handle("/launcher/menu/{id}")
         .get (launcher_menu_get)
         .put (launcher_menu_put)
@@ -67,6 +68,12 @@ mux.handle("/users/message/broadcast")
         .get (users_message_broadcast_get);
 ////////////////////// LIVE //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /live/* ALL_METHODS";
+mux.handle("/live/tuners/hardware/input")
+        .get (live_tuners_hardware_input_get);
+mux.handle("/live/tuners/hardware/output")
+        .get (live_tuners_hardware_output_get);
+mux.handle("/live/tuners/input_scan/{id}")
+        .get (live_tuners_input_scan_get);
 mux.handle("/live/tuners/input/{id}")
         .get (live_tuners_input_get)
         .put (live_tuners_input_put)
@@ -172,39 +179,23 @@ mux.handle("/live/output/gold/{id}")
 mux.handle("/live/output/gold")
         .post(live_output_gold_post)
         .get (live_output_gold_get);
-mux.handle("/live/icons/{id}")
-        .get (live_icons_get)
-        .put (live_icons_put)
-        .del (live_icons_del);
-mux.handle("/live/icons")
-        .post(live_icons_post)
-        .get (live_icons_get);
-mux.handle("/live/tuners/hardware/input")
-        .get (live_tuners_hardware_input_get);
-mux.handle("/live/tuners/hardware/output")
-        .get (live_tuners_hardware_output_get);
-mux.handle("/live/tuners/scan/{id}")
-        .get (live_tuners_input_scan_get);
-////////////////////// STATUS //////////////////////////////////////////////////
-BOOST_LOG_TRIVIAL(trace) << "Add route /status/* GET";
-mux.handle("/status/information").get(status_information_get);
-mux.handle("/status/cpu_mem").get(status_cpu_mem_get);
-mux.handle("/status/network").get(status_network_get);
-mux.handle("/status/storage").get(status_storage_get);
-mux.handle("/status/dvb").get(status_dvb_get);
-mux.handle("/status/channels_input").get(status_channels_input_get);
-mux.handle("/status/channels_output").get(status_channels_output_get);
-mux.handle("/status/channels_output_view/{id}").get(status_channels_output_view_get);
-mux.handle("/status/users").get(status_users_get);
-mux.handle("/status/error").get(status_errors_get);
 ////////////////////// REPORT //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /report/* GET";
-mux.handle("/report/user").get(report_user_get);
-mux.handle("/report/system").get(report_system_get);
-mux.handle("/report/live").get(report_live_get);
-mux.handle("/report/vod").get(report_vod_get);
-mux.handle("/report/component").get(report_component_get);
-mux.handle("/report/system_user").get(report_system_user_get);
+mux.handle("/status/information").get(status_information_get);
+mux.handle("/report/tuners").get(report_tuners_get);
+mux.handle("/report/channels").get(report_channels_get);
+mux.handle("/report/error").get(report_error_get);
+mux.handle("/report/operations").get(report_operations_get);
+mux.handle("/report/iptv_user").get(report_iptv_user_get);
+mux.handle("/report/webui_user").get(report_webui_user_get);
+mux.handle("/report/system_usage").get(report_system_usage_get);
+mux.handle("/report/sensor/{id}")
+            .get (report_sensor_get)
+            .put (report_sensor_put)
+            .del (report_sensor_del);
+mux.handle("/report/sensor")
+            .post(report_sensor_post)
+            .get (report_sensor_get);
 ////////////////////// SYSTEM //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /system/* GET";
 mux.handle("/system/location")

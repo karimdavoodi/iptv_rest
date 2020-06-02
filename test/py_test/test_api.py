@@ -1,10 +1,26 @@
 import unittest
+import sys
 import requests
 
 #base = "http://data.moojafzar.com:8139"
 base = "http://localhost:8139"
 defAuth = requests.auth.HTTPBasicAuth('test','test')
+"""
+rdata = "{"
+for i in range(100000):
+    rdata += "\"f%d\": %d,"%(i,i)
+rdata += "\"f666\": 666"
+rdata += "}"
 
+res = requests.post(base + "/system/users",
+        auth = defAuth,
+        headers = {
+            'content-type': 'application/json',
+            'content-length': str(len(rdata)),
+            },
+        data = rdata)
+sys.exit(0)
+"""
 def check_status_code(res):
     #if res.status_code != 200: #print "##### Error #####"
     print res.url,":",res.request.method,":",res.status_code #,":",res.text
@@ -149,3 +165,4 @@ test_url("/users/message/broadcast/1", {"_id":1}, None, None, "get put post del"
 test_url("/users/message/from/1", {"_id":1}, None, None, "get put post del", False)
 test_url("/users/message/to/1", {"_id":1}, None, None, "get put post del", False)
 test_url("/users/user/1", {"_id":1}, None, None, "get put post del")
+"""

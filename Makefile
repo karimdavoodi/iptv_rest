@@ -51,7 +51,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /s/iptv_rest
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /s/iptv_rest
+CMAKE_BINARY_DIR = /home/karim/src/iptv_rest
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /s/iptv_rest/CMakeFiles /s/iptv_rest/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/iptv_rest/CMakeFiles /home/karim/src/iptv_rest/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /s/iptv_rest/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/karim/src/iptv_rest/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -298,33 +298,6 @@ src/report.cpp.s:
 	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/report.cpp.s
 .PHONY : src/report.cpp.s
 
-src/status.o: src/status.cpp.o
-
-.PHONY : src/status.o
-
-# target to build an object file
-src/status.cpp.o:
-	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/status.cpp.o
-.PHONY : src/status.cpp.o
-
-src/status.i: src/status.cpp.i
-
-.PHONY : src/status.i
-
-# target to preprocess a source file
-src/status.cpp.i:
-	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/status.cpp.i
-.PHONY : src/status.cpp.i
-
-src/status.s: src/status.cpp.s
-
-.PHONY : src/status.s
-
-# target to generate assembly for a file
-src/status.cpp.s:
-	$(MAKE) -f CMakeFiles/iptv_api.dir/build.make CMakeFiles/iptv_api.dir/src/status.cpp.s
-.PHONY : src/status.cpp.s
-
 src/storage.o: src/storage.cpp.o
 
 .PHONY : src/storage.o
@@ -461,9 +434,6 @@ help:
 	@echo "... src/report.o"
 	@echo "... src/report.i"
 	@echo "... src/report.s"
-	@echo "... src/status.o"
-	@echo "... src/status.i"
-	@echo "... src/status.s"
 	@echo "... src/storage.o"
 	@echo "... src/storage.i"
 	@echo "... src/storage.s"

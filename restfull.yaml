@@ -1,4 +1,9 @@
 ChangLog:
+    2.7: May 30, 2020
+        - change status and report sections
+        - add new api like users_accesslist 
+        - add comment for fields
+
     2.6: May 18, 2020
         - change live/inputs/iptv to live/inputs/web
         - change two path names
@@ -71,18 +76,7 @@ Authentication:  Basic Auth
 ##########            API       #######################
 #######################################################
 
-#HELP   ###############################################       
-        Description: Get information of APIs
-        Path: /api_josn
-        Method: GET
-        ResponseBody: json 
-        Path: /api_yaml
-        Method: GET
-        ResponseBody: yaml 
-
-#Status ###############################################       
-### Dashboard              
-### Sensor0 (information)
+### Reports ##############################
         Description: Get information
         Path: /status/information
         Method: GET
@@ -100,20 +94,94 @@ Authentication:  Basic Auth
                 "SystemDate": epochtime,
                 "SystemInternet": boolean,
                 "Manufacturer": string,
-                "Model": string,
+                "Server": string,
                 "CPU": string,
                 "CoreNum": int,
                 "Storage": int,
                 "Memory": int
             }
-
-### Sensor1 (CPU/MEM)  
-        Description: Get CPU & MEM current stat
-        Path: /status/cpu_mem
+        Description: Get log of errors 
+        Path: /report/error
         Method: GET
-        Parameters: 
-                    [from=int&to=int&]
+        Parameters: [from=int&to=int
                     start-time=epochtime&
+                    end-time=epochtime]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                    "_id": int,
+                    "time": epochtime,
+                    "process": string,
+                    "message": string,
+                    "level":int
+                    },
+                ]
+            }
+### Users Activity
+        Description: Get log of IPTV users activity.  
+        Path: /report/iptv_user
+        Method: GET
+        Parameters: from=int
+                    to=int
+                    start-time=epochtime
+                    end-time=epochtime
+                    user=[int]
+                    platform=[int]
+                    component=[int]
+                    category=[int]
+                    content=[int]
+                    operation=[int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                    "_id": int,
+                    "time": epochtime,
+                    "user": int,         # from users/user   
+                    "platform":int,      # from storage/contents/platforms
+                    "component":int      # from launcher/components/info
+                    "category":int,      # from storage/contents/categories
+                    "content":int,      
+                    "operation": int,    # from report/operations
+                    },
+                ]
+            }
+### System Activity
+        Description: Get log of Web UI activity.
+        Path: /report/webui_user
+        Method: GET
+        Parameters: from=int
+                    to=int
+                    start-time=epochtime
+                    end-time=epochtime
+                    user=[int]
+                    api=string
+                    operation=[int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                     {
+                    "_id": int,
+                    "time": epochtime,
+                    "user": int,         # from system/users
+                    "api": string,       # from system/users_accesslist
+                    "operation": int,    # from report/operations
+                    "oldValue":object,
+                    "newValue":object
+                    },
+                ]
+            }
+### Live Usage
+        Description: Get log of Live channels activity.
+        Path: /report/system_usage
+        Method: GET
+        Parameters: from=int
+                    to=int
+                    start-time=epochtime
                     end-time=epochtime
         ResponseBody: 
             {
@@ -125,269 +193,35 @@ Authentication:  Basic Auth
                     "sysLoad":float,
                     "cpuUsage":float,
                     "memUsage": int,
-                    }
-                ]
-
-            }
-### Sensor2 (Network)
-        Description: Get Network current stat
-        Path: /status/network
-        Method: GET
-        Parameters: 
-                    [from=int&to=int&]
-                    start-time=epochtime&
-                    end-time=epochtime
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                        "_id": int,
-                        "time": epochtime,
-                        "interfaces":[
+                    "diskUsage": int,
+                    "networkInterfaces":[
                             {
                             "name": string,
-                            "sendAve": int,
-                            "receiveAve": int
-                            },
-                        ]
-                    },
-                ]
-            }
-
-### Sensor3 (Storage)
-        Description: Get Storage current stat
-        Path: /status/storage
-        Method: GET
-        Parameters: 
-                    [from=int&to=int&]
-                    start-time=epochtime&
-                    end-time=epochtime
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                        "_id": int,
-                        "time": epochtime,
-                        "mounts":[
-                            {
-                            "name": string,
-                            "partition": string,
-                            "total": int,
-                            "usage": int,
-                            "readAve": int,
-                            "writeAve": int
-                            },
-                        ]
-                    },
-                ]
-            }
-        
-### Sensor4 (DVB)
-        Description: Get DVB current stat
-        Path: /status/dvb
-        Method: GET
-        Parameters: 
-                    [from=int&to=int&]
-                    start-time=epochtime&
-                    end-time=epochtime
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                        "_id": int,
-                        "time": epochtime,
-                        "inputDVBs":[
-                            {
-                            "_id": int,
-                            "isDVBT": boolean,
-                            "parameters": string,
-                            "channelNumber": int,
-                            "signal": int,
-                            "snr": int
-                            },
+                            "read": int,
+                            "write": int
+                            }
                         ],
-                        "outputDVBs":[
+                    "diskPartitions":[
                             {
-                            "_id": int,
-                            "frequency": int,
-                            "capacity": int
-                            },
+                            "name": string,
+                            "read": int,
+                            "write": int
+                            }
                         ]
                     }
-                ]
-            }
-        
-### Sensor5 (Input Channels)
-        Description: Get Input channels list
-        Path: /status/channels/input
-        Method: GET
-        Parameters: [from=int&to=int&]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "_id": int,
-                    "name": string,
-                    "health": int,
-                    },
-                ]
-            }
-
-### Sensor6 (Output Channels Status)
-        Description: Get Output channels list
-        Path: /status/channels/output
-        Method: GET
-        Parameters: [from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "_id": int,
-                    "name": string,
-                    "usage": int
-                    },
-                ]
-            }
-
-### Sensor7 (Output Channels Screenshut)    
-        Description: Get Output channels view list
-        Path: /status/channels/output/view
-        Method: GET
-        Parameters: [from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "_id": int,
-                    "name": string,
-                    },
-                ]
-            }
-        Path: /status/channels/output/view/{id}
-        Method: GET
-        ResponseBody: channel view image file 
-
-### Sensor8 (Users)
-        Description: Get users list
-        Path: /status/users
-        Method: GET
-        Parameters: [from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "_id": int,
-                    "name": string,
-                    "active": boolean,
-                    "online": boolean,
-                    "lastActivity": string,
-                    "lastActivityTime": epochtime
-                    },
-                ]
-            }
-
-### Sensor9 (Errors) 
-        Description: Get error list
-        Path: /status/errors
-        Method: GET
-        Parameters: 
-        Parameters: [from=int&to=int]
-                    start-time=epochtime&
-                    end-time=epochtime
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "_id": int,
-                    "time": epochtime,
-                    "error": string,
-                    "priority": int
-                    },
-                ]
-            }
-
-### Reports(Backup,Export)  ##############################
-### Users Activity
-        Description: Get log of users activity. 'user' and 'activityType' are optional 
-        Path: /report/user
-        Method: GET
-        Parameters: [from=int&to=int]
-                    start-time=epochtime&
-                    end-time=epochtime
-                    [user=int&
-                    activityType=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "_id": int,
-                    "time": epochtime,
-                    "user": int,
-                    "activityType": int
-                    },
-                ]
-            }
-### System Activity
-        Description: Get log of system activity. 'activityType' is optional 
-        Path: /report/system
-        Method: GET
-        Parameters: [from=int&to=int]
-                    start-time=epochtime&
-                    end-time=epochtime
-                    [activityType=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                     {
-                    "_id": int,
-                    "time": epochtime,
-                    "activityType": int
-                    },
-                ]
-            }
-### Live Usage
-        Description: Get log of Live channels activity.
-        Path: /report/live
-        Method: GET
-        Parameters: [from=int&to=int]
-                    start-time=epochtime&
-                    end-time=epochtime
-                    [user=int&
-                    content=int&
-                    activityType=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[
-                    {
-                    "_id": int,
-                    "time": epochtime,
-                    "user": int,
-                    "content": int,
-                    "activityType": int
-                    },
                 ]
             }
 ### VOD Usage
         Description: Get log of VOD activity.
-        Path: /report/vod
+        Path: /report/channels
         Method: GET
-        Parameters: [from=int&to=int]
-                    start-time=epochtime&
+        Parameters: from=int
+                    to=int
+                    start-time=epochtime
                     end-time=epochtime
-                    [user=int&
-                    content=int&
-                    activityType=int]
+                    inputid=[int]
+                    inputtype=[int]
+                    status=int
         ResponseBody: 
             {
                 "total":int,
@@ -395,21 +229,20 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
-                    "user": int,
-                    "content": int,
-                    "activityType": int
+                    "inputId": int,
+                    "inputType": int,   # live/inputs/types
+                    "status": int       # helth percent of input channels 
                     },
                 ]
             }
-### Components Usage
+### Tuners Usage
         Description: Get log of Components activity.
-        Path: /report/component
+        Path: /report/tuners
         Method: GET
-        Parameters: [from=int&to=int]
-                    start-time=epochtime&
+        Parameters: from=int
+                    to=int
+                    start-time=epochtime
                     end-time=epochtime
-                    [user=int&
-                    component=int]
         ResponseBody: 
             {
                 "total":int,
@@ -417,31 +250,86 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
-                    "user": int,
-                    "content": int,
-                    "activityType": string
-                    },
+                    "input":[
+                        {
+                        "tuner": int,    # from live/tuners/input
+                        "signal": int,
+                        "snr": int
+                        },
+                    ],
+                    "output":[
+                        {
+                        "tuner": int,   # from live/tuners/output
+                        "capacity": int
+                        },
+                    ]
+                }
+            }
+
+### Surver Reports
+        Description: Get log of Users Survey.
+        Path: /report/survey
+        Method: GET
+        Parameters: from=int
+                    to=int
+                    start-time=epochtime
+                    end-time=epochtime
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                    "_id": int,
+                    "time": epochtime,
+                    "user":int,
+                    "survey":[
+                        {
+                            "_id": int,         # system/survey id
+                            "grade": int
+                        }
+                    ]
                 ]
             }
-### System Users Activity
-        Description: Get log of System users.
-        Path: /report/system_user
+        Description: List of reports Operations
+        Path: /report/operations
         Method: GET
         Parameters: [from=int&to=int]
-                    start-time=epochtime&
-                    end-time=epochtime
-                    [user=int]
         ResponseBody: 
             {
                 "total":int,
                 "content":[
                     {
-                    "_id": int,
-                    "time": epochtime,
-                    "user": int,
-                    "activityType": string
-                    },
+                        "_id":int,
+                        "name":string
+                    }
                 ]
+            }
+        Description: Manage sensors
+        Path: /report/sensor
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                        ...same as 'PUT' RequestBody
+                ]
+            }
+
+        Path: /report/sensor/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: 
+            {
+                "_id": int,
+                "name":string,
+                "user":int,         # from system/users
+                "api":string,       # from /report/* APIs
+                "filters":[
+                    {
+                    "key": string,  # from report/* GET parameters
+                    "value":[int]
+                    }
+               ]
             }
 ### System  ##############################################
 ### Setting
@@ -455,22 +343,36 @@ Authentication:  Basic Auth
             {
                     "_id": 1,
                     "name": string,
-                    "debug": int,
-                    "testUserId": int,
-                    "weatherLocation": string,
-                    "pryerTimeZone": string,
-                    "pryerContentId": int,
-                    "timeZone": string,
+                    "debug": int,           # from 0..6
+                    "testUserId": int,      # from users/user
+                    "weatherLocation": string, # city name in yahoo weather
+                    "pryerTimeZone": string, # city name
+                    "pryerContentId": int,   # 'Video' type from storage/contents/info
+                    "timeZone": string,      # 
                     "systemTime": epochtime,
-                    "logo":{
-                        "ownerSmall":int,
-                        "ownerLarge":int,
-                        "manufacturerSmall":int,
-                        "manufacturerLarge":int
+                    "logo":{     # 'Logo' type from system/storage/contents/info
+                        "en":{
+                            "ownerSmall":int,
+                            "ownerLarge":int,
+                            "manufacturerSmall":int,
+                            "manufacturerLarge":int
+                            },
+                        "fa":{
+                            "ownerSmall":int,
+                            "ownerLarge":int,
+                            "manufacturerSmall":int,
+                            "manufacturerLarge":int
+                            }
+                        "ar":{
+                            "ownerSmall":int,
+                            "ownerLarge":int,
+                            "manufacturerSmall":int,
+                            "manufacturerLarge":int
+                            }
                     },
                     "subtitle":{
                         "isLeft": boolean,
-                        "components":[int, ...]
+                        "components":[int]  # launcher/components/info
                      }
                     "map":{
                         "server": string,
@@ -505,8 +407,8 @@ Authentication:  Basic Auth
                 "multicastBase": string,
                 "multicastInterface": int,
                 "addressForNAT": string,
-                "staticRoute": [string, ... ],
-                "firewallRule": [string, ... ]
+                "staticRoute": [string],
+                "firewallRule": [string]
             }
 ### System Users Profile 
         Description: Get information of current user
@@ -533,22 +435,29 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string,
-                "profileImage": int,
+                "profileImage": int,        # 'Logo' type from system/storage/contents/info
                 "locationName": string,
-                "creatorId": int, 
+                "creatorId": int,           # from system/users 
                 "description": string,
                 "start": epochtime,
                 "expire": epochtime,
-                "weektime": [int, ...],
-                "accessList": { 
+                "weektime": [int],
+                "accessList": {             # from system/users_accesslist 
                     "/system/users":[GET,PUT,POST,DELET],
                     "/system/pms":[GET,PUT,POST,DELET],
                     ...
-            },   
+                },   
                 "user": string,
                 "pass": string,
             }
-
+        Path: /system/users_accesslist
+        Method: GET
+        ResponseBody: 
+            {
+                "api1":[method,..],
+                "api2":[method,..],
+                ...
+            }
 ### Hotel Survey
         Description: Manage system users
         Path: /system/survey
@@ -811,7 +720,7 @@ Authentication:  Basic Auth
                         "fa": string,
                         "ar": string
                         }, 
-                    "logo": int,
+                    "logo": int,  # 'Logo' type from storage/contents/info
                     },
                  ]
             }
@@ -830,15 +739,15 @@ Authentication:  Basic Auth
                 "content":[    
                     {
                         "_id": int,
-                        "type": int,
-                        "format": int,
-                        "category":[int, ...],
+                        "type": int,                # from storage/contents/types
+                        "format": int,              # from storage/contents/formats
+                        "category":[int],      # from storage/contents/categories
                         "name": string,
-                        "permission":[int, ...],
+                        "permission":[int],    # from system/permission
                         "price": int,
-                        "platform":[int, ...],
+                        "platform":[int],      # from storage/contents/platforms
                         "date": epochtime,
-                        "languages" : [2-char, ... ], 
+                        "languages" : [string],  # from 'en','fa','ar' 
                         "description":[
                             "en": {
                                 "name": string,
@@ -895,8 +804,8 @@ Authentication:  Basic Auth
                             "_id": int,
                             "content": int,
                             "name": string,
-                            "categories": [int,...], 
-                            "weektime": [int, ...],
+                            "categories": [int],    # from storage/contents/categories
+                            "weektime": [int],     # from system/weektime
                             "expire": epochtime,
                             "period": int,
                         },
@@ -961,10 +870,10 @@ Authentication:  Basic Auth
                 "errrate": string, 
                 "pol": string, 
                 "symrate": int,
-                "switch": int, 
+                "switch": int     # from 1,2,3,4
             }
 
-        Path: /live/tuners/input/scan/{id}
+        Path: /live/tuners/input_scan/{id}
         Method: GET
         ResponseBody: 
             {
@@ -1035,15 +944,10 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string, 
-                "dvb_id": int, 
-                "is_dvbt": boolean, 
-                "sid": int, 
-                "aid": int, 
-                "vid": int,
-                "freq": int, 
-                "pol": int, 
-                "scramble": boolean, 
-                "symb": int
+                "dvb_id": int,          # from /live/tuners/inputs
+                "sid": int,             # from /live/tuners/input/scan
+                "aid": int,             # from /live/tuners/input/scan
+                "vid": int,             # from /live/tuners/input/scan
             }
 
 
@@ -1071,9 +975,9 @@ Authentication:  Basic Auth
                 "manualSchedule": boolean,
                 "contents": [ 
                         {
-                        "content": int,
-                        "weekday": int,
-                        "time": int,
+                        "content": int,   # type 'Video' or 'Audio' from storage/contents/info
+                        "weekday": int,   # from system/weektime  
+                        "time": int,      # time of day format 'hhmm'
                         }
                     ],
                 
@@ -1201,14 +1105,14 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string, 
-                "preset": string,
-                "videoCodec": string, 
-                "videoSize": string, 
-                "videoRate": string, 
-                "videoFps": string, 
-                "videoProfile": string, 
-                "audioCodec": string, 
-                "audioRate": string, 
+                "preset": string,       # from 'ultrafast','fast','medium','slow','veryslow' 
+                "videoCodec": string,   # from  'h265','h264','mpeg2' 
+                "videoSize": string,    # from '4K', 'FHD', 'HD', 'SD', 'CD' 
+                "videoRate": int,       
+                "videoFps": int, 
+                "videoProfile": string, # from 'Baseline', 'Main', 'High'
+                "audioCodec": string,   # from 'aac','mp3','mp2' 
+                "audioRate": int, 
                 "extra": string 
             }
 
@@ -1231,9 +1135,9 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string, 
-                "input": int, 
-                "inputType": int, 
-                "profile": int,
+                "input": int,         
+                "inputType": int,    # from live/inputs/types 
+                "profile": int,      # from live/transcode_profile
             }
 
 
@@ -1257,7 +1161,7 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string, 
-                "protocol": string,
+                "protocol": string,  # from "cccam","camd35","cs378x","gbox","newcamd"
                 "server": string, 
                 "user": string, 
                 "pass": string 
@@ -1283,9 +1187,9 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "input": int, 
-                "inputType": int, 
+                "inputType": int,    # from live/inputs/types 
                 "bssKey": string,
-                "cccam": int
+                "cccam": int         # from live/cccam
             }
 
 
@@ -1309,11 +1213,40 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "input": int, 
-                "inputType": int, 
+                "inputType": int,    # from live/inputs/types 
                 "crypto": string,
                 "key": string 
             }
 
+### Mixed Channels   
+        Description: Manage of mixed channels
+        Path: /live/inputs/mixed
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    ... same as 'PUT' RequestBody
+                 ]
+            }
+
+        Path: /live/inputs/mixed/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: 
+            {
+                "_id": int,
+                "active": boolean,
+                "input1": int, 
+                "input2": int, 
+                "inputType1": int,    # from live/inputs/types 
+                "inputType2": int,    # from live/inputs/types 
+                "input2mix": string,  # from 'multiple','cover'
+                "input2x": int, 
+                "input2y": int, 
+                "input2width": int, 
+                "input2height": int 
+            }
 
 ### Live Output  #########################################
 ### Silver Channels
@@ -1335,19 +1268,20 @@ Authentication:  Basic Auth
             {
                 "_id": int,
                 "active": boolean,
-                "inputId": int,   
-                "inputType": int,   
+                "input": int,   
+                "inputType": int,   # from live/inputs/types 
                 "name": string, 
-                "logo": int,
-                "permission": int,
-                "category": [int],
+                "logo": int,        # 'Logo' from storage/contents/info
+                "permission": int,  # from system/permission
+                "category": [int],  # from storage/contents/categories
                 "freq": int, 
                 "sid": int, 
                 "recordTime": int,
                 "udp": boolean,
                 "http": boolean,
                 "rtsp": boolean,
-                "hls": boolean
+                "hls": boolean,
+                "snapshut":int      # contentID of channel snapshut as 'Logo' type    
             }
 
 
@@ -1376,15 +1310,30 @@ Authentication:  Basic Auth
                 "satellites":[ 
                     {
                         "name": string,
-                        "switch": int,
-                        "LNC":["LH", "LV", "HH", "HV"]
+                        "switch": int,     # from 1,2,3,4
+                        "LNC":[string]     # from "LH", "LV", "HH", "HV"
                     }
                 ] 
             }
 
 ### Launcher ############################################# 
 ### Components 
-        Description: Types of components like: LiveTV, LiveRadio, VoD, AoD, Picture, ..
+        Description: Types of fonst 
+        Path: /launcher/components/fonts
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                        {
+                            "_id": int,
+                            "name": string,
+                            "language" : string,  # from 'en','fa','ar' 
+                        },
+                 ]
+            }
+        Description: Types of components 
         Path: /launcher/components/types
         Method: GET
         Parameters: [from=int&to=int]
@@ -1419,16 +1368,16 @@ Authentication:  Basic Auth
             {
                 "_id": int,
                 "active": boolean,
-                "type": int,
+                "type": int,            # from launcher/components/types
                 "name":{
                     "en": string,
                     "fa": string,
                     "ar": string
                     }, 
-                "logo": int,
+                "logo": int,            # 'Logo' type from storage/contents/info
                 "url":string,
-                "platform":[int,...],
-                "category":[int, ...]
+                "platform":[int],  # from storage/contents/platforms
+                "category":[int]   # from storage/contents/categories
             }
 
         Path: /launcher/components/info/{id}
@@ -1460,9 +1409,9 @@ Authentication:  Basic Auth
                     "fa": string,
                     "ar": string
                     }, 
-                "logo": int,
-                "permission": int,
-                "components": [int, ... ]
+                "logo": int,            # 'Logo' type from storage/contents/info
+                "permission": int,      # from system/permission
+                "components": [int]     # from launcher/components/info
             }
 
         Path: /launcher/menu/{id}
@@ -1489,8 +1438,8 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string,
-                "menu": [int, ... ],
-                "icons":{
+                "menu": [int],          # from launcher/menu
+                "icons":{               # 'Logo' type from storage/contents/info
                     "background": int,
                     "company":int,
                     "net_ok":int,
@@ -1500,34 +1449,35 @@ Authentication:  Basic Auth
                     "logo": {
                         "en": int,
                         "fa": int,
-                        "ar": int
+                        "ar": int,
                         }
+                    }
                 },
-                "font":{
-                    "en": string,
-                    "fa": string,
-                    "ar": string
-                    },
+                "font":{                # from launcher/components/fonts
+                        "en": int,
+                        "fa": int,
+                        "ar": int,
+                },
                 "welcome":{
-                    "en": string,
-                    "fa": string,
-                    "ar": string
-                    },
+                        "en": string,
+                        "fa": string,
+                        "ar": string,
+                },
                 "user":{
-                    "en": string,
-                    "fa": string,
-                    "ar": string
-                    },
-                "language": string,
+                        "en": string,
+                        "fa": string,
+                        "ar": string,
+                },
+                "language" : string,  # from 'en','fa','ar' 
                 "welcomeClip": boolean,
-                "welcomeClipMedia": {
-                            "en":int,
-                            "fa":int,
-                            "ar":int
-                            },
+                "welcomeClipMedia":{  # 'Video' type from storage/contents/info
+                        "en": int,
+                        "fa": int,
+                        "ar": int,
+                },
                 "unitName": string,
-                "clientHotspot": string,
-                "defaultChannel": int 
+                "clientHotspot": string,  # from 'AccessPoint', 'TV/STB'
+                "defaultChannel": int     # from live/output/silver
             }
 
         Path: /launcher/setting/{id}
@@ -1555,8 +1505,8 @@ Authentication:  Basic Auth
                 "_id": int,
                 "active": boolean,
                 "name": string, 
-                "permission": [int, ... ],
-                "weektime": [int, ... ] 
+                "permission": [int],      # from system/permission
+                "weekday": [int]          # from system/weektime  
             }
 
         Path: /users/group/{id}
@@ -1585,21 +1535,21 @@ Authentication:  Basic Auth
                 "active": boolean,
                 "name": string, 
                 "description": string,
-                "group": [int, ... ],
+                "group": [int],         # from users/group
                 "connections": int, 
                 "ipAddress": string, 
                 "macAddress": string, 
-                "language": string, 
-                "launcher": int, 
-                "user": string, 
-                "pass": string, 
+                "language" : string,  # from 'en','fa','ar' 
+                "launcher": int,        # from launcher/setting
+                "user": string,         # for Authentication
+                "pass": string,         # for Authorization
                 "ssidUser": string,
                 "ssidPass": string,
-                "vodId": int,
-                "npvr": int,
+                "vodId": int,           # from system/vod_account 
+                "npvr": int,            # from 0 until storage/setting(NPVR/maxPerUser) 
                 "start": epochtime,
                 "expire": epochtime,
-                "stats":{
+                "stats":{               # cache of user stat. don't show in UI   
                     "timers":{},
                     "npvr":[]
                 }
@@ -1626,7 +1576,7 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                 "_id": int,
-                "user": int,
+                "user": int,            # from users/user
                 "time": epochtime,
                 "subject": string, 
                 "body": string,
@@ -1644,7 +1594,7 @@ Authentication:  Basic Auth
                 "content":[    
                     {   
                     "_id": int,
-                    "user": int,
+                    "user": int,        # from users/user
                     "time": epochtime,
                     "subject": string, 
                     "body": string,
@@ -1672,9 +1622,9 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                 "_id": int,
-                "group": [ int, ... ],
+                "group": [int],         # from users/group
                 "time": epochtime,
-                "weektime": [int, ... ],
+                "weekday": [int],          # from system/weektime  
                 "expire": epochtime,
                 "subject": string, 
                 "body": string,

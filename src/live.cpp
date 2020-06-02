@@ -6,19 +6,25 @@
 
 void live_tuners_hardware_input_get(served::response &res, const served::request &req)
 {
+    // TODO: remove API
 	CHECK_AUTH;
-    GET_COL("live_tuners_hardware_input");
+    res.set_header("Content-type", "application/json");     
+    res << ""; 
+    res.set_status(200);
 }
 void live_tuners_hardware_output_get(served::response &res, const served::request &req)
 {
+    // TODO: remove API
 	CHECK_AUTH;
-    GET_COL("live_tuners_hardware_output");
+    res.set_header("Content-type", "application/json");     
+    res << ""; 
+    res.set_status(200);
 }
 void live_tuners_input_scan_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     int id;
-    if(!get_id(req, id) ){
+    if(!Util::get_id(req, id) ){
         ERRORSEND(res, 400, 1002, "Invalid id!");
     }
     auto tuner = Mongo::find_id("live_tuners_input", id);
@@ -40,15 +46,16 @@ void live_tuners_input_post(served::response &res, const served::request &req)
 	CHECK_AUTH;
     POST_ID_COL("live_tuners_input");
 }
+void live_tuners_input_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    Util::fill_input_tuners_in_db();
+    GET_COL("live_tuners_input");
+}
 void live_tuners_input_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     DEL_ID_COL("live_tuners_input");
-}
-void live_tuners_input_get(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    GET_COL("live_tuners_input");
 }
 
 void live_tuners_output_put(served::response &res, const served::request &req)
@@ -61,14 +68,10 @@ void live_tuners_output_post(served::response &res, const served::request &req)
 	CHECK_AUTH;
     POST_ID1_COL("live_tuners_output");
 }
-void live_tuners_output_del(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    DEL_ID1_COL("live_tuners_output");
-}
 void live_tuners_output_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
+    Util::fill_output_tuners_in_db();
     GET_ID1_COL("live_tuners_output");
 }
 void live_inputs_types_get(served::response &res, const served::request &req)

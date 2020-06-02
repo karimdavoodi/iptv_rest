@@ -36,20 +36,10 @@ void launcher_components_types_get(served::response &res, const served::request 
     CHECK_AUTH;
     GET_COL("launcher_components_types");
 }
-void launcher_components_types_put(served::response &res, const served::request &req)
+void launcher_components_fonts_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    PUT_ID_COL("launcher_components_types");
-}
-void launcher_components_types_post(served::response &res, const served::request &req)
-{
-    CHECK_AUTH;
-    POST_ID_COL("launcher_components_types");
-}
-void launcher_components_types_del(served::response &res, const served::request &req)
-{
-    CHECK_AUTH;
-    DEL_ID_COL("launcher_components_types");
+    GET_COL("launcher_components_fonts");
 }
 void launcher_menu_get(served::response &res, const served::request &req)
 {

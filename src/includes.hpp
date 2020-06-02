@@ -1,4 +1,3 @@
-#include "status.hpp"
 #include "report.hpp"
 #include "system.hpp"
 #include "storage.hpp"
