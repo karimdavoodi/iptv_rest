@@ -8,6 +8,11 @@
 using namespace std;
 time_t currentTime = 0;
 string currentZone = "";
+void system_general_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_COL("system_general");
+}
 void system_location_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
@@ -107,18 +112,20 @@ void system_network_put(served::response &res, const served::request &req)
     json net = json::parse(req.body());
     if(net["interfaces"].is_array()){
         for(const auto& nic : net["interfaces"]){
-            if(nic["ip"].get<string>() == "" ) continue;
-            ostringstream cmd;
-            cmd << "ifconfig " << nic["name"].get<string>() << " " 
-                << nic["ip"].get<string>() << " up";
-            BOOST_LOG_TRIVIAL(trace) << cmd.str();
-            system(cmd.str().c_str());
+            string name = nic["name"];
+            string ip = nic["ip"];
+            if(!ip.size() || !name.size()) continue;
+            string cmd = "ip address flush dev " + name;
+            //Util::system(cmd.str()); FIXME
+            cmd = "ip address add " + ip + "/24 dev " + name; // TODO: apply real netmask 
+            //Util::system(cmd.str()); FIXME
         }
     }
-    if(net["gateway"].size() > 0 ){
-        string cmd = "route add default gw " + net["gateway"].get<string>();
+    string gw = net["gateway"];
+    if(gw.size() > 0 ){
+        string cmd = "ip route add default via "+ gw;
         BOOST_LOG_TRIVIAL(trace) << cmd;
-        system(cmd.c_str());
+        //Util::system(cmd); FIXME
     }
     // TODO .... run all config 
     // and add to /etc/netplan/01-network-manager-all.yaml
@@ -154,6 +161,11 @@ void system_users_me_get(served::response &res, const served::request &req)
     res << Mongo::find_one("system_users","{\"user\": \"" + user + "\"}");
     res.set_status(200);                                        \
 }
+void system_cities_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_COL("system_cities");
+}
 void system_survey_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
@@ -177,12 +189,22 @@ void system_survey_del(served::response &res, const served::request &req)
 void system_pms_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_ID1_COL("system_pms");
+    GET_COL("system_pms");
 }
 void system_pms_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    PUT_ID1_COL("system_pms");
+    PUT_ID_COL("system_pms");
+}
+void system_pms_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("system_pms");
+}
+void system_pms_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("system_pms");
 }
 
 void system_vod_account_get(served::response &res, const served::request &req)
@@ -246,19 +268,80 @@ void system_weektime_del(served::response &res, const served::request &req)
 	CHECK_AUTH;
     DEL_ID_COL("system_weektime");
 }
+void system_backup_list_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    auto path = string(MEDIA_ROOT) + "Backup/";
+    CHECK_PATH(path);
+    json list = json::array();
+    for(auto file : boost::filesystem::directory_iterator(path)){
+        string name = file.path().filename().c_str();
+        json item = json::object();
+        item["name"] = (string)file.path().filename().c_str();
+        item["size"] = (long)boost::filesystem::file_size(file);
+        item["time"] = (long)boost::filesystem::last_write_time(file); 
+        list.push_back(item);
+    }
+    json all = json::object();
+    all["total"] = list.size();
+    all["content"] = list;
+    res << all.dump(2);
+    res.set_status(200);
+}
 void system_backup_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    Util::sys_backup();
-    SEND_FILE("backup.zip");	
+    auto name = req.query.get("name");
+    if(name.size()){
+        auto path = "Backup/" + name;
+        SEND_FILE(path);	
+        res.set_status(200);
+    }else{
+        ERRORSEND(res, 400, 1002, "Parameter required");
+    }
+}
+void system_backup_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    auto name = req.query.get("name");
+    if(name.size()){
+        auto path = "Backup/" + name;
+        if(path.find(".gz") == string::npos)
+            path = path + ".gz";
+        Util::sys_backup(path);
+        res.set_status(200);
+    }else{
+        ERRORSEND(res, 400, 1002, "Parameter required");
+    }
 }
 void system_backup_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    RECV_FILE("backup.zip");	
-    Util::sys_restore();
+    auto name = req.query.get("name");
+    if(name.size()){
+        auto path = "Backup/" + name;
+        Util::sys_restore(path);
+        res.set_status(200);
+    }else{
+        ERRORSEND(res, 400, 1002, "Parameter required");
+    }
 }
-
+void system_backup_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    auto name = req.query.get("name");
+    if(name.size()){
+        auto path = string(MEDIA_ROOT) +  "Backup/" + name;
+        if(boost::filesystem::exists(path)){
+            boost::filesystem::remove(path);
+            res.set_status(200);
+        }else{
+            ERRORSEND(res, 400, 1002, "Fie not found!");
+        }
+    }else{
+        ERRORSEND(res, 400, 1002, "Parameter required");
+    }
+}
 void system_license_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
@@ -280,9 +363,9 @@ void system_firmware_put(served::response &res, const served::request &req)
     std::string deb = std::string(MEDIA_ROOT) + "firmware.deb";
     if(boost::filesystem::exists(deb)){
         auto cmd = std::string("dpkg -i ") + deb;
-        std::system(cmd.c_str());
+        Util::system(cmd);
     }
-    Util::sys_update();
+    res.set_status(200);
 }
 void system_logout_get(served::response &res, const served::request &req)
 {
@@ -313,5 +396,30 @@ void system_reboot_get(served::response &res, const served::request &req)
         res.set_status(served::status_2XX::OK);
     else
         res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
+}
+void system_operations_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_COL("system_operations");
+}
+void system_sensor_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_COL("system_sensor");
+}
+void system_sensor_put(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    PUT_ID_COL("system_sensor");
+}
+void system_sensor_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("system_sensor");
+}
+void system_sensor_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("system_sensor");
 }
 

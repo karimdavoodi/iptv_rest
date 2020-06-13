@@ -42,6 +42,11 @@ void live_inputs_web_del(served::response &, const served::request &);
 void live_inputs_web_put(served::response &, const served::request &);
 void live_inputs_web_post(served::response &, const served::request &);
 
+void live_inputs_mixed_get(served::response &, const served::request &);
+void live_inputs_mixed_del(served::response &, const served::request &);
+void live_inputs_mixed_put(served::response &, const served::request &);
+void live_inputs_mixed_post(served::response &, const served::request &);
+
 void live_inputs_virtual_net_get(served::response &, const served::request &);
 void live_inputs_virtual_net_del(served::response &, const served::request &);
 void live_inputs_virtual_net_put(served::response &, const served::request &);

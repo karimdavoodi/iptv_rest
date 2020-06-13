@@ -1,4 +1,8 @@
 ChangLog:
+    2.8: Jun 6, 2020
+        - change report/operation and report/sensor to system/operation and system/sensor
+        - add all fields as parameter to 'GET' method
+
     2.7: May 30, 2020
         - change status and report sections
         - add new api like users_accesslist 
@@ -70,7 +74,27 @@ Methods:
 Authentication:  Basic Auth 
     - Any API must sent Base64 of 'user:pass' with 'Authorization' header
       #like: Authorization: Basic 'Base64 of user:pass'  
-      #example: curl ##user user:pass  https://server/
+      #example: curl -u user:pass  http://server:8139/..
+#######################################################
+Query: in 'GET' method, use any field as parameter. (not nested field) 
+    with this syntax:
+        field=value                  => check if field == value
+        field=value1,value2,value3   => check if field is in [value1,value2,value3]
+        field=value1:value2          => check if field is between value1 and value2
+    special parameters: 
+        'from' and 'to' for paging of result
+    deprecrated: but not disabled 
+        you can use "time=1:2" instead of "start-time=1&end-time=2"
+        you can use "_id=1:2" instead of "start-id=1&end-id=2"
+    example: 
+        curl "http://127.0.0.1:8139/launcher/components/info?type=2"
+            records that 'type' is 2
+        curl "http://127.0.0.1:8139/launcher/components/info?type=2&active=true"
+            records that 'type' is 2, and 'active' is true
+        curl "http://127.0.0.1:8139/launcher/components/info?type=1:5"
+            records that 'type' is between 1 and 5
+        curl "http://127.0.0.1:8139/launcher/components/info?type=1:5&logo=37,60"
+            records that 'type' is between 1 and 5, and 'logo' is (37 or 60)
 
 #######################################################
 ##########            API       #######################
@@ -85,27 +109,27 @@ Authentication:  Basic Auth
                 "_id": 1,
                 "Running": boolean,
                 "Owner": string,
+                "OwnerId": string,
                 "LicenseExpire": string,
                 "Serial": string,
                 "Version": string,
                 "Uptime": epochtime,
+                "Kernel": string,
                 "LastReset": epochtime,
                 "SystemIP": string,
                 "SystemDate": epochtime,
                 "SystemInternet": boolean,
                 "Manufacturer": string,
-                "Server": string,
+                "Model": string,
                 "CPU": string,
                 "CoreNum": int,
-                "Storage": int,
-                "Memory": int
+                "Storage": int,     # in Byte
+                "Memory": int       # in Byte
             }
         Description: Get log of errors 
         Path: /report/error
         Method: GET
-        Parameters: [from=int&to=int
-                    start-time=epochtime&
-                    end-time=epochtime]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -123,16 +147,7 @@ Authentication:  Basic Auth
         Description: Get log of IPTV users activity.  
         Path: /report/iptv_user
         Method: GET
-        Parameters: from=int
-                    to=int
-                    start-time=epochtime
-                    end-time=epochtime
-                    user=[int]
-                    platform=[int]
-                    component=[int]
-                    category=[int]
-                    content=[int]
-                    operation=[int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -144,7 +159,7 @@ Authentication:  Basic Auth
                     "platform":int,      # from storage/contents/platforms
                     "component":int      # from launcher/components/info
                     "category":int,      # from storage/contents/categories
-                    "content":int,      
+                    "content":int,       # from storage/contents/info 
                     "operation": int,    # from report/operations
                     },
                 ]
@@ -153,13 +168,7 @@ Authentication:  Basic Auth
         Description: Get log of Web UI activity.
         Path: /report/webui_user
         Method: GET
-        Parameters: from=int
-                    to=int
-                    start-time=epochtime
-                    end-time=epochtime
-                    user=[int]
-                    api=string
-                    operation=[int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -179,10 +188,7 @@ Authentication:  Basic Auth
         Description: Get log of Live channels activity.
         Path: /report/system_usage
         Method: GET
-        Parameters: from=int
-                    to=int
-                    start-time=epochtime
-                    end-time=epochtime
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -190,22 +196,22 @@ Authentication:  Basic Auth
                     {
                     "_id": int,
                     "time": epochtime,
-                    "sysLoad":float,
-                    "cpuUsage":float,
-                    "memUsage": int,
-                    "diskUsage": int,
+                    "sysLoad":float,        # from 0.0 .. 100(or more)
+                    "cpuUsage":float,       # from 0.0 .. 1.0
+                    "memUsage": float,      # from 0.0 .. 1.0
+                    "diskUsage": float,     # from 0.0 .. 1.0 
                     "networkInterfaces":[
                             {
                             "name": string,
-                            "read": int,
-                            "write": int
+                            "read": int,    # in Byte
+                            "write": int    # in Byte
                             }
                         ],
                     "diskPartitions":[
                             {
                             "name": string,
-                            "read": int,
-                            "write": int
+                            "read": int,    # in Byte
+                            "write": int    # in Byte
                             }
                         ]
                     }
@@ -215,13 +221,7 @@ Authentication:  Basic Auth
         Description: Get log of VOD activity.
         Path: /report/channels
         Method: GET
-        Parameters: from=int
-                    to=int
-                    start-time=epochtime
-                    end-time=epochtime
-                    inputid=[int]
-                    inputtype=[int]
-                    status=int
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -231,7 +231,7 @@ Authentication:  Basic Auth
                     "time": epochtime,
                     "inputId": int,
                     "inputType": int,   # live/inputs/types
-                    "status": int       # helth percent of input channels 
+                    "status": int       # from 0 .. 100, helth percent of input channels 
                     },
                 ]
             }
@@ -239,10 +239,7 @@ Authentication:  Basic Auth
         Description: Get log of Components activity.
         Path: /report/tuners
         Method: GET
-        Parameters: from=int
-                    to=int
-                    start-time=epochtime
-                    end-time=epochtime
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -253,14 +250,14 @@ Authentication:  Basic Auth
                     "input":[
                         {
                         "tuner": int,    # from live/tuners/input
-                        "signal": int,
-                        "snr": int
+                        "signal": int,   # from 0 .. 65000
+                        "snr": int       # from 0 .. 65000
                         },
                     ],
                     "output":[
                         {
                         "tuner": int,   # from live/tuners/output
-                        "capacity": int
+                        "capacity": int # from 0 .. 100
                         },
                     ]
                 }
@@ -270,10 +267,7 @@ Authentication:  Basic Auth
         Description: Get log of Users Survey.
         Path: /report/survey
         Method: GET
-        Parameters: from=int
-                    to=int
-                    start-time=epochtime
-                    end-time=epochtime
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -285,13 +279,13 @@ Authentication:  Basic Auth
                     "survey":[
                         {
                             "_id": int,         # system/survey id
-                            "grade": int
+                            "grade": int        # from 0 .. 5
                         }
                     ]
                 ]
             }
         Description: List of reports Operations
-        Path: /report/operations
+        Path: /system/operations
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -305,7 +299,7 @@ Authentication:  Basic Auth
                 ]
             }
         Description: Manage sensors
-        Path: /report/sensor
+        Path: /system/sensor
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -316,7 +310,7 @@ Authentication:  Basic Auth
                 ]
             }
 
-        Path: /report/sensor/{id}
+        Path: /system/sensor/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
@@ -327,12 +321,38 @@ Authentication:  Basic Auth
                 "filters":[
                     {
                     "key": string,  # from report/* GET parameters
-                    "value":[int]
+                    "valueType":string, # from 'int', 'string', 'boolean'
+                    "value":[string]
                     }
                ]
             }
 ### System  ##############################################
 ### Setting
+        Description: Get general setting 
+        Path: /system/general
+        Method: GET
+        ResponseBody: 
+        {
+        "_id": int,
+        "debug": int,
+        "testUserId": int,
+        "logo":{
+            "en":{
+                "manufacturerLarge": int,
+                "manufacturerSmall": int
+            },
+            "fa":{
+                "manufacturerLarge": int,
+                "manufacturerSmall": int
+            },
+            "ar":{
+                "manufacturerLarge": int,
+                "manufacturerSmall": int
+            }
+        }
+
+        Description: Manage localization data 
+        ResponseBody: same as 'PUT' RequestBody
         Description: Manage localization data 
         Path: /system/location
         Method: GET
@@ -342,32 +362,22 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                     "_id": 1,
-                    "name": string,
-                    "debug": int,           # from 0..6
-                    "testUserId": int,      # from users/user
-                    "weatherLocation": string, # city name in yahoo weather
-                    "pryerTimeZone": string, # city name
-                    "pryerContentId": int,   # 'Video' type from storage/contents/info
-                    "timeZone": string,      # 
+                    "location": int,        # from system/cities
+                    "azanContent": int,     # 'Video' type from storage/contents/info
+                    "timeZone": string,     # 
                     "systemTime": epochtime,
                     "logo":{     # 'Logo' type from system/storage/contents/info
                         "en":{
-                            "ownerSmall":int,
-                            "ownerLarge":int,
-                            "manufacturerSmall":int,
-                            "manufacturerLarge":int
+                            "ownerSmall":int, 
+                            "ownerLarge":int, 
                             },
                         "fa":{
                             "ownerSmall":int,
                             "ownerLarge":int,
-                            "manufacturerSmall":int,
-                            "manufacturerLarge":int
                             }
                         "ar":{
                             "ownerSmall":int,
                             "ownerLarge":int,
-                            "manufacturerSmall":int,
-                            "manufacturerLarge":int
                             }
                     },
                     "subtitle":{
@@ -381,13 +391,30 @@ Authentication:  Basic Auth
                         "zoom":int
                      }
             }
+        Description: List of cities for weather and prayerTime
+        Path: /system/cities
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                    "_id": int,
+                    "country": string,
+                    "name":{
+                        "en": string,
+                        "fa": string,
+                        "ar": string
+                    }
+                ]
+            }
 
 ### Network
         Description: Manage network setting
         Path: /system/network
         Method: GET
         ResponseBody: same as 'PUT' RequestBody
-
         Method: PUT,POST
         RequestBody: 
             {
@@ -401,14 +428,14 @@ Authentication:  Basic Auth
                     "mask": string,
                     },
                    ],
-                "dns": string,
-                "gateway": string,
-                "mainInterface": int,
-                "multicastBase": string,
-                "multicastInterface": int,
-                "addressForNAT": string,
-                "staticRoute": [string],
-                "firewallRule": [string]
+                "dns": string,               # ip address
+                "gateway": string,           # ip address
+                "mainInterface": int,        # interface id
+                "multicastBase": int,        # Multicast class : 224 .. 239
+                "multicastInterface": int,   # interface id
+                "addressForNAT": string,     # ip:[port] address
+                "staticRoute": [string],     # string to pass to 'route' command
+                "firewallRule": [string]     # string to pass to 'iptables' command
             }
 ### System Users Profile 
         Description: Get information of current user
@@ -419,7 +446,7 @@ Authentication:  Basic Auth
         Description: Manage system users
         Path: /system/users
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -444,17 +471,15 @@ Authentication:  Basic Auth
                 "weektime": [int],
                 "accessList": {             # from system/users_accesslist 
                     "/system/users":[GET,PUT,POST,DELET],
-                    "/system/pms":[GET,PUT,POST,DELET],
-                    ...
                 },   
-                "user": string,
-                "pass": string,
+                "user": string,     # use for Authorization
+                "pass": string,     # use for Authorization
             }
         Path: /system/users_accesslist
         Method: GET
         ResponseBody: 
             {
-                "api1":[method,..],
+                "api1":[method,..],    #from APIs of this document
                 "api2":[method,..],
                 ...
             }
@@ -476,6 +501,7 @@ Authentication:  Basic Auth
         RequestBody: 
             {
                 "_id": int,
+                "active": boolean,
                 "description":{
                     "en": string,
                     "fa": string,
@@ -486,13 +512,21 @@ Authentication:  Basic Auth
         Description: Manage PMS setting
         Path: /system/pms
         Method: GET
-        ResponseBody: same as 'PUT' RequestBody 
+        Parameters: [from=int&to=int] and all record's fields
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                        ...same as 'PUT' RequestBody
+                ]
+            }
 
-        Method: PUT, POST  
+        Path: /system/pms/{id}
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": 1,
-                "active": boolean,
+                "active": boolean,  
                 "name": string,
                 "address": string,
                 "user": string,
@@ -503,7 +537,7 @@ Authentication:  Basic Auth
         Description: Manage VOD accounts
         Path: /system/vod_account
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -513,7 +547,7 @@ Authentication:  Basic Auth
             }
 
         Path: /system/vod_account/{id}
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                     "_id": int,
@@ -522,14 +556,12 @@ Authentication:  Basic Auth
                     "pass": string,
             }
 
-        Path: /system/vod_account/{id}
-        Method: DELETE 
 
 ### Permissions
         Description: Manage of Permissions
         Path: /system/permission
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -552,7 +584,7 @@ Authentication:  Basic Auth
         Description: Manage of Week Times
         Path: /system/weektime
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -580,15 +612,40 @@ Authentication:  Basic Auth
             }
 
 ### Backup/Restore
-        Description: Backup Setting
-        Path: /system/backup
+        Description: List of Backup files
+        Path: /system/backup/list
         Method: GET
-        ResponseBody: application/gzip file
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                        "name": string,
+                        "size": int,
+                        "time": epochtime
+                    }
+                ]
+            }
 
-        Description: Restor Setting
-        Path: /system/backup
-        Method: PUT  
-        RequestBody: application/gzip file
+        Description: Make new Backup
+        Path: /system/backup/backup
+        Parameters: name=string
+        Method: POST
+
+        Description: Delete a Backup
+        Path: /system/backup/backup
+        Parameters: name=string
+        Method: DELETE
+
+        Description: Download a Backup
+        Path: /system/backup/backup
+        Parameters: name=string
+        Method: GET
+
+        Description: Restore a Backup
+        Path: /system/backup/backup
+        Parameters: name=string
+        Method: PUT
 
 ### Update
         Description: Get license
@@ -665,9 +722,6 @@ Authentication:  Basic Auth
                     },
                  ]
             }
-        Path: /storage/contents/types/{id}
-        Method: GET, PUT, POST, DELETE
-        RequestBody: same as GET ResponsBody 
 
         Description: Get list of contents formats like mp3, mp4
         Path: /storage/contents/formats
@@ -683,9 +737,6 @@ Authentication:  Basic Auth
                     },
                  ]
             }
-        Path: /storage/contents/formats/{id}
-        Method: GET, PUT, POST, DELETE
-        RequestBody: same as GET ResponsBody 
 
         Description: Get list of platforms like: samsung, lg, android, amino
         Path: /storage/contents/platforms
@@ -701,9 +752,6 @@ Authentication:  Basic Auth
                     },
                  ]
             }
-        Path: /storage/contents/platforms/{id}
-        Method: GET, PUT, POST, DELETE
-        RequestBody: same as GET ResponsBody 
 
         Description: Get list of categories
         Path: /storage/contents/categories
@@ -748,7 +796,7 @@ Authentication:  Basic Auth
                         "platform":[int],      # from storage/contents/platforms
                         "date": epochtime,
                         "languages" : [string],  # from 'en','fa','ar' 
-                        "description":[
+                        "description":{
                             "en": {
                                 "name": string,
                                 "description": string
@@ -761,7 +809,7 @@ Authentication:  Basic Auth
                                 "name": string,
                                 "description": string
                             }
-                        ]
+                        }
                     },
                 ]
             }
@@ -802,50 +850,22 @@ Authentication:  Basic Auth
                 "content":[
                         {
                             "_id": int,
-                            "content": int,
+                            "content": int,        # 'Video','Picture','Text'   
                             "name": string,
-                            "categories": [int],    # from storage/contents/categories
+                            "categories": [int],   # from storage/contents/categories
                             "weektime": [int],     # from system/weektime
+                            "start": epochtime,
                             "expire": epochtime,
                             "period": int,
                         },
                     ]
             }
         Path: /storage/advertize/{id}
-        Method: GET, PUT, POST
+        Method: GET, PUT, POST, DELETE
         RequestBody: same as content in 'GET' ResponsBody 
-        Method: DELETE
 
  
 ### Media Server #########################################
-### Tuners(Scan,Enable,Disable)
-        Description: Get Tuners from System
-        Path: /live/tuners/hardware/input
-        Method: GET
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    {
-                    "_id": int,
-                    "name": string, 
-                    "is_dvbt": boolean, 
-                    }
-                 ]
-            }
-        Path: /live/tuners/hardware/output
-        Method: GET
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    {
-                    "_id": int,
-                    "name": string, 
-                    "is_dvbt": boolean, 
-                    }
-                 ]
-            }
         Description: Manage of Tunners
         Path: /live/tuners/input
         Method: GET
@@ -859,18 +879,18 @@ Authentication:  Basic Auth
             }
 
         Path: /live/tuners/input/{id}
-        Method: GET, PUT, POST, DELETE 
-        RequestBody: in PUT, POST  
+        Method: GET, PUT 
+        RequestBody: in PUT  
             {
                 "_id": int,
                 "name": string, 
                 "active": boolean,
                 "is_dvbt": boolean, 
-                "freq": int, 
-                "errrate": string, 
-                "pol": string, 
-                "symrate": int,
-                "switch": int     # from 1,2,3,4
+                "freq": int,        # from 10000 .. 1000000
+                "errrate": string,  # from 'AUTO', '1/2', '1/3', '3/4', '5/6', '7/8'
+                "pol": string,      # from 'H', 'V'
+                "symrate": int,     # from 1 .. 50000
+                "switch": int       # from 1 .. 4
             }
 
         Path: /live/tuners/input_scan/{id}
@@ -897,7 +917,7 @@ Authentication:  Basic Auth
             }
 
         Path: /live/tuners/output
-        Method: GET, PUT, POST, DELETE 
+        Method: GET, PUT 
         RequestBody: 
             {
                 "_id": 1,
@@ -928,7 +948,7 @@ Authentication:  Basic Auth
         Description: Manage of DVB channels
         Path: /live/inputs/dvb
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -955,7 +975,7 @@ Authentication:  Basic Auth
         Description: Manage of Archive channels
         Path: /live/inputs/archive
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -987,7 +1007,7 @@ Authentication:  Basic Auth
         Description: Manage of Network channels
         Path: /live/inputs/network
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1012,7 +1032,7 @@ Authentication:  Basic Auth
         Description: Manage of Web Url channels
         Path: /live/inputs/web
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1036,7 +1056,7 @@ Authentication:  Basic Auth
         Description: Manage of virtual NET channels (import channels )
         Path: /live/inputs/virtual_net
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1062,7 +1082,7 @@ Authentication:  Basic Auth
         Description: Manage of virtual DVB channels (import channels )
         Path: /live/inputs/virtual_dvb
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1108,18 +1128,18 @@ Authentication:  Basic Auth
                 "preset": string,       # from 'ultrafast','fast','medium','slow','veryslow' 
                 "videoCodec": string,   # from  'h265','h264','mpeg2' 
                 "videoSize": string,    # from '4K', 'FHD', 'HD', 'SD', 'CD' 
-                "videoRate": int,       
-                "videoFps": int, 
+                "videoRate": int,       # from 1 .. 100000000 
+                "videoFps": int,        # from 1 .. 60
                 "videoProfile": string, # from 'Baseline', 'Main', 'High'
                 "audioCodec": string,   # from 'aac','mp3','mp2' 
-                "audioRate": int, 
+                "audioRate": int,       # from 1 to 1000000
                 "extra": string 
             }
 
         Description: Manage of transcodec channels
         Path: /live/inputs/transcode
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1145,7 +1165,7 @@ Authentication:  Basic Auth
         Description: Manage of cccam accounts
         Path: /live/cccam
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1171,7 +1191,7 @@ Authentication:  Basic Auth
         Description: Manage of input scrambled channels
         Path: /live/inputs/unscramble
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1197,7 +1217,7 @@ Authentication:  Basic Auth
         Description: Manage of channel scrambling
         Path: /live/inputs/scramble
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1222,7 +1242,7 @@ Authentication:  Basic Auth
         Description: Manage of mixed channels
         Path: /live/inputs/mixed
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1235,17 +1255,6 @@ Authentication:  Basic Auth
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
-                "_id": int,
-                "active": boolean,
-                "input1": int, 
-                "input2": int, 
-                "inputType1": int,    # from live/inputs/types 
-                "inputType2": int,    # from live/inputs/types 
-                "input2mix": string,  # from 'multiple','cover'
-                "input2x": int, 
-                "input2y": int, 
-                "input2width": int, 
-                "input2height": int 
             }
 
 ### Live Output  #########################################
@@ -1253,7 +1262,7 @@ Authentication:  Basic Auth
         Description: Manage of Output silver channels
         Path: /live/output/silver
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1281,7 +1290,7 @@ Authentication:  Basic Auth
                 "http": boolean,
                 "rtsp": boolean,
                 "hls": boolean,
-                "snapshut":int      # contentID of channel snapshut as 'Logo' type    
+                "snapshut":int      # 'read-only'. contentID of channel snapshut as 'Logo' type    
             }
 
 
@@ -1289,7 +1298,7 @@ Authentication:  Basic Auth
         Description: Manage of Output gold channels
         Path: /live/output/gold
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1351,7 +1360,7 @@ Authentication:  Basic Auth
         Description: Manage of components
         Path: /launcher/components/info
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1361,9 +1370,7 @@ Authentication:  Basic Auth
             }
 
         Path: /launcher/components/info/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1380,14 +1387,11 @@ Authentication:  Basic Auth
                 "category":[int]   # from storage/contents/categories
             }
 
-        Path: /launcher/components/info/{id}
-        Method: DELETE 
-
 ### Components Arrange
         Description: Manage of Launcher's Menu
         Path: /launcher/menu
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1397,9 +1401,7 @@ Authentication:  Basic Auth
             }
 
         Path: /launcher/menu/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1414,13 +1416,11 @@ Authentication:  Basic Auth
                 "components": [int]     # from launcher/components/info
             }
 
-        Path: /launcher/menu/{id}
-        Method: DELETE 
 
         Description: Manage of Launcher's Config
         Path: /launcher/setting
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1430,9 +1430,7 @@ Authentication:  Basic Auth
             }
 
         Path: /launcher/setting/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1475,19 +1473,17 @@ Authentication:  Basic Auth
                         "fa": int,
                         "ar": int,
                 },
-                "unitName": string,
+                "unitName": string,       # from 'Room', 'TV', 'Bed', 'Seat', 'Unit' 
                 "clientHotspot": string,  # from 'AccessPoint', 'TV/STB'
                 "defaultChannel": int     # from live/output/silver
             }
 
-        Path: /launcher/setting/{id}
-        Method: DELETE 
 ### Users ################################################
 ### User Groups
         Description: Manage of Users's groups
         Path: /users/group
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1497,9 +1493,7 @@ Authentication:  Basic Auth
             }
 
         Path: /users/group/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1509,14 +1503,11 @@ Authentication:  Basic Auth
                 "weekday": [int]          # from system/weektime  
             }
 
-        Path: /users/group/{id}
-        Method: DELETE 
-
 ### Profile(ExpireTime&Date,)     
         Description: Manage of Users
         Path: /users/user
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1526,9 +1517,7 @@ Authentication:  Basic Auth
             }
 
         Path: /users/user/{id}
-        Method: GET
-        RequestBody: same as 'PUT' RequestBody 
-        Method: PUT, POST 
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
@@ -1555,14 +1544,11 @@ Authentication:  Basic Auth
                 }
             }
 
-        Path: /users/user/{id}
-        Method: DELETE 
-
 ### Messaging  
-        Description: Message to message
-        Path: /users/message/to/{userid}
+        Description: Message from/to users
+        Path: /users/message/to
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1571,8 +1557,8 @@ Authentication:  Basic Auth
                  ]
             }
 
-        Path: /users/message/to/{userid}
-        Method: PUT, POST 
+        Path: /users/message/to/{id}
+        Method: GET, PUT, POST, DELETE
         RequestBody: 
             {
                 "_id": int,
@@ -1581,13 +1567,11 @@ Authentication:  Basic Auth
                 "subject": string, 
                 "body": string,
             }
-        Path: /users/message/to/{userid}/{msg_id}
-        Method: DELETE 
 
         Description: Message from User
-        Path: /users/message/from/{userid}
+        Path: /users/message/from
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1601,14 +1585,13 @@ Authentication:  Basic Auth
                     }
                  ]
             }
-
-        Path: /users/message/from/{userid}/{msg_id}
-        Method: DELETE 
+        Path: /users/message/from/{id}
+        Method: GET, DELETE
 
         Description: Message to All Users
         Path: /users/message/broadcast
         Method: GET
-        Parameters: [from=int&to=int]
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
@@ -1617,8 +1600,8 @@ Authentication:  Basic Auth
                  ]
             }
 
-        Path: /users/message/broadcast
-        Method: PUT 
+        Path: /users/message/broadcast/{id}
+        Method: GET, PUT, POST, DELETE
         RequestBody: 
             {
                 "_id": int,
@@ -1629,5 +1612,3 @@ Authentication:  Basic Auth
                 "subject": string, 
                 "body": string,
             }
-        Path: /users/message/broadcast/{msg_id}
-        Method: DELETE 

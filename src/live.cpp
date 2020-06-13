@@ -4,22 +4,6 @@
 #include "hardware.hpp"
 #include "mongo_driver.hpp"
 
-void live_tuners_hardware_input_get(served::response &res, const served::request &req)
-{
-    // TODO: remove API
-	CHECK_AUTH;
-    res.set_header("Content-type", "application/json");     
-    res << ""; 
-    res.set_status(200);
-}
-void live_tuners_hardware_output_get(served::response &res, const served::request &req)
-{
-    // TODO: remove API
-	CHECK_AUTH;
-    res.set_header("Content-type", "application/json");     
-    res << ""; 
-    res.set_status(200);
-}
 void live_tuners_input_scan_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
@@ -32,8 +16,13 @@ void live_tuners_input_scan_get(served::response &res, const served::request &re
         ERRORSEND(res, 400, 1002, "Invalid tuner!");
     }
     res.set_header("Content-type", "application/json");     
-    res << Hardware::scan_input_tuner(tuner);
-    res.set_status(200);
+    json channs = Hardware::scan_input_tuner(tuner);
+    if(channs["total"] > 0){
+        res << channs.dump();
+        res.set_status(200);
+    }else{
+        ERRORSEND(res, 400, 1008, channs["error"]);             \
+    }
 }
 
 void live_tuners_input_put(served::response &res, const served::request &req)
@@ -41,32 +30,16 @@ void live_tuners_input_put(served::response &res, const served::request &req)
     CHECK_AUTH;
     PUT_ID_COL("live_tuners_input");
 }
-void live_tuners_input_post(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    POST_ID_COL("live_tuners_input");
-}
 void live_tuners_input_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     Util::fill_input_tuners_in_db();
     GET_COL("live_tuners_input");
 }
-void live_tuners_input_del(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    DEL_ID_COL("live_tuners_input");
-}
-
 void live_tuners_output_put(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     PUT_ID1_COL("live_tuners_output");
-}
-void live_tuners_output_post(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    POST_ID1_COL("live_tuners_output");
 }
 void live_tuners_output_get(served::response &res, const served::request &req)
 {
@@ -158,6 +131,26 @@ void live_inputs_web_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     GET_COL("live_inputs_web");
+}
+void live_inputs_mixed_put(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    PUT_ID_COL("live_inputs_mixed");
+}
+void live_inputs_mixed_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("live_inputs_mixed");
+}
+void live_inputs_mixed_del(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    DEL_ID_COL("live_inputs_mixed");
+}
+void live_inputs_mixed_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_COL("live_inputs_mixed");
 }
 void live_inputs_virtual_net_put(served::response &res, const served::request &req)
 {

@@ -95,7 +95,7 @@ void storage_info_del(served::response &res, const served::request &req)
 }
 void storage_media_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+	//CHECK_AUTH;
     SEND_ID_FILE;
 }
 void storage_media_put(served::response &res, const served::request &req)
@@ -115,7 +115,7 @@ void storage_media_del(served::response &res, const served::request &req)
 }
 void storage_poster_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+	//CHECK_AUTH;
     SEND_ID_FILE;
 }
 void storage_poster_put(served::response &res, const served::request &req)
@@ -135,7 +135,7 @@ void storage_poster_del(served::response &res, const served::request &req)
 }
 void storage_subtitle_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+	//CHECK_AUTH;
     SEND_ID_FILE;
 }
 void storage_subtitle_put(served::response &res, const served::request &req)

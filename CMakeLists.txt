@@ -10,6 +10,7 @@ add_definitions(
                  -fdiagnostics-show-location=every-line
                  -fdiagnostics-generate-patch 
                  -DBOOST_LOG_DYN_LINK=1
+                 -O3
                  #-g
                  )
 

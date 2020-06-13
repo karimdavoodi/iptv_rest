@@ -1,4 +1,4 @@
-///////////////  LAUNCHER    /////////////////////////////////////////////////////
+//////////////  LAUNCHER    /////////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/* ";
 mux.handle("/launcher/components/info/{id}")
         .get(launcher_components_info_get)
@@ -68,18 +68,12 @@ mux.handle("/users/message/broadcast")
         .get (users_message_broadcast_get);
 ////////////////////// LIVE //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /live/* ALL_METHODS";
-mux.handle("/live/tuners/hardware/input")
-        .get (live_tuners_hardware_input_get);
-mux.handle("/live/tuners/hardware/output")
-        .get (live_tuners_hardware_output_get);
 mux.handle("/live/tuners/input_scan/{id}")
         .get (live_tuners_input_scan_get);
 mux.handle("/live/tuners/input/{id}")
         .get (live_tuners_input_get)
-        .put (live_tuners_input_put)
-        .del (live_tuners_input_del);
+        .put (live_tuners_input_put);
 mux.handle("/live/tuners/input")
-        .post(live_tuners_input_post)
         .get (live_tuners_input_get);
 mux.handle("/live/tuners/output")
         .get (live_tuners_output_get)
@@ -116,6 +110,13 @@ mux.handle("/live/inputs/web/{id}")
 mux.handle("/live/inputs/web")
         .post(live_inputs_web_post)
         .get (live_inputs_web_get);
+mux.handle("/live/inputs/mixed/{id}")
+        .get (live_inputs_mixed_get)
+        .put (live_inputs_mixed_put)
+        .del (live_inputs_mixed_del);
+mux.handle("/live/inputs/mixed")
+        .post(live_inputs_mixed_post)
+        .get (live_inputs_mixed_get);
 mux.handle("/live/inputs/virtual_net/{id}")
         .get (live_inputs_virtual_net_get)
         .put (live_inputs_virtual_net_put)
@@ -185,19 +186,24 @@ mux.handle("/status/information").get(status_information_get);
 mux.handle("/report/tuners").get(report_tuners_get);
 mux.handle("/report/channels").get(report_channels_get);
 mux.handle("/report/error").get(report_error_get);
-mux.handle("/report/operations").get(report_operations_get);
+mux.handle("/report/survey").get(report_survey_get);
 mux.handle("/report/iptv_user").get(report_iptv_user_get);
 mux.handle("/report/webui_user").get(report_webui_user_get);
 mux.handle("/report/system_usage").get(report_system_usage_get);
-mux.handle("/report/sensor/{id}")
-            .get (report_sensor_get)
-            .put (report_sensor_put)
-            .del (report_sensor_del);
-mux.handle("/report/sensor")
-            .post(report_sensor_post)
-            .get (report_sensor_get);
+
 ////////////////////// SYSTEM //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /system/* GET";
+mux.handle("/system/operations").get(system_operations_get);
+mux.handle("/system/general").get(system_general_get);
+mux.handle("/system/sensor/{id}")
+            .get (system_sensor_get)
+            .put (system_sensor_put)
+            .del (system_sensor_del);
+mux.handle("/system/sensor")
+            .post(system_sensor_post)
+            .get (system_sensor_get);
+mux.handle("/system/cities")
+            .get (system_cities_get);
 mux.handle("/system/location")
             .get (system_location_get)
             .put (system_location_put)
@@ -222,10 +228,13 @@ mux.handle("/system/survey/{id}")
 mux.handle("/system/survey")
             .post(system_survey_post)
             .get (system_survey_get);
-mux.handle("/system/pms")
+mux.handle("/system/pms/{id}")
             .get (system_pms_get)
             .put (system_pms_put)
-            .post(system_pms_put);
+            .del (system_pms_del);
+mux.handle("/system/pms")
+            .post(system_pms_post)
+            .get (system_pms_get);
 mux.handle("/system/vod_account/{id}")
             .get (system_vod_account_get)
             .put (system_vod_account_put)
@@ -247,10 +256,13 @@ mux.handle("/system/weektime/{id}")
 mux.handle("/system/weektime")
             .post(system_weektime_post)
             .get (system_weektime_get);
-mux.handle("/system/backup")
+mux.handle("/system/backup/list")
+            .get (system_backup_list_get);
+mux.handle("/system/backup/backup")
             .get (system_backup_get)
+            .post(system_backup_post)
             .put (system_backup_put)
-            .post(system_backup_put);
+            .del (system_backup_del);
 mux.handle("/system/license")
             .get (system_license_get)
             .put (system_license_put)
@@ -273,23 +285,14 @@ mux.handle("/storage/setting")
             .post(storage_setting_put);
 mux.handle("/storage/contents/types/{id}")
             .get (storage_contents_types_get);
-//            .put (storage_contents_types_put)
-//            .del (storage_contents_types_del)
-//            .post(storage_contents_types_post);
 mux.handle("/storage/contents/types")
             .get (storage_contents_types_get);
 mux.handle("/storage/contents/formats/{id}")
             .get (storage_contents_formats_get);
-//            .put (storage_contents_formats_put)
-//            .del (storage_contents_formats_del)
-//            .post(storage_contents_formats_post);
 mux.handle("/storage/contents/formats")
             .get (storage_contents_formats_get);
 mux.handle("/storage/contents/platforms/{id}")
             .get (storage_platforms_get);
-//            .put (storage_platforms_put)
-//            .del (storage_platforms_del)
-//            .post(storage_platforms_post);
 mux.handle("/storage/contents/platforms")
             .get (storage_platforms_get);
 mux.handle("/storage/contents/categories/{id}")
