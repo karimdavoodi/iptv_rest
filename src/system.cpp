@@ -1,4 +1,8 @@
+// power on / off
+// 
+//
 #include "auth.hpp"
+
 #include "mongo_driver.hpp"
 #include "util.hpp"
 #include "system.hpp"
@@ -29,7 +33,7 @@ void system_location_get(served::response &res, const served::request &req)
         res << net.dump(2);                                          
         res.set_status(200);                                    
     }catch(std::exception& e){                                  
-        BOOST_LOG_TRIVIAL(error) << e.what();                   
+        LOG(error) << e.what();                   
     }                       
 }
 void system_location_put(served::response &res, const served::request &req)
@@ -41,19 +45,19 @@ void system_location_put(served::response &res, const served::request &req)
         time_t now = system_location["systemTime"].get<long>();
         string tzone = system_location["timeZone"].get<string>();
         if(now != currentTime){
-            BOOST_LOG_TRIVIAL(info) << "Set time:" << now;
+            LOG(info) << "Set time:" << now;
             struct timespec n;
             n.tv_sec = now;
             n.tv_nsec = 0;
             clock_settime(CLOCK_REALTIME, &n); // FIXME: not work
         }
         if(tzone != currentZone){
-            BOOST_LOG_TRIVIAL(info) << "Set timeZone:" << tzone;
+            LOG(info) << "Set timeZone:" << tzone;
             ofstream zone("/etc/timezone");
             if(zone.is_open()) zone <<  tzone;
         }
     }catch(std::exception& e){                                  
-        BOOST_LOG_TRIVIAL(error) << e.what();                   
+        LOG(error) << e.what();                   
     }                       
 }
 void system_network_get(served::response &res, const served::request &req)
@@ -102,7 +106,7 @@ void system_network_get(served::response &res, const served::request &req)
         res << net.dump(2);                                          
         res.set_status(200);                                    
     }catch(std::exception& e){                                  
-        BOOST_LOG_TRIVIAL(error) << e.what();                   
+        LOG(error) << e.what();                   
     }                       
 }
 void system_network_put(served::response &res, const served::request &req)
@@ -110,25 +114,8 @@ void system_network_put(served::response &res, const served::request &req)
 	CHECK_AUTH;
     PUT_ID1_COL("system_network");
     json net = json::parse(req.body());
-    if(net["interfaces"].is_array()){
-        for(const auto& nic : net["interfaces"]){
-            string name = nic["name"];
-            string ip = nic["ip"];
-            if(!ip.size() || !name.size()) continue;
-            string cmd = "ip address flush dev " + name;
-            //Util::system(cmd.str()); FIXME
-            cmd = "ip address add " + ip + "/24 dev " + name; // TODO: apply real netmask 
-            //Util::system(cmd.str()); FIXME
-        }
-    }
-    string gw = net["gateway"];
-    if(gw.size() > 0 ){
-        string cmd = "ip route add default via "+ gw;
-        BOOST_LOG_TRIVIAL(trace) << cmd;
-        //Util::system(cmd); FIXME
-    }
-    // TODO .... run all config 
-    // and add to /etc/netplan/01-network-manager-all.yaml
+    //Hardware::apply_network(net);  FIXME
+    Hardware::save_network(net);
 }
 void system_users_get(served::response &res, const served::request &req)
 {

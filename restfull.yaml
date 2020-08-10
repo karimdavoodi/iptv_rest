@@ -1,4 +1,17 @@
 ChangLog:
+    3.0: Jul 26, 2020
+        - change live APIs
+
+    3.0: Jul 18, 2020
+        - change fields in launcher 
+        - complete mix input channel fields
+        - add nested field search 
+
+    2.9: Jul 2, 2020
+        - add systemId to reports
+        - add webui_state api
+        - return _id in POST
+
     2.8: Jun 6, 2020
         - change report/operation and report/sensor to system/operation and system/sensor
         - add all fields as parameter to 'GET' method
@@ -53,7 +66,9 @@ ChangLog:
 HTTP Code:
     - switch(Response Code):
         case 200(OK):
-                Return Response in GET and empty in other methods
+                Return Response in GET.
+                Return _id in POST. 
+                And empty in other methods
                 break
         case 400(Bad Request):
         case 401(Unauthorized):
@@ -76,11 +91,17 @@ Authentication:  Basic Auth
       #like: Authorization: Basic 'Base64 of user:pass'  
       #example: curl -u user:pass  http://server:8139/..
 #######################################################
-Query: in 'GET' method, use any field as parameter. (not nested field) 
+Query: in 'GET' method, use any field as parameter.  
     with this syntax:
         field=value                  => check if field == value
+        field.nested_field=value     => check if nested_field == value (inside of filed)
         field=value1,value2,value3   => check if field is in [value1,value2,value3]
         field=value1:value2          => check if field is between value1 and value2
+
+        field=!value                  => check if field != value
+        field=!value1,value2,value3   => check if field is not in [value1,value2,value3]
+        field=!value1:value2          => check if field is not between value1 and value2
+
     special parameters: 
         'from' and 'to' for paging of result
     deprecrated: but not disabled 
@@ -89,6 +110,8 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
     example: 
         curl "http://127.0.0.1:8139/launcher/components/info?type=2"
             records that 'type' is 2
+        curl "http://127.0.0.1:8139/launcher/components/info?name.en=Book"
+            records that '{ name : { en : "Book" } }' 
         curl "http://127.0.0.1:8139/launcher/components/info?type=2&active=true"
             records that 'type' is 2, and 'active' is true
         curl "http://127.0.0.1:8139/launcher/components/info?type=1:5"
@@ -111,6 +134,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "Owner": string,
                 "OwnerId": string,
                 "LicenseExpire": string,
+                "LicenseDate": epochtime,      # time of license change
                 "Serial": string,
                 "Version": string,
                 "Uptime": epochtime,
@@ -136,6 +160,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "content":[
                     {
                     "_id": int,
+                    "systemId": int,
                     "time": epochtime,
                     "process": string,
                     "message": string,
@@ -154,12 +179,13 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "content":[
                     {
                     "_id": int,
+                    "systemId": int,
                     "time": epochtime,
                     "user": int,         # from users/user   
                     "platform":int,      # from storage/contents/platforms
                     "component":int      # from launcher/components/info
                     "category":int,      # from storage/contents/categories
-                    "content":int,       # from storage/contents/info 
+                    "content":int,       # from storage/contents/info or live/output/* 
                     "operation": int,    # from report/operations
                     },
                 ]
@@ -175,6 +201,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "content":[
                      {
                     "_id": int,
+                    "systemId": int,
                     "time": epochtime,
                     "user": int,         # from system/users
                     "api": string,       # from system/users_accesslist
@@ -184,6 +211,27 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                     },
                 ]
             }
+        Description: Get log of Web UI activity.
+        Path: /report/webui_state
+        Method: GET
+        Parameters: [from=int&to=int] and all record's fields
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                     {
+                    "_id": int,
+                    "systemId": int,
+                    "time": epochtime,
+                    "user": int,         # from system/users
+                    "page": string       # from system/users_accesslist
+                    },
+                ]
+            }
+        Path: /report/webui_state
+        Method: POST 
+        RequestBody: same as GET
+
 ### Live Usage
         Description: Get log of Live channels activity.
         Path: /report/system_usage
@@ -195,6 +243,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "content":[
                     {
                     "_id": int,
+                    "systemId": int,
                     "time": epochtime,
                     "sysLoad":float,        # from 0.0 .. 100(or more)
                     "cpuUsage":float,       # from 0.0 .. 1.0
@@ -213,7 +262,14 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                             "read": int,    # in Byte
                             "write": int    # in Byte
                             }
-                        ]
+                        ],
+                    "contents": {           # size in byte
+                        "All": int,
+                        "Video": int,
+                        "Audio": int,
+                        "Image": int,
+                        "TimeShift": int,
+                        "userContents": int
                     }
                 ]
             }
@@ -228,6 +284,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "content":[
                     {
                     "_id": int,
+                    "systemId": int,
                     "time": epochtime,
                     "inputId": int,
                     "inputType": int,   # live/inputs/types
@@ -246,6 +303,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "content":[
                     {
                     "_id": int,
+                    "systemId": int,
                     "time": epochtime,
                     "input":[
                         {
@@ -274,6 +332,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "content":[
                     {
                     "_id": int,
+                    "systemId": int,
                     "time": epochtime,
                     "user":int,
                     "survey":[
@@ -317,14 +376,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "_id": int,
                 "name":string,
                 "user":int,         # from system/users
-                "api":string,       # from /report/* APIs
-                "filters":[
-                    {
-                    "key": string,  # from report/* GET parameters
-                    "valueType":string, # from 'int', 'string', 'boolean'
-                    "value":[string]
-                    }
-               ]
+                "settings": string
             }
 ### System  ##############################################
 ### Setting
@@ -468,7 +520,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "description": string,
                 "start": epochtime,
                 "expire": epochtime,
-                "weektime": [int],
+                "weektime": [int],          # from system/weektime  
                 "accessList": {             # from system/users_accesslist 
                     "/system/users":[GET,PUT,POST,DELET],
                 },   
@@ -769,6 +821,8 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                         "ar": string
                         }, 
                     "logo": int,  # 'Logo' type from storage/contents/info
+                    "permission": [int],      # from system/permission
+                    "weektime": [int]          # from system/weektime  
                     },
                  ]
             }
@@ -789,13 +843,12 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                         "_id": int,
                         "type": int,                # from storage/contents/types
                         "format": int,              # from storage/contents/formats
-                        "category":[int],      # from storage/contents/categories
+                        "category":[int],           # from storage/contents/categories
                         "name": string,
-                        "permission":[int],    # from system/permission
                         "price": int,
-                        "platform":[int],      # from storage/contents/platforms
+                        "platform":[int],           # from storage/contents/platforms
                         "date": epochtime,
-                        "languages" : [string],  # from 'en','fa','ar' 
+                        "languages" : [string],     # from 'en','fa','ar' 
                         "description":{
                             "en": {
                                 "name": string,
@@ -853,7 +906,6 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                             "content": int,        # 'Video','Picture','Text'   
                             "name": string,
                             "categories": [int],   # from storage/contents/categories
-                            "weektime": [int],     # from system/weektime
                             "start": epochtime,
                             "expire": epochtime,
                             "period": int,
@@ -866,8 +918,219 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
 
  
 ### Media Server #########################################
-        Description: Manage of Tunners
-        Path: /live/tuners/input
+        Description: Get Satellite names
+        Path: /live/satellites/names
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                      {
+                           "_id": int,
+                           "active": boolean,
+                           "name": string, 
+                           "dvbt": boolean
+                      }
+                 ]
+            }
+        Description: Get Satellite frequency
+        Path: /live/satellites/frequencies
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                      {
+                       "_id": int,
+                       "active": boolean,
+                       "name": string, 
+                       "satelliteId": string,       # from satellites/names
+                       "frequency": int,
+                       "parameters": string         # linke "T 602000000 8MHz 2/3 NONE QAM64 8k 1/8 NONE"
+                                                    # or    "S 11242000 V 27500000 3/4"
+                      }
+                 ]
+            }
+
+        Description: Get Satellite channels
+        Path: /live/satellites/channels
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                      {
+                       "_id": int,
+                       "active": boolean,
+                       "name": string, 
+                       "frequencyId": string,       # from satellites/frequencies
+                       "serviceId": int,        
+                       "videoId": int,    
+                       "audioId": [int],   
+                       "scrambled": boolean
+                      }
+                 ]
+            }
+        Description: Get physical tuners list
+        Path: /live/tuners/system
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+
+                "content":[    
+                      {
+                       "_id": int,
+                       "systemId": int,         
+                       "name": string, 
+                       "dvbt": boolean,
+                       "inputDvb": boolean,
+                      }
+                 ]
+            }
+        Description: Get/Set tuners
+        Path: /live/tuners/info
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                      {
+                       "_id": int,
+                       "active": boolean,
+                       "name": string, 
+                       "description": string,
+                       "dvbt": boolean,
+                       "systemId": int,          # from tuners/system
+                       "frequencyId": int,       # from satellites/frequencies
+                       "diSEqC": int,            # from 1 .. 4
+                       "virtual": boolean
+                      }
+                 ]
+            }
+        Path: /live/tuners/info/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: like content of GET
+
+        Path: /live/tuners/scan/{id}
+        Method: GET
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                        "_id": int,
+                        "name": string, 
+                        "serviceId": int, 
+                        "videoId": int,
+                        "audioId": int, 
+                        "scrambled": boolean
+                    }
+
+                ]
+            }
+        Path: /live/tuners/scan_bw/{id}
+        Method: GET
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                        "_id": int,
+                        "name": string, 
+                        "serviceId": int, 
+                        "videoId": int,
+                        "audioId": int, 
+                        "scrambled": boolean
+                    }
+
+                ]
+            }
+        Description: Get/Set network iptv account
+        Path: /live/network/accounts
+        Method: GET
+        Parameters: [from=int&to=int]
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                      {
+                       "_id": int,
+                       "active": boolean,
+                       "name": string, 
+                       "description": string,
+                       "url": string,
+                       "virtual": boolean
+                      }
+                 ]
+            }
+        Path: /live/network/accounts/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: like content of GET
+
+        Description: Get network iptv account channels
+        Path: /live/network/channels
+        Method: GET
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                        "_id": int,
+                        "name": string, 
+                        "accountId": int,           # from network/accounts 
+                        "url": int,
+                    }
+                ]
+            }
+
+### Processed Profiles 
+        Description: Manage of mix profiles
+        Path: /live/profiles/mix
+        Method: GET
+        Parameters: [from=int&to=int] and all record's fields
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    ... same as 'PUT' RequestBody
+                 ]
+            }
+
+        Path: /live/profiles/mix/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: 
+            {
+                "_id": int,
+                "active": boolean,
+                "name": string, 
+                "input1": {
+                    "useVideo": boolean,
+                    "useAudio": boolean,
+                    "audioNumber": int
+                    },
+                "input2": {
+                    "useVideo": boolean,
+                    "useAudio": boolean,
+                    "audioNumber": int,
+                    "whiteTransparent": boolean,
+                    "posX": int,
+                    "posY": int,
+                    "width": int,
+                    "height": int
+                    },
+                "output":{          # use if we mix two video
+                    "width": int,
+                    "height": int,
+                    "bitrate": int
+                    }
+            }
+        Description: Manage of transcodec channels
+        Path: /live/profiles/transcode
         Method: GET
         Parameters: [from=int&to=int]
         ResponseBody: 
@@ -878,57 +1141,53 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                  ]
             }
 
-        Path: /live/tuners/input/{id}
-        Method: GET, PUT 
-        RequestBody: in PUT  
+        Path: /live/profiles/transcode/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: 
             {
                 "_id": int,
-                "name": string, 
                 "active": boolean,
-                "is_dvbt": boolean, 
-                "freq": int,        # from 10000 .. 1000000
-                "errrate": string,  # from 'AUTO', '1/2', '1/3', '3/4', '5/6', '7/8'
-                "pol": string,      # from 'H', 'V'
-                "symrate": int,     # from 1 .. 50000
-                "switch": int       # from 1 .. 4
+                "name": string, 
+                "preset": string,       # from  '','ultrafast','fast','medium','slow','veryslow' 
+                "videoCodec": string,   # from  '','h265','h264','mpeg2' 
+                "videoSize": string,    # from  '','4K', 'FHD', 'HD', 'SD', 'CD' 
+                "videoRate": int,       # from 1 .. 100000000  (in bps) 
+                "videoFps": int,        # from 1 .. 60
+                "videoProfile": string, # from  '','Baseline', 'Main', 'High'
+                "audioCodec": string,   # from  '','aac','mp3','mp2' 
+                "audioRate": int,       # from 1 to 1000000 (in bps)
+                "extra": string 
             }
-
-        Path: /live/tuners/input_scan/{id}
+        Description: Manage of scrambling profiles
+        Path: /live/profiles/scramble
         Method: GET
+        Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
             {
                 "total":int,
-                "content":[
-                    {
-                        "_id": int,
-                        "name": string, 
-                        "dvb_id": int, 
-                        "is_dvbt": boolean, 
-                        "sid": int, 
-                        "aid": int, 
-                        "vid": int,
-                        "freq": int, 
-                        "pol": int, 
-                        "scramble": boolean, 
-                        "symb": int
-                    }
-
-                ]
+                "content":[    
+                    ... same as 'PUT' RequestBody
+                 ]
             }
 
-        Path: /live/tuners/output
-        Method: GET, PUT 
+        Path: /live/profiles/scramble/{id}
+        Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
-                "_id": 1,
-                "dvbs": [int, int, ], 
-                "dvbt": [int, int, ], 
-                "dvbsConfig": string, 
-                "dvbtBandwidth": float, 
-                "dvbtPcr": int
+                "_id": int,
+                "active": boolean,
+                "name": string,
+                "offline":{
+                    "algorithm": string,   # from 'BISS', 'AES128', 'AES256' 
+                    "key": string 
+                }
+                "online":{
+                    "protocol": string,  # from "cccam","camd35","cs378x","gbox","newcamd"
+                    "server": string, 
+                    "user": string, 
+                    "pass": string 
+                }
             }
-
-
 ### Live Inputs ################################
         Path: /live/inputs/types
         Method: GET
@@ -944,7 +1203,6 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 ]
             }
 
-### DVB Channels
         Description: Manage of DVB channels
         Path: /live/inputs/dvb
         Method: GET
@@ -963,15 +1221,12 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
             {
                 "_id": int,
                 "active": boolean,
-                "name": string, 
-                "dvb_id": int,          # from /live/tuners/inputs
-                "sid": int,             # from /live/tuners/input/scan
-                "aid": int,             # from /live/tuners/input/scan
-                "vid": int,             # from /live/tuners/input/scan
+                "logo": int,            # from storage/contents/info type 'Logo'. auto select if name == name
+                "dvbId": int,           # from tuners/info
+                "channelId": int,       # from satellite/channels
+                "tv": boolean 
             }
 
-
-### Archive Channels
         Description: Manage of Archive channels
         Path: /live/inputs/archive
         Method: GET
@@ -988,22 +1243,22 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
-                "_id": int,
-                "name": string,
-                "active": boolean,
-                "isTV": boolean, 
-                "manualSchedule": boolean,
-                "contents": [ 
-                        {
-                        "content": int,   # type 'Video' or 'Audio' from storage/contents/info
-                        "weekday": int,   # from system/weektime  
-                        "time": int,      # time of day format 'hhmm'
-                        }
-                    ],
-                
+               "_id": int,
+               "active": boolean,
+               "description": string, 
+               "name": string, 
+               "logo": int,                    # from storage/contents/info  type 'Logo'
+               "tv": boolean,
+               "contents":[
+                    {
+                    "content": int,       # from storage/contents/info type: 'Video' or 'Audio'
+                    "weektime": int,     # from system/weektime
+                    "startDate": epochtime,
+                    "endDate": epochtime,
+                    }
+               ]
             }
 
-### Network Channels
         Description: Manage of Network channels
         Path: /live/inputs/network
         Method: GET
@@ -1021,120 +1276,23 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
         RequestBody: 
             {
                 "_id": int,
-                "name": string,
+                "active": boolean,
+                "name": string,             
+                "type": string,             # from 'MST', 'SST', 'WEB'
+                "description": string, 
+                "logo": int,                # from storage/contents/info  type 'Logo'
+                "accountId": string,        # from live/network/accounts
+                "channelId": string,        # from live/network/channels 
                 "url": string, 
-                "active": boolean,
-                "static": boolean
+                "static": boolean,
+                "virtual": boolean,
+                "webPage": boolean,
+                "tv": boolean
+                                           # In 'SST' and 'WEB' the accountId and channelId 
+                                           # is empty, in 'MST' the url is empty 
             }
 
 
-### Web Channels
-        Description: Manage of Web Url channels
-        Path: /live/inputs/web
-        Method: GET
-        Parameters: [from=int&to=int] and all record's fields
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    ... same as 'PUT' RequestBody
-                 ]
-            }
-
-        Path: /live/inputs/web/{id}
-        Method: GET, PUT, POST, DELETE 
-        RequestBody: 
-            {
-                "_id": int,
-                "name": string,
-                "url": string, 
-                "active": boolean
-            }
-
-
-### Virtual Network Channels
-        Description: Manage of virtual NET channels (import channels )
-        Path: /live/inputs/virtual_net
-        Method: GET
-        Parameters: [from=int&to=int] and all record's fields
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    ... same as 'PUT' RequestBody
-                 ]
-            }
-
-        Path: /live/inputs/virtual_net/{id}
-        Method: GET, PUT, POST, DELETE 
-        RequestBody: 
-            {
-                "_id": int,
-                "active": boolean,
-                "name": string, 
-                "url": string, 
-                "record": boolean,
-                "permission": int
-            }
-
-
-### Virtual DVB Channels
-        Description: Manage of virtual DVB channels (import channels )
-        Path: /live/inputs/virtual_dvb
-        Method: GET
-        Parameters: [from=int&to=int] and all record's fields
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    ... same as 'PUT' RequestBody
-                 ]
-            }
-
-        Path: /live/inputs/virtual_dvb/{id}
-        Method: GET, PUT, POST, DELETE 
-        RequestBody: 
-            {
-                "_id": int,
-                "active": boolean,
-                "name": string, 
-                "freq": int, 
-                "sid": int, 
-                "record": boolean,
-                "permission": int
-            }
-
-
-### Transcoding    
-        Description: Manage of transcodec channels
-        Path: /live/transcode_profile
-        Method: GET
-        Parameters: [from=int&to=int]
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    ... same as 'PUT' RequestBody
-                 ]
-            }
-
-        Path: /live/transcode_profile/{id}
-        Method: GET, PUT, POST, DELETE 
-        RequestBody: 
-            {
-                "_id": int,
-                "active": boolean,
-                "name": string, 
-                "preset": string,       # from 'ultrafast','fast','medium','slow','veryslow' 
-                "videoCodec": string,   # from  'h265','h264','mpeg2' 
-                "videoSize": string,    # from '4K', 'FHD', 'HD', 'SD', 'CD' 
-                "videoRate": int,       # from 1 .. 100000000 
-                "videoFps": int,        # from 1 .. 60
-                "videoProfile": string, # from 'Baseline', 'Main', 'High'
-                "audioCodec": string,   # from 'aac','mp3','mp2' 
-                "audioRate": int,       # from 1 to 1000000
-                "extra": string 
-            }
 
         Description: Manage of transcodec channels
         Path: /live/inputs/transcode
@@ -1155,65 +1313,14 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "_id": int,
                 "active": boolean,
                 "name": string, 
-                "input": int,         
+                "description": string, 
+                "input": int,        # from live/inputs
                 "inputType": int,    # from live/inputs/types 
                 "profile": int,      # from live/transcode_profile
             }
 
 
-### UnScrambling
-        Description: Manage of cccam accounts
-        Path: /live/cccam
-        Method: GET
-        Parameters: [from=int&to=int] and all record's fields
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    ... same as 'PUT' RequestBody
-                 ]
-            }
 
-        Path: /live/cccam/{id}
-        Method: GET, PUT, POST, DELETE 
-        RequestBody: 
-            {
-                "_id": int,
-                "active": boolean,
-                "name": string, 
-                "protocol": string,  # from "cccam","camd35","cs378x","gbox","newcamd"
-                "server": string, 
-                "user": string, 
-                "pass": string 
-            }
-
-
-        Description: Manage of input scrambled channels
-        Path: /live/inputs/unscramble
-        Method: GET
-        Parameters: [from=int&to=int] and all record's fields
-        ResponseBody: 
-            {
-                "total":int,
-                "content":[    
-                    ... same as 'PUT' RequestBody
-                 ]
-            }
-
-        Path: /live/inputs/unscramble/{id}
-        Method: GET, PUT, POST, DELETE 
-        RequestBody: 
-            {
-                "_id": int,
-                "active": boolean,
-                "input": int, 
-                "inputType": int,    # from live/inputs/types 
-                "bssKey": string,
-                "cccam": int         # from live/cccam
-            }
-
-
-### Scrambling   
         Description: Manage of channel scrambling
         Path: /live/inputs/scramble
         Method: GET
@@ -1232,15 +1339,16 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
             {
                 "_id": int,
                 "active": boolean,
-                "input": int, 
-                "inputType": int,    # from live/inputs/types 
-                "crypto": string,
-                "key": string 
+                "name": string, 
+                "description": string, 
+                "input": int,           # from live/inputs
+                "inputType": int,       # from live/inputs/types 
+                "decrypt": boolean,     # 'True' for unscrambling and 'False' for scrambling 
+                "profile": int          # from live/scramble_profile
             }
 
-### Mixed Channels   
-        Description: Manage of mixed channels
-        Path: /live/inputs/mixed
+        Description: Manage of mix channels
+        Path: /live/inputs/mix
         Method: GET
         Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
@@ -1251,16 +1359,24 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                  ]
             }
 
-        Path: /live/inputs/mixed/{id}
+        Path: /live/inputs/mix/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
+                "_id": int,
+                "active": boolean,
+                "name": string, 
+                "description": string, 
+                "profile": int,             # from live/mix_profile
+                "input1": int,           # from live/inputs
+                "inputType1": int,       # from live/inputs/types 
+                "input2": int,           # from live/inputs
+                "inputType2": int,       # from live/inputs/types 
             }
 
 ### Live Output  #########################################
-### Silver Channels
-        Description: Manage of Output silver channels
-        Path: /live/output/silver
+        Description: Manage of Output DVB channels
+        Path: /live/output/dvb
         Method: GET
         Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
@@ -1271,32 +1387,21 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                  ]
             }
 
-        Path: /live/output/silver/{id}
+        Path: /live/output/dvb/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
                 "_id": int,
                 "active": boolean,
-                "input": int,   
+                "description": string, 
+                "input": int,       # from live/inputs
                 "inputType": int,   # from live/inputs/types 
-                "name": string, 
-                "logo": int,        # 'Logo' from storage/contents/info
-                "permission": int,  # from system/permission
                 "category": [int],  # from storage/contents/categories
-                "freq": int, 
-                "sid": int, 
-                "recordTime": int,
-                "udp": boolean,
-                "http": boolean,
-                "rtsp": boolean,
-                "hls": boolean,
-                "snapshut":int      # 'read-only'. contentID of channel snapshut as 'Logo' type    
+                "dvbId": int, 
+                "serviceId": int, 
             }
-
-
-### Gold Channels
-        Description: Manage of Output gold channels
-        Path: /live/output/gold
+        Description: Manage of Output Network channels
+        Path: /live/output/network
         Method: GET
         Parameters: [from=int&to=int] and all record's fields
         ResponseBody: 
@@ -1307,23 +1412,48 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                  ]
             }
 
-        Path: /live/output/gold/{id}
+        Path: /live/output/network/{id}
         Method: GET, PUT, POST, DELETE 
         RequestBody: 
             {
-                "_id": int,
-                "active": boolean,
-                "user": int, 
-                "iptvAccount": string,
-                "tuner": int,
-                "satellites":[ 
-                    {
-                        "name": string,
-                        "switch": int,     # from 1,2,3,4
-                        "LNC":[string]     # from "LH", "LV", "HH", "HV"
-                    }
-                ] 
+               "_id": int,
+               "active": boolean,
+               "description": string, 
+               "input": int,    
+               "inputType": int,   
+               "category": [int],
+               "udp": boolean,
+               "http": boolean,
+               "rtsp": boolean,
+               "hls": boolean,
             }
+        Description: Manage of Output Archive channels
+        Path: /live/output/archive
+        Method: GET
+        Parameters: [from=int&to=int] and all record's fields
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                    ... same as 'PUT' RequestBody
+                 ]
+            }
+
+        Path: /live/output/archive/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: 
+            {
+               "_id": int,
+               "active": boolean,
+               "description": string, 
+               "input": int,    
+               "inputType": int,   
+               "category": [int],
+               "timeShift": int,
+               "programName": string,
+               "virtual": boolean,
+            }
+
 
 ### Launcher ############################################# 
 ### Components 
@@ -1383,7 +1513,10 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                     }, 
                 "logo": int,            # 'Logo' type from storage/contents/info
                 "url":string,
-                "platform":[int],  # from storage/contents/platforms
+                "url_params": [         # parameters of url
+                    "key": value,       # value from : 'user_id', 'user_name', 'platform', 
+                    ...                 #              'partner_user', 'partner_pass'
+                ],
                 "category":[int]   # from storage/contents/categories
             }
 
@@ -1412,7 +1545,6 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                     "ar": string
                     }, 
                 "logo": int,            # 'Logo' type from storage/contents/info
-                "permission": int,      # from system/permission
                 "components": [int]     # from launcher/components/info
             }
 
@@ -1436,14 +1568,12 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "_id": int,
                 "active": boolean,
                 "name": string,
+                "type" : string,        # from 'Line', 'Matrix', 'Curve'
+                "permission": int,      # from system/permission
+                "platform":[int],       # from storage/contents/platforms
                 "menu": [int],          # from launcher/menu
                 "icons":{               # 'Logo' type from storage/contents/info
                     "background": int,
-                    "company":int,
-                    "net_ok":int,
-                    "net_nok":int,
-                    "lock":int,
-                    "unlock":int,
                     "logo": {
                         "en": int,
                         "fa": int,
@@ -1475,7 +1605,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 },
                 "unitName": string,       # from 'Room', 'TV', 'Bed', 'Seat', 'Unit' 
                 "clientHotspot": string,  # from 'AccessPoint', 'TV/STB'
-                "defaultChannel": int     # from live/output/silver
+                "defaultChannel": int     # from live/output/*
             }
 
 ### Users ################################################
@@ -1500,7 +1630,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "active": boolean,
                 "name": string, 
                 "permission": [int],      # from system/permission
-                "weekday": [int]          # from system/weektime  
+                "weektime": [int]          # from system/weektime  
             }
 
 ### Profile(ExpireTime&Date,)     
@@ -1537,11 +1667,7 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "vodId": int,           # from system/vod_account 
                 "npvr": int,            # from 0 until storage/setting(NPVR/maxPerUser) 
                 "start": epochtime,
-                "expire": epochtime,
-                "stats":{               # cache of user stat. don't show in UI   
-                    "timers":{},
-                    "npvr":[]
-                }
+                "expire": epochtime
             }
 
 ### Messaging  
@@ -1607,8 +1733,10 @@ Query: in 'GET' method, use any field as parameter. (not nested field)
                 "_id": int,
                 "group": [int],         # from users/group
                 "time": epochtime,
-                "weekday": [int],          # from system/weektime  
+                "weektime": [int],       # from system/weektime  
                 "expire": epochtime,
                 "subject": string, 
                 "body": string,
             }
+
+

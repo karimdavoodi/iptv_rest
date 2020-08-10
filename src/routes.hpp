@@ -68,118 +68,124 @@ mux.handle("/users/message/broadcast")
         .get (users_message_broadcast_get);
 ////////////////////// LIVE //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /live/* ALL_METHODS";
-mux.handle("/live/tuners/input_scan/{id}")
-        .get (live_tuners_input_scan_get);
-mux.handle("/live/tuners/input/{id}")
-        .get (live_tuners_input_get)
-        .put (live_tuners_input_put);
-mux.handle("/live/tuners/input")
-        .get (live_tuners_input_get);
-mux.handle("/live/tuners/output")
-        .get (live_tuners_output_get)
-        .put (live_tuners_output_put);
-mux.handle("/live/inputs/types/{id}")
-        .get (live_inputs_types_get);
-mux.handle("/live/inputs/types")
-        .get (live_inputs_types_get);
+
+mux.handle("/live/satellites/names")      
+    .get(live_satellites_names_get);
+mux.handle("/live/satellites/frequencies")
+    .get(live_satellites_frequencies_get);
+mux.handle("/live/satellites/channels")   
+    .get(live_satellites_channels_get);
+mux.handle("/live/tuners/system")         
+    .get(live_tuners_system_get);
+mux.handle("/live/tuners/scan/{id}")      
+    .get(live_tuners_scan_get);
+mux.handle("/live/tuners/scan_bw/{id}")   
+    .get(live_tuners_scan_bw_get);
+mux.handle("/live/network/channels")      
+    .get(live_network_channels_get);
+mux.handle("/live/inputs/types")          
+    .get(live_inputs_types_get);
+///////////////////
+mux.handle("/live/profiles/mix/{id}")
+	.get(live_profiles_mix_get)
+	.put(live_profiles_mix_put)
+	.del(live_profiles_mix_del);
+mux.handle("/live/profiles/transcode/{id}")
+	.get(live_profiles_transcode_get)
+	.put(live_profiles_transcode_put)
+	.del(live_profiles_transcode_del);
+mux.handle("/live/profiles/scramble/{id}")
+	.get(live_profiles_scramble_get)
+	.put(live_profiles_scramble_put)
+	.del(live_profiles_scramble_del);
+mux.handle("/live/network/accounts/{id}")
+	.get(live_network_accounts_get)
+	.put(live_network_accounts_put)
+	.del(live_network_accounts_del);
+mux.handle("/live/tuners/info/{id}")
+	.get(live_tuners_info_get)
+	.put(live_tuners_info_put)
+	.del(live_tuners_info_del);
 mux.handle("/live/inputs/dvb/{id}")
-        .get (live_inputs_dvb_get)
-        .put (live_inputs_dvb_put)
-        .del (live_inputs_dvb_del);
-mux.handle("/live/inputs/dvb")
-        .post(live_inputs_dvb_post)
-        .get (live_inputs_dvb_get);
+	.get(live_inputs_dvb_get)
+	.put(live_inputs_dvb_put)
+	.del(live_inputs_dvb_del);
 mux.handle("/live/inputs/archive/{id}")
-        .get (live_inputs_archive_get)
-        .put (live_inputs_archive_put)
-        .del (live_inputs_archive_del);
-mux.handle("/live/inputs/archive")
-        .post(live_inputs_archive_post)
-        .get (live_inputs_archive_get);
+	.get(live_inputs_archive_get)
+	.put(live_inputs_archive_put)
+	.del(live_inputs_archive_del);
 mux.handle("/live/inputs/network/{id}")
-        .get (live_inputs_network_get)
-        .put (live_inputs_network_put)
-        .del (live_inputs_network_del);
-mux.handle("/live/inputs/network")
-        .post(live_inputs_network_post)
-        .get (live_inputs_network_get);
-mux.handle("/live/inputs/web/{id}")
-        .get (live_inputs_web_get)
-        .put (live_inputs_web_put)
-        .del (live_inputs_web_del);
-mux.handle("/live/inputs/web")
-        .post(live_inputs_web_post)
-        .get (live_inputs_web_get);
-mux.handle("/live/inputs/mixed/{id}")
-        .get (live_inputs_mixed_get)
-        .put (live_inputs_mixed_put)
-        .del (live_inputs_mixed_del);
-mux.handle("/live/inputs/mixed")
-        .post(live_inputs_mixed_post)
-        .get (live_inputs_mixed_get);
-mux.handle("/live/inputs/virtual_net/{id}")
-        .get (live_inputs_virtual_net_get)
-        .put (live_inputs_virtual_net_put)
-        .del (live_inputs_virtual_net_del);
-mux.handle("/live/inputs/virtual_net")
-        .post(live_inputs_virtual_net_post)
-        .get (live_inputs_virtual_net_get);
-mux.handle("/live/inputs/virtual_dvb/{id}")
-        .get (live_inputs_virtual_dvb_get)
-        .put (live_inputs_virtual_dvb_put)
-        .del (live_inputs_virtual_dvb_del);
-mux.handle("/live/inputs/virtual_dvb")
-        .post(live_inputs_virtual_dvb_post)
-        .get (live_inputs_virtual_dvb_get);
+	.get(live_inputs_network_get)
+	.put(live_inputs_network_put)
+	.del(live_inputs_network_del);
 mux.handle("/live/inputs/transcode/{id}")
-        .get (live_inputs_transcode_get)
-        .put (live_inputs_transcode_put)
-        .del (live_inputs_transcode_del);
-mux.handle("/live/inputs/transcode")
-        .post(live_inputs_transcode_post)
-        .get (live_inputs_transcode_get);
-mux.handle("/live/transcode_profile/{id}")
-        .get (live_transcode_profile_get)
-        .put (live_transcode_profile_put)
-        .del (live_transcode_profile_del);
-mux.handle("/live/transcode_profile")
-        .post(live_transcode_profile_post)
-        .get (live_transcode_profile_get);
-mux.handle("/live/cccam/{id}")
-        .get (live_cccam_get)
-        .put (live_cccam_put)
-        .del (live_cccam_del);
-mux.handle("/live/cccam")
-        .post(live_cccam_post)
-        .get (live_cccam_get);
-mux.handle("/live/inputs/unscramble/{id}")
-        .get (live_inputs_unscramble_get)
-        .put (live_inputs_unscramble_put)
-        .del (live_inputs_unscramble_del);
-mux.handle("/live/inputs/unscramble")
-        .post(live_inputs_unscramble_post)
-        .get (live_inputs_unscramble_get);
+	.get(live_inputs_transcode_get)
+	.put(live_inputs_transcode_put)
+	.del(live_inputs_transcode_del);
 mux.handle("/live/inputs/scramble/{id}")
-        .get (live_inputs_scramble_get)
-        .put (live_inputs_scramble_put)
-        .del (live_inputs_scramble_del);
+	.get(live_inputs_scramble_get)
+	.put(live_inputs_scramble_put)
+	.del(live_inputs_scramble_del);
+mux.handle("/live/inputs/mix/{id}")
+	.get(live_inputs_mix_get)
+	.put(live_inputs_mix_put)
+	.del(live_inputs_mix_del);
+mux.handle("/live/output/dvb/{id}")
+	.get(live_output_dvb_get)
+	.put(live_output_dvb_put)
+	.del(live_output_dvb_del);
+mux.handle("/live/output/network/{id}")
+	.get(live_output_network_get)
+	.put(live_output_network_put)
+	.del(live_output_network_del);
+mux.handle("/live/output/archive/{id}")
+	.get(live_output_archive_get)
+	.put(live_output_archive_put)
+	.del(live_output_archive_del);
+////////////////////////
+mux.handle("/live/profiles/mix")
+	.get(live_profiles_mix_get)
+	.post(live_profiles_mix_post);
+mux.handle("/live/profiles/transcode")
+	.get(live_profiles_transcode_get)
+	.post(live_profiles_transcode_post);
+mux.handle("/live/profiles/scramble")
+	.get(live_profiles_scramble_get)
+	.post(live_profiles_scramble_post);
+mux.handle("/live/network/accounts")
+	.get(live_network_accounts_get)
+	.post(live_network_accounts_post);
+mux.handle("/live/tuners/info")
+	.get(live_tuners_info_get)
+	.post(live_tuners_info_post);
+mux.handle("/live/inputs/dvb")
+	.get(live_inputs_dvb_get)
+	.post(live_inputs_dvb_post);
+mux.handle("/live/inputs/archive")
+	.get(live_inputs_archive_get)
+	.post(live_inputs_archive_post);
+mux.handle("/live/inputs/network")
+	.get(live_inputs_network_get)
+	.post(live_inputs_network_post);
+mux.handle("/live/inputs/transcode")
+	.get(live_inputs_transcode_get)
+	.post(live_inputs_transcode_post);
 mux.handle("/live/inputs/scramble")
-        .post(live_inputs_scramble_post)
-        .get (live_inputs_scramble_get);
-mux.handle("/live/output/silver/{id}")
-        .get (live_output_silver_get)
-        .put (live_output_silver_put)
-        .del (live_output_silver_del);
-mux.handle("/live/output/silver")
-        .post(live_output_silver_post)
-        .get (live_output_silver_get);
-mux.handle("/live/output/gold/{id}")
-        .get (live_output_gold_get)
-        .put (live_output_gold_put)
-        .del (live_output_gold_del);
-mux.handle("/live/output/gold")
-        .post(live_output_gold_post)
-        .get (live_output_gold_get);
+	.get(live_inputs_scramble_get)
+	.post(live_inputs_scramble_post);
+mux.handle("/live/inputs/mix")
+	.get(live_inputs_mix_get)
+	.post(live_inputs_mix_post);
+mux.handle("/live/output/dvb")
+	.get(live_output_dvb_get)
+	.post(live_output_dvb_post);
+mux.handle("/live/output/network")
+	.get(live_output_network_get)
+	.post(live_output_network_post);
+mux.handle("/live/output/archive")
+	.get(live_output_archive_get)
+	.post(live_output_archive_post);
+
 ////////////////////// REPORT //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /report/* GET";
 mux.handle("/status/information").get(status_information_get);
@@ -190,6 +196,9 @@ mux.handle("/report/survey").get(report_survey_get);
 mux.handle("/report/iptv_user").get(report_iptv_user_get);
 mux.handle("/report/webui_user").get(report_webui_user_get);
 mux.handle("/report/system_usage").get(report_system_usage_get);
+mux.handle("/report/webui_state")
+        .get(report_webui_state_get)
+        .post(report_webui_state_post);
 
 ////////////////////// SYSTEM //////////////////////////////////////////////////
 BOOST_LOG_TRIVIAL(trace) << "Add route /system/* GET";

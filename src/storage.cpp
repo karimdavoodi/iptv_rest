@@ -2,6 +2,7 @@
 #include "mongo_driver.hpp"
 #include "util.hpp"
 #include "storage.hpp"
+using namespace std;
 
 void storage_setting_get(served::response &res, const served::request &req)
 {
@@ -76,7 +77,35 @@ void storage_categories_del(served::response &res, const served::request &req)
 void storage_info_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    GET_COL("storage_contents_info");
+    auto col = "storage_contents_info";
+
+    try{                                                         
+        int id;                                                  
+        std::string result = "";
+        res.set_header("Content-type", "application/json");      
+        if(Util::get_id(req, id)){                               
+            result =  Mongo::find_id(col, id);                      
+        }else{                                                   
+            auto [from, to] = Util::req_range(req);              
+            const std::string parameters = Util::req_parameters(req); 
+            result =  Mongo::find_filter_range(col, parameters, from, to);                         
+        }   
+        // Add media status
+        if(result.size()){
+            json list = json::parse(result);
+            if(!list["content"].is_null()){
+                for(auto& item : list["content"] ){
+                    item["files_exist"] = Util::check_media_exists(req, item["_id"]);
+                }
+            }else if(!list["_id"].is_null()){
+                    list["files_exist"] = Util::check_media_exists(req, list["_id"]);
+            }
+            res << list.dump(2); 
+        }
+        res.set_status(200);                                    
+    }catch(std::exception& e){                                  
+        BOOST_LOG_TRIVIAL(error) << e.what();                   
+    };
 }
 void storage_info_put(served::response &res, const served::request &req)
 {
@@ -177,19 +206,4 @@ void storage_contents_formats_get(served::response &res, const served::request &
 {
 	CHECK_AUTH;
     GET_COL("storage_contents_formats");
-}
-void storage_contents_formats_put(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    PUT_ID_COL("storage_contents_formats");
-}
-void storage_contents_formats_post(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    POST_ID_COL("storage_contents_formats");
-}
-void storage_contents_formats_del(served::response &res, const served::request &req)
-{
-	CHECK_AUTH;
-    DEL_ID_COL("storage_contents_formats");
 }

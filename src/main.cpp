@@ -29,7 +29,7 @@
 
 
 #define PORT "8139"
-#define THREADS 1
+#define THREADS 4
 using namespace std;
 
 #define DUMP_FILE "/tmp/iptv_rest.dump"
@@ -38,7 +38,7 @@ void signal_handler(int signum)
     signal(signum, SIG_DFL);
     string fname = DUMP_FILE + to_string( rand()%10000 );
     boost::stacktrace::safe_dump_to(static_cast<const char*>(fname.c_str()));
-    //BOOST_LOG_TRIVIAL(info) << boost::stacktrace::stacktrace(); 
+    //LOG(info) << boost::stacktrace::stacktrace(); 
     raise(SIGABRT);
 }
 void init_log(int argc, char* argv[]){
@@ -53,7 +53,7 @@ void init_log(int argc, char* argv[]){
     logging::add_file_log
         (
          keywords::file_name = log_out,
-         keywords::format = "%Process% %ThreadID%: %Message%",
+         keywords::format = "%TimeStamp% %Process% %ThreadID% %Severity%: %Message%",
          keywords::auto_flush = true,
          keywords::open_mode = std::ios_base::app
          //%TimeStamp% %Process% %ThreadID% %Severity% %LineID% %Message%"     
@@ -68,16 +68,16 @@ int main(int argc, char *argv[])
     string port = (argc == 2) ? argv[1] : PORT;
     init_log(argc, argv);
     if( geteuid() != 0 ){
-        BOOST_LOG_TRIVIAL(error) << "Must run by root";
+        LOG(error) << "Must run by root";
         return -1;
     }
-    BOOST_LOG_TRIVIAL(info) << "Start Main";
+    LOG(info) << "Start Main";
     Mongo::fill_defauls();
     signal(SIGSEGV, &signal_handler);
     signal(SIGABRT, &signal_handler);
     try{
         served::multiplexer mux;
-        BOOST_LOG_TRIVIAL(info) << "Init Routes";
+        LOG(info) << "Init Routes";
 
         #include "routes.hpp"
 
@@ -89,25 +89,25 @@ int main(int argc, char *argv[])
                 json j = json::object();
                 auto endpoint_list = mux.get_endpoint_list();
                 for ( const auto & endpoint : endpoint_list ){
-                j[endpoint.first] = json::array();
-                for ( const auto & method : std::get<1>(endpoint.second) ){
-                j[endpoint.first].push_back(method);
-                }
+                    j[endpoint.first] = json::array();
+                    for ( const auto & method : std::get<1>(endpoint.second) ){
+                        j[endpoint.first].push_back(method);
+                    }
                 }
                 res << j.dump(2);
+                res.set_status(200);
                 });
 
         mux.use_after([&](served::response& res, served::request& req){
-                // FIXME. only for debug
-                if(argc == 2)
-                    BOOST_LOG_TRIVIAL(trace) << "RESULT:\n" <<  res.to_buffer();
+                if(argc == 2)  // debug mode
+                    LOG(trace) << "RESULT:\n" <<  res.to_buffer();
                 });
         mux.use_before([](served::response& res, served::request& req){
-                BOOST_LOG_TRIVIAL(trace) << "URL:" << req.url().URI();
+                LOG(trace) << "URL:" << req.url().URI();
                 if(req.method() != served::method::OPTIONS){
-                res.set_status(served::status_4XX::NOT_FOUND);  
+                    res.set_status(served::status_4XX::NOT_FOUND);  
                 }else{
-                res.set_header("Allow", "GET, POST, PUT, DELETE");
+                    res.set_header("Allow", "GET, POST, PUT, DELETE");
                 }
                 // Date header
                 auto now1 = std::chrono::system_clock::now();
@@ -139,13 +139,13 @@ int main(int argc, char *argv[])
                 //    }
                 //}
         });
-        BOOST_LOG_TRIVIAL(info) << "Listen on:" << port;
+        LOG(info) << "Listen on:" << port;
         served::net::server server("0.0.0.0", port, mux);
         server.run(THREADS); 
     }catch(std::exception& e){
-        BOOST_LOG_TRIVIAL(error) << "Exception " << e.what();
+        LOG(error) << "Exception " << e.what();
     }catch(...){
-        BOOST_LOG_TRIVIAL(error) << "unknown exception\n";
+        LOG(error) << "unknown exception\n";
     }
     return 0;
 }

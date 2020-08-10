@@ -1,4 +1,4 @@
-#pragma onc;
+#pragma once
 
 #include <iostream>
 #include <boost/log/trivial.hpp>
@@ -7,12 +7,14 @@
 #include <mongocxx/logger.hpp>
 #include <mongocxx/options/client.hpp>
 #include <mongocxx/uri.hpp>
+#include <mongocxx/pool.hpp>
 
 #include <bsoncxx/builder/basic/document.hpp>
 #include <bsoncxx/builder/basic/kvp.hpp>
 #include <bsoncxx/json.hpp>
 #include <bsoncxx/stdx/make_unique.hpp>
 #define  QUERY_SIZE 10
+#define LOG(level) BOOST_LOG_TRIVIAL(level) << "[" << __func__ << ":" <<__LINE__ << "] " 
 
 namespace Mongo {
     void fill_defauls();
@@ -30,6 +32,7 @@ namespace Mongo {
     bool replace(const std::string col, const std::string filter, 
             const std::string doc);
     int get_uniq_id();
+    bool update_id(const std::string col, int id, const std::string doc);
     const std::string find_one(const std::string col, const std::string filter);
     const std::string find_mony(const std::string col, const std::string filter);
     const std::string find_id(const std::string col, int id);
@@ -38,5 +41,4 @@ namespace Mongo {
     const std::string find_filter_range(const std::string col, 
             const std::string filter,
             int begin = 0, int end = QUERY_SIZE);
-    void info();
 };

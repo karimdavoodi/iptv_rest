@@ -10,19 +10,20 @@ void status_information_get(served::response &res, const served::request &req)
     try{                                                        
         json result = json::object();                                     
         json license = json::parse(Mongo::find_id("system_license", 1));      
-        //BOOST_LOG_TRIVIAL(trace) << license.dump(2);
+        //LOG(trace) << license.dump(2);
         auto stat = Util::send_http_cmd("/service_stat");
         result["_id"] = 1; 
         result["Running"] = stat.find("True") != string::npos; 
         auto last_reset = Util::send_http_cmd("/last_reset");
         result["LastReset"] = last_reset.size()?
-            last_reset.substr(last_reset.find("\n1")):"";
+            last_reset.substr(last_reset.find("\n")):"";
         result["SystemIP"] = Hardware::detect_ip();
         result["SystemInternet"] = Hardware::detect_internet();
         result["Owner"] = license["license"]["General"]["Customer"];
         result["OwnerId"] = license["license"]["General"]["MMK_ID"];
         result["Serial"] = license["license"]["General"]["MMK_Serial"];
         result["LicenseExpire"] = license["license"]["General"]["Expire_Date"];
+        result["LicenseDate"] = Hardware::file_date("/opt/sms/lic.bin");
         result["Version"] = Hardware::detect_mmk_version();
         result["CPU"] = Hardware::detect_cpu_model();
         result["Kernel"] = Hardware::detect_os_kernel();
@@ -37,7 +38,7 @@ void status_information_get(served::response &res, const served::request &req)
         res << result.dump(2);                                          
         res.set_status(200);                                    
     }catch(std::exception& e){                                  
-        BOOST_LOG_TRIVIAL(error) << e.what();                   
+        LOG(error) << e.what();                   
     }                       
 }
 void report_system_usage_get(served::response &res, const served::request &req)
@@ -74,4 +75,14 @@ void report_survey_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     GET_COL("report_survey");
+}
+void report_webui_state_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_COL("report_webui_state");
+}
+void report_webui_state_post(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    POST_ID_COL("report_webui_state");
 }

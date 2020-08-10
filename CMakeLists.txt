@@ -1,24 +1,22 @@
 cmake_minimum_required(VERSION 3.10)
 project(iptv_api)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(QT_QMAKE_EXECUTABLE "/usr/bin/qmake")
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
 add_definitions( 
                 #-fdiagnostics-color=always 
                  -fdiagnostics-show-location=every-line
                  -fdiagnostics-generate-patch 
                  -DBOOST_LOG_DYN_LINK=1
                  -O3
+                 -Wall
                  #-g
                  )
 
 aux_source_directory(src SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-target_include_directories(${PROJECT_NAME} PUBLIC 
-    /usr/local/include # for served, libmongo*
-    )
 
 target_link_libraries(${PROJECT_NAME} 
     -lserved

@@ -1,10 +1,10 @@
-#pragma onc;
+#pragma once
 #include <iostream>
 #include <vector>
 #include "../third_party/json.hpp"
 namespace Hardware {
     const std::vector<std::pair<int,std::string>> detect_input_tuners();
-    const std::vector<int> detect_output_tuners();
+    const std::vector<int,std::string> detect_output_tuners();
     const std::string detect_network();
     const nlohmann::json scan_input_tuner(const std::string&);
     const std::string detect_cpu_model();
@@ -19,4 +19,7 @@ namespace Hardware {
     const std::string detect_mmk_version();
     const bool detect_internet();
     const std::vector<std::string> detect_interfaces();
+    void apply_network(nlohmann::json& net);
+    void save_network(nlohmann::json& net);
+    long file_date(const std::string file_path);
 }

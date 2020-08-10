@@ -10,9 +10,6 @@ void storage_contents_types_post(served::response &, const served::request &);
 void storage_contents_types_del(served::response &, const served::request &);
 
 void storage_contents_formats_get(served::response &, const served::request &);
-void storage_contents_formats_put(served::response &, const served::request &);
-void storage_contents_formats_post(served::response &, const served::request &);
-void storage_contents_formats_del(served::response &, const served::request &);
 
 void storage_platforms_get(served::response &, const served::request &);
 void storage_platforms_put(served::response &, const served::request &);

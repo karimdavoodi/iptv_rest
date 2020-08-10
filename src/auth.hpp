@@ -81,8 +81,11 @@
 #define POST_ID_COL(col)                                            \
     try{                                                            \
         GET_BODY_AS_j                                               \
-        j["_id"] = Mongo::get_uniq_id();                            \
+        long _id = Mongo::get_uniq_id();                            \
+        j["_id"] = _id;                                             \
         Mongo::insert(col, j.dump());                               \
+        res.set_header("Content-Type", "application/json");         \
+        res << "{ \"_id\":" + std::to_string(_id) + " }";           \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
         BOOST_LOG_TRIVIAL(error) << e.what();                       \
@@ -93,6 +96,8 @@
         GET_BODY_AS_j                                               \
         j["_id"] = 1;                                               \
         Mongo::insert_or_replace_id(col, 1, j.dump());              \
+        res.set_header("Content-Type", "application/json");         \
+        res << "{ \"_id\": 1 }";                                    \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
         BOOST_LOG_TRIVIAL(error) << e.what();                       \
@@ -128,13 +133,13 @@
     try{                                                            \
         int id;                                                     \
         res.set_header("Content-type", "application/json");         \
-        if(Util::get_id(req, id)){                                        \
+        if(Util::get_id(req, id)){                                 \
             res << Mongo::find_id(col, id);                       \
-        }else{                                                      \
-            auto [from, to] = Util::req_range(req);                           \
+        }else{                                                     \
+            auto [from, to] = Util::req_range(req);                \
             const std::string parameters = Util::req_parameters(req); \
-            res << Mongo::find_filter_range(col,                       \
-                parameters , from, to);      \
+            res << Mongo::find_filter_range(col,                    \
+                parameters , from, to);                             \
         }                                                           \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
@@ -170,7 +175,9 @@
 #define SEND_ID_FILE                                                \
     try{                                                            \
         GET_FILE_PATH                                               \
-        if(!Util::send_file(res, req, fname)){                            \
+        if(fname == ""){                                            \
+            ERRORSEND(res, 403, 1004, "Can't find content ID");     \
+        }else if(!Util::send_file(res, req, fname)){                            \
             ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
         }                                                           \
     }catch(std::exception& e){                                      \
@@ -180,7 +187,9 @@
 #define RECV_ID_FILE                                                \
     try{                                                            \
         GET_FILE_PATH                                               \
-        if(!Util::save_file(res, req, fname)){                            \
+        if(fname == ""){                                            \
+            ERRORSEND(res, 403, 1004, "Can't find content ID");     \
+        }else if(!Util::save_file(res, req, fname)){                \
             ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
         }                                                           \
     }catch(std::exception& e){                                      \

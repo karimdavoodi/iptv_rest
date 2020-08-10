@@ -1,4 +1,4 @@
-#pragma onc;
+#pragma once
 #include <iostream>
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
@@ -18,6 +18,7 @@ namespace Util {
             const std::string method = "get");
     const std::string req_parameters(const served::request &req);
     const std::string get_content_path(const served::request &req, int id);
+    const json check_media_exists(const served::request &req, int id);
     bool check_auth(const served::request &req);
     void test(served::response &res, const served::request &req);
     bool get_id(const served::request &req, std::string& id);
