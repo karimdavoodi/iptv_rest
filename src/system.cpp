@@ -1,6 +1,11 @@
-// power on / off
-// 
 //
+/*
+ *   users_me  - set Cookie
+ *   
+ *
+ *
+ *
+ * */
 #include "auth.hpp"
 
 #include "mongo_driver.hpp"
@@ -144,6 +149,7 @@ void system_users_me_get(served::response &res, const served::request &req)
     auto text = Util::base64_decode(auth);
     auto pos = text.find(':');
     if(pos == std::string::npos) return;
+    //res.set_header("Set-Cookie","key=123");
     auto user = text.substr(0,pos);
     res << Mongo::find_one("system_users","{\"user\": \"" + user + "\"}");
     res.set_status(200);                                        \
@@ -336,16 +342,22 @@ void system_license_get(served::response &res, const served::request &req)
 }
 void system_license_put(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
-    RECV_FILE("license.bin");	
-    std::string from = std::string(MEDIA_ROOT) + "license.bin";
-    if(boost::filesystem::exists(from)){
-        boost::filesystem::copy_file(from, "/opt/sms/lic.bin");
-    }
+    try{
+        CHECK_AUTH;
+        RECV_FILE("license.bin");	
+        std::string from = std::string(MEDIA_ROOT) + "license.bin";
+        if(boost::filesystem::exists(from)){
+            LOG(debug) << "Copy " << from << " to /opt/sms/lic.bin";
+            boost::filesystem::copy_file(from, "/opt/sms/lic.bin", 
+                    boost::filesystem::copy_option::overwrite_if_exists);
+        }
+    }catch(std::exception& e){                                  
+        LOG(error) << e.what();                   
+    }                       
 }
 void system_firmware_put(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     RECV_FILE("firmware.deb");	
     std::string deb = std::string(MEDIA_ROOT) + "firmware.deb";
     if(boost::filesystem::exists(deb)){
@@ -356,13 +368,13 @@ void system_firmware_put(served::response &res, const served::request &req)
 }
 void system_logout_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     res.set_status(served::status_2XX::OK);
     // TODO : do nothing...
 }
 void system_restart_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     if(Util::send_http_cmd("/start") != "")
         res.set_status(served::status_2XX::OK);
     else
@@ -370,7 +382,7 @@ void system_restart_get(served::response &res, const served::request &req)
 }
 void system_stop_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     if(Util::send_http_cmd("/stop") != "")
         res.set_status(served::status_2XX::OK);
     else
@@ -378,7 +390,7 @@ void system_stop_get(served::response &res, const served::request &req)
 }
 void system_reboot_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     if(Util::send_http_cmd("/reboot") != "")
         res.set_status(served::status_2XX::OK);
     else
@@ -386,27 +398,27 @@ void system_reboot_get(served::response &res, const served::request &req)
 }
 void system_operations_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     GET_COL("system_operations");
 }
 void system_sensor_get(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     GET_COL("system_sensor");
 }
 void system_sensor_put(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     PUT_ID_COL("system_sensor");
 }
 void system_sensor_post(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     POST_ID_COL("system_sensor");
 }
 void system_sensor_del(served::response &res, const served::request &req)
 {
-	CHECK_AUTH;
+    CHECK_AUTH;
     DEL_ID_COL("system_sensor");
 }
 

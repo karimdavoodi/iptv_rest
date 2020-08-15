@@ -815,6 +815,7 @@ Query: in 'GET' method, use any field as parameter.
                 "content":[    
                     {
                     "_id":int,
+                    "description": string,
                     "name":{
                         "en": string,
                         "fa": string,
@@ -847,7 +848,7 @@ Query: in 'GET' method, use any field as parameter.
                         "name": string,
                         "price": int,
                         "platform":[int],           # from storage/contents/platforms
-                        "date": epochtime,
+                        "date": int,                # date in year 
                         "languages" : [string],     # from 'en','fa','ar' 
                         "description":{
                             "en": {
@@ -1002,7 +1003,6 @@ Query: in 'GET' method, use any field as parameter.
                       {
                        "_id": int,
                        "active": boolean,
-                       "name": string, 
                        "description": string,
                        "dvbt": boolean,
                        "systemId": int,          # from tuners/system
@@ -1016,7 +1016,7 @@ Query: in 'GET' method, use any field as parameter.
         Method: GET, PUT, POST, DELETE 
         RequestBody: like content of GET
 
-        Path: /live/tuners/scan/{id}
+        Path: /live/tuners/scan/{id}            # id  from tuner/info
         Method: GET
         ResponseBody: 
             {
@@ -1033,7 +1033,7 @@ Query: in 'GET' method, use any field as parameter.
 
                 ]
             }
-        Path: /live/tuners/scan_bw/{id}
+        Path: /live/tuners/scan_bw/{id}        # id from tuner/info
         Method: GET
         ResponseBody: 
             {
@@ -1280,13 +1280,13 @@ Query: in 'GET' method, use any field as parameter.
                 "name": string,             
                 "type": string,             # from 'MST', 'SST', 'WEB'
                 "description": string, 
-                "logo": int,                # from storage/contents/info  type 'Logo'
                 "accountId": string,        # from live/network/accounts
                 "channelId": string,        # from live/network/channels 
                 "url": string, 
                 "static": boolean,
                 "virtual": boolean,
                 "webPage": boolean,
+                "logo": int,                # from storage/contents/info  type 'Logo'
                 "tv": boolean
                                            # In 'SST' and 'WEB' the accountId and channelId 
                                            # is empty, in 'MST' the url is empty 
@@ -1316,7 +1316,9 @@ Query: in 'GET' method, use any field as parameter.
                 "description": string, 
                 "input": int,        # from live/inputs
                 "inputType": int,    # from live/inputs/types 
-                "profile": int,      # from live/transcode_profile
+                "profile": int,      # from live/profiles/transcode
+                "logo": int,         # from storage/contents/info  type 'Logo'
+                "tv": boolean
             }
 
 
@@ -1344,7 +1346,9 @@ Query: in 'GET' method, use any field as parameter.
                 "input": int,           # from live/inputs
                 "inputType": int,       # from live/inputs/types 
                 "decrypt": boolean,     # 'True' for unscrambling and 'False' for scrambling 
-                "profile": int          # from live/scramble_profile
+                "profile": int,         # from live/profiles/scramble
+                "logo": int,            # from storage/contents/info  type 'Logo'
+                "tv": boolean
             }
 
         Description: Manage of mix channels
@@ -1367,11 +1371,13 @@ Query: in 'GET' method, use any field as parameter.
                 "active": boolean,
                 "name": string, 
                 "description": string, 
-                "profile": int,             # from live/mix_profile
+                "profile": int,          # from live/profiles/mix
                 "input1": int,           # from live/inputs
                 "inputType1": int,       # from live/inputs/types 
                 "input2": int,           # from live/inputs
                 "inputType2": int,       # from live/inputs/types 
+                "logo": int,             # from storage/contents/info  type 'Logo'
+                "tv": boolean
             }
 
 ### Live Output  #########################################
@@ -1398,7 +1404,7 @@ Query: in 'GET' method, use any field as parameter.
                 "inputType": int,   # from live/inputs/types 
                 "category": [int],  # from storage/contents/categories
                 "dvbId": int, 
-                "serviceId": int, 
+                "serviceId": int,   # from 100 ... 999 
             }
         Description: Manage of Output Network channels
         Path: /live/output/network
@@ -1569,7 +1575,7 @@ Query: in 'GET' method, use any field as parameter.
                 "active": boolean,
                 "name": string,
                 "type" : string,        # from 'Line', 'Matrix', 'Curve'
-                "permission": int,      # from system/permission
+                "permission": [int],      # from system/permission
                 "platform":[int],       # from storage/contents/platforms
                 "menu": [int],          # from launcher/menu
                 "icons":{               # 'Logo' type from storage/contents/info
@@ -1740,3 +1746,5 @@ Query: in 'GET' method, use any field as parameter.
             }
 
 
+#TODO:  secure user pass
+#TODO:  ui login limitation(location, browser session)

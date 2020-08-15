@@ -13,6 +13,11 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/tokenizer.hpp>
 #include <sstream>
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+#include <curlpp/Options.hpp>
+#include <curlpp/Exception.hpp>
+
 #include "mongo_driver.hpp"
 #include "util.hpp"
 #include "hardware.hpp"
@@ -103,6 +108,7 @@ namespace Util {
             LOG(error)  <<  e.what();
         }
     }
+    /*
     void fill_output_tuners_in_db()
     {
         json tuners = json::parse(Mongo::find_id("live_tuners_output", 1));
@@ -156,6 +162,7 @@ namespace Util {
             LOG(error)  <<  e.what();
         }
     }
+    */
     string send_http_cmd(const string target, 
             const string host, 
             const string port,
@@ -244,7 +251,7 @@ namespace Util {
         else return "";
 
     }
-    const json check_media_exists(const served::request &req, int id)
+    const json check_media_exists(const served::request &req, uint64_t id)
     {
         std::string media_path = get_content_path(req, id);
         std::string poster_path = string(MEDIA_ROOT) + 
@@ -257,7 +264,7 @@ namespace Util {
         media_status["subtitle"]= boost::filesystem::exists(subtitle_path);
         return media_status;
     }
-    const string get_content_path(const served::request &req, int id)
+    const string get_content_path(const served::request &req, uint64_t id)
     {
         try{
             string dir = "", ext = "";
@@ -374,7 +381,7 @@ namespace Util {
                 report_error("Invalid user record for :"+user+" pass:"+pass);
                 return false;
             }
-            report_webui_user(j["_id"].get<int>(), req);
+            report_webui_user(j["_id"].get<uint64_t>(), req);
             // FIXME : not check permission for test user
             if(user == "test" && pass == "test") return true;
             // check user expire
@@ -425,19 +432,19 @@ namespace Util {
         if(id.size() < 1) return false;
         return true;
     }
-    bool get_id(const served::request &req, int& id)
+    bool get_id(const served::request &req, uint64_t& id)
     {
         id = 0;
         auto sid = req.params.get("id");
         if(sid.size() < 1) return false;
         for(auto c : sid)
             if(!isdigit(c)) return false;
-        id = stoi(sid);
+        id = stoull(sid);
         return true;
     }
-    int get_id_from_body_and_url(const served::request &req)
+    uint64_t get_id_from_body_and_url(const served::request &req)
     {
-        int id;
+        uint64_t id;
         try{
             if(!get_id(req, id)){
                 LOG(trace) << "Not exists 'id' in url";
@@ -448,7 +455,7 @@ namespace Util {
                 LOG(trace) << "Not exists '_id' in body json";
                 return -1;
             }
-            int _id = j["_id"];
+            uint64_t _id = j["_id"];
             if(id != _id){
                 LOG(trace) << "Diffrent '_id' in body and 'id' in url";
                 return -1;
@@ -457,7 +464,7 @@ namespace Util {
 
         }catch(exception& e){
             LOG(trace) << "Exception: " << e.what();
-            return -1;
+            return 0;
         }
     }
     bool save_file(served::response &res, const served::request &req, const string path)
@@ -535,7 +542,7 @@ namespace Util {
         for(const auto it : tok){
             if(it.size()){
                 if(isdigit(it[0]))
-                    j[op].push_back(stol(it));
+                    j[op].push_back(stoull(it));
                 else
                     j[op].push_back(remove_camma(it));
             } 
@@ -562,22 +569,22 @@ namespace Util {
                     auto end = req.query.get("end-id");
                     if(end.size()){
                         j["_id"] = json::object();
-                        j["_id"]["$gt"] = stol(value);
-                        j["_id"]["$lt"] = stol(end);
+                        j["_id"]["$gt"] = stoull(value);
+                        j["_id"]["$lt"] = stoull(end);
                     }
                 }
                 else if(name == "start-time"){
                     auto end = req.query.get("end-time");
                     if(end.size()){
                         j["time"] = json::object();
-                        j["time"]["$gt"] = stol(value);
-                        j["time"]["$lt"] = stol(end);
+                        j["time"]["$gt"] = stoull(value);
+                        j["time"]["$lt"] = stoull(end);
                     }
                 }else{
                     if(value.find(':') != string::npos ){
                         auto pos = value.find(':');
-                        auto start = stof(value.substr(0, pos));
-                        auto end = stof(value.substr(pos+1));
+                        auto start = stoull(value.substr(0, pos));
+                        auto end = stoull(value.substr(pos+1));
                         if(_not){
                             json gt,lt;
                             gt[name]["$gt"] = end; 
@@ -595,14 +602,14 @@ namespace Util {
                     }else{
                         if(_not){
                             if(isdigit(value[0]))
-                                j[name]["$ne"] = stof(value);
+                                j[name]["$ne"] = stoull(value);
                             else if(value == "true" || value == "false")
                                 j[name]["$ne"] = (value == "true");
                             else
                                 j[name]["$ne"] = remove_camma(value);
                         }else{
                             if(isdigit(value[0]))
-                                j[name] = stof(value);
+                                j[name] = stoull(value);
                             else if(value == "true" || value == "false")
                                 j[name] = (value == "true");
                             else
@@ -683,5 +690,22 @@ namespace Util {
         }
 
         return ret;
+    }
+    const std::string get_url(const std::string url)
+    {
+        try{
+            LOG(debug) << "Try to get " << url;
+            curlpp::Cleanup cleaner;
+            curlpp::Easy request;
+            request.setOpt(new curlpp::options::Url(url));
+
+            ostringstream out;
+            out << request;
+            return out.str();
+
+        }catch(std::exception const& e){
+            LOG(error) << e.what();
+        }
+        return "";
     }
 }

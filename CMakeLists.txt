@@ -32,6 +32,12 @@ find_package(LIBMONGOCXX REQUIRED)
 target_link_libraries(${PROJECT_NAME} ${LIBMONGOCXX_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${LIBMONGOCXX_INCLUDE_DIRS})
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CURLPP REQUIRED curlpp)
+target_link_libraries(${PROJECT_NAME} ${CURLPP_LIBRARIES} )
+target_include_directories(${PROJECT_NAME} PUBLIC ${CURLPP_INCLUDE_DIRS})
+
+
 add_custom_target(copy ALL 
     COMMAND cp -f iptv_* /opt/sms/bin
     COMMENT "Copy to /opt/sms/bin"

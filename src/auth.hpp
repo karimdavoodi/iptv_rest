@@ -38,13 +38,14 @@
         if(req.body().size() == 0){                             \
             ERRORSEND(res, 400, 1001, "No input!");             \
         }                                                       \
-        auto j = json::parse(req.body());                       \
+        j = json::parse(req.body());                            \
         if(j.is_null()){                                        \
             ERRORSEND(res, 400, 1001, "No valid input!");       \
         }                                                       \
 
 
 #define CHECK_BODY_EXISTS_ID                                    \
+    json j;                                                         \
     do{                                                         \
         GET_BODY_AS_j                                             \
         if( j.count("_id") == 0 ){                              \
@@ -55,7 +56,7 @@
 #define PUT_ID_COL(col)                                             \
     try{                                                            \
         CHECK_BODY_EXISTS_ID;                                       \
-        int id = Util::get_id_from_body_and_url(req);                     \
+        uint64_t id = Util::get_id_from_body_and_url(req);                     \
         if(id < 0 ){                                                \
             ERRORSEND(res, 400, 1002, "Invalid id!");               \
         }                                                           \
@@ -79,9 +80,10 @@
     }do{}while(false)                       
 
 #define POST_ID_COL(col)                                            \
+    json j;                                                         \
     try{                                                            \
         GET_BODY_AS_j                                               \
-        long _id = Mongo::get_uniq_id();                            \
+        uint64_t _id = Mongo::get_uniq_id();                            \
         j["_id"] = _id;                                             \
         Mongo::insert(col, j.dump());                               \
         res.set_header("Content-Type", "application/json");         \
@@ -92,6 +94,7 @@
     }do{}while(false)                       
 
 #define POST_ID1_COL(col)                                           \
+    json j;                                                         \
     try{                                                            \
         GET_BODY_AS_j                                               \
         j["_id"] = 1;                                               \
@@ -104,8 +107,8 @@
     }do{}while(false)                       
 
 #define DEL_ID_COL(col)                                             \
+    uint64_t id;                                                     \
     try{                                                            \
-        int id;                                                     \
         if(!Util::get_id(req, id) ){                                      \
             ERRORSEND(res, 400, 1002, "Invalid id!");               \
         }                                                           \
@@ -131,7 +134,7 @@
 
 #define GET_COL(col)                                             \
     try{                                                            \
-        int id;                                                     \
+        uint64_t id;                                                     \
         res.set_header("Content-type", "application/json");         \
         if(Util::get_id(req, id)){                                 \
             res << Mongo::find_id(col, id);                       \
@@ -166,7 +169,7 @@
                             prefix + "_" + id + postfix;          
 
 #define GET_FILE_PATH                                               \
-        int id;                                                     \
+        uint64_t id;                                                     \
         if(!Util::get_id(req, id)){                                       \
             ERRORSEND(res, 400, 1003, "Invalid file id!");          \
         }                                                           \

@@ -23,7 +23,7 @@ sys.exit(0)
 """
 def check_status_code(res):
     #if res.status_code != 200: #print "##### Error #####"
-    print res.url,":",res.request.method,":",res.status_code #,":",res.text
+    print(res.url,":",res.request.method,":",res.status_code) #,":",res.text
     #if res.text != None: print res.text
 
 def test_url(url, jdata, rdata, param, methods, no_id_get = True):
@@ -36,13 +36,11 @@ def test_url(url, jdata, rdata, param, methods, no_id_get = True):
                     json = jdata)
             check_status_code(res)
         if "post" in methods:
-            if "/1" in url:
-                url = url[:-2]
-                res = requests.post(base + url,
-                        auth = defAuth,
-                        params = param,
-                        json = jdata)
-                check_status_code(res)
+            res = requests.post(base + url,
+                    auth = defAuth,
+                    params = param,
+                    json = jdata)
+            check_status_code(res)
     else:
         #fdata = open('data/bg.png', 'rb').read()
         if "put" in methods:
@@ -81,13 +79,24 @@ def test_url(url, jdata, rdata, param, methods, no_id_get = True):
                     )
             check_status_code(res)
 
-    if "del11" in methods:
+    if "del" in methods:
         res = requests.delete(base + url,
                 auth = defAuth,
                 params = param,
                 )
         check_status_code(res)
 
+test_url("/live/tuners/info", {
+                       "_id": 1000031,
+                       "active": True,
+                       "description": "desc",
+                       "dvbt": True,
+                       "systemId": 0,
+                       "frequencyId": 1597034798385114285,
+                       "diSEqC": 1, 
+                       "virtual": False
+    }, None, None, "post")
+"""
 fdata = open('data/bg.png', 'rb').read()
 test_url("/launcher/components/info/1", {"_id":1}, None, None, "get put post del")
 test_url("/launcher/components/types/1", {"_id":1}, None, None, "get put post del")

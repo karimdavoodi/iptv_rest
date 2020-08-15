@@ -1,4 +1,16 @@
 #include "mongo_driver.hpp"
+#include <boost/log/trivial.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/instance.hpp>
+#include <mongocxx/logger.hpp>
+#include <mongocxx/options/client.hpp>
+#include <mongocxx/uri.hpp>
+#include <mongocxx/pool.hpp>
+
+#include <bsoncxx/builder/basic/document.hpp>
+#include <bsoncxx/builder/basic/kvp.hpp>
+#include <bsoncxx/json.hpp>
+#include <bsoncxx/stdx/make_unique.hpp>
 #include <exception>
 #include <string>
 #include <utility>
@@ -30,7 +42,7 @@ namespace Mongo {
         if(result > 0) return true;
         return false;
     }
-    bool exists_id(const std::string col_name, int id)
+    bool exists_id(const std::string col_name, int64_t id)
     {
         auto client = pool.acquire();
         mongocxx::database db = (*client)[DB_NAME];
@@ -65,7 +77,7 @@ namespace Mongo {
             return false;
         }
     }
-    bool remove_id(const std::string col, int id)
+    bool remove_id(const std::string col, int64_t id)
     {
         LOG(debug) << " from col:" << col << " id:" << id;
         try{
@@ -93,7 +105,7 @@ namespace Mongo {
             return false;
         }
     }
-    bool insert_or_replace_id(const std::string col, int id, 
+    bool insert_or_replace_id(const std::string col, int64_t id, 
             const std::string doc)
     {
         try{
@@ -110,7 +122,7 @@ namespace Mongo {
         }
         return false;
     }
-    bool replace_id(const std::string col, int id, const std::string doc)
+    bool replace_id(const std::string col, int64_t id, const std::string doc)
     {
         LOG(debug) << " id:" << id;
         try{
@@ -125,7 +137,7 @@ namespace Mongo {
         }
         return false;
     }
-    bool update_id(const std::string col, int id, const std::string doc)
+    bool update_id(const std::string col, int64_t id, const std::string doc)
     {
         LOG(debug) << " id:" << id;
         try{
@@ -175,7 +187,7 @@ namespace Mongo {
         }
         return "{}";
     }
-    const std::string find_id(const std::string col, int id)
+    const std::string find_id(const std::string col, int64_t id)
     {
         LOG(debug) << "col:" << col << " id:" << id;
         try{
@@ -191,10 +203,10 @@ namespace Mongo {
         }
         return "{}";
     }
-    int get_uniq_id()
+    int64_t get_uniq_id()
     {
         std::string col = "uniq_counter"; 
-        int id = 1;
+        int64_t id = 1;
         LOG(debug) << "id:" << id;
         try{
             auto client = pool.acquire();

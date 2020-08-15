@@ -20,7 +20,7 @@ namespace Hardware {
         }
         return 0;
     }
-    const std::vector<int,string> detect_output_tuners()
+    const std::vector<pair<int,string>> detect_output_tuners()
     {
         vector<pair<int,string>> list;
         try{
@@ -29,7 +29,7 @@ namespace Hardware {
                     for(int j=0; j<5; ++j){
                         auto dev = "/dev/tbsmod" + to_string(i) + "/mod" + to_string(j);
                         if(boost::filesystem::exists(dev)){
-                            list.push_back({j, dev});
+                            list.push_back({1000 + i*100 + j, dev});
                         }
                     }
                 }
@@ -38,7 +38,7 @@ namespace Hardware {
             for(size_t i=0; i<32; ++i){
                 auto dev = "/dev/usb-it950x"+to_string(i); 
                 if(boost::filesystem::exists(dev)){
-                    list.push_back({i, dev});
+                    list.push_back({2000 + i, dev});
                 }
             }
         }catch(std::exception& e){
@@ -52,7 +52,7 @@ namespace Hardware {
         vector<pair<int,string>> list;
         try{
             if(boost::filesystem::exists("/dev/dvb")){
-                for(size_t i=0; i<32; ++i){
+                for(size_t i=0; i<64; ++i){
                     ostringstream path;
                     path << "/sys/class/dvb/dvb"<< i <<".frontend0/device";
                     if(!boost::filesystem::exists(path.str())) continue;
@@ -85,10 +85,23 @@ namespace Hardware {
             json tuner = json::parse(tuner_json);
             if(tuner["_id"].is_null()){
                 LOG(error) << "Tuner is invalid:" << tuner_json;
-                res["error"] = "Tuners in invalid";
+                res["error"] = "Tuners is invalid";
                 return res;
             }
-            int _id = tuner["_id"];
+            if(tuner["virtual"]){
+                LOG(error) << "Tuner is virtual:" << tuner_json;
+                res["error"] = "Tuners is virtual";
+                return res;
+            }
+            auto freq_rec = json::parse(Mongo::find_id("live_satellites_frequencies", 
+                                        tuner["frequencyId"]));
+            if(freq_rec["_id"].is_null()){
+                LOG(error) << "Freq is invalid";
+                res["error"] = "Frequency is invalid";
+                return res;
+            }
+            auto _id = tuner["systemId"]; 
+            auto parameters = freq_rec["parameters"];
             if(!boost::filesystem::exists("/dev/dvb/adapter"+
                         to_string(_id)+"/frontend0")){
                 LOG(error) << "Tuner Not Exists:" << _id;
@@ -102,30 +115,9 @@ namespace Hardware {
                 LOG(error) << "Can't open scan config file";
                 return res;
             }
-            if(tuner["is_dvbt"] == true){
-                int frq = tuner["freq"];
-                if(frq < 474000 || frq > 900000 ){
-                    LOG(error) << "Invalid tuner options";
-                    res["error"] = "Invalid tuner option";
-                    return res;
-                }
-                freq << "T " << tuner["freq"].get<int>() 
-                     << "000 8MHz 2/3 NONE QAM64 8k 1/8 NONE";
-            }else{
-                int frq = tuner["freq"];
-                string pol = tuner["pol"];
-                int symrate = tuner["symrate"];
-                string errrate = tuner["errrate"];
-                if(frq < 9000 || frq > 13000 || pol == "" || symrate == 0 ){
-                    LOG(error) << "Invalid tuner options";
-                    res["error"] = "Invalid tuner option";
-                    return res;
-                }
-                freq << "S "<< frq <<"000 " << pol <<" "<< symrate
-                     << "000 " << errrate;
-            }
+            freq << parameters;
             freq.close();
-            int sw = tuner["switch"].get<int>(); 
+            int sw = tuner["diSEqC"]; 
             cmd << "/opt/sms/bin/scan-s2 -o vdr -a " 
                 << _id << " -s " 
                 << sw - 1     // switch 0 .. 3 in scan tools
@@ -139,6 +131,7 @@ namespace Hardware {
                 res["error"] = "Can't scan the tuner";
                 return res;
             }
+            int n = 1;
             string line;
             while( vdr_file.good() ){
                 std::getline(vdr_file, line);
@@ -151,18 +144,17 @@ namespace Hardware {
                 auto it = tok.begin();
                 auto pos = it->find(';');
                 if(it->at(0) == '[') continue;
-                chan["dvb_id"] = _id;
+                chan["_id"]  = n++; 
                 chan["name"] = (pos == string::npos) ? *it : it->substr(0,pos); 
-                chan["freq"] = *(++it); // 1
-                ++it; ++it; 
-                chan["symb"] = *(++it);  // 4
-                ++it; ++it; ++it; ++it; 
-                chan["scramble"]  = (it->at(0) == '0') ? false : true;
-                chan["sid"]  = *(++it); //9
-                chan["vid"]  = 0; //?
-                chan["aid"]  = 0; //?
-                chan["pol"]  = *(++it); //10
-                LOG(trace) << chan.dump(2);
+
+                for(size_t i=0; i<8; ++i) 
+                    ++it;
+                
+                chan["scrambled"]  = (it->at(0) == '0') ? false : true;
+                chan["serviceId"]  = *(++it); //9
+                chan["videoId"]  = 0; //TODO
+                chan["audioId"]  = 0; //TODO
+                //LOG(trace) << chan.dump(2);
                 res["content"].push_back(chan);
                 num++;
             }

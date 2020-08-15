@@ -80,7 +80,7 @@ void storage_info_get(served::response &res, const served::request &req)
     auto col = "storage_contents_info";
 
     try{                                                         
-        int id;                                                  
+        int64_t id;                                                  
         std::string result = "";
         res.set_header("Content-type", "application/json");      
         if(Util::get_id(req, id)){                               

@@ -5,25 +5,24 @@
 #include "../third_party/json.hpp"
 #define  MEDIA_ROOT "/opt/sms/www/iptv/media/"
 using json = nlohmann::json;
+
 namespace Util {
     void system(const std::string cmd);
     const std::string get_file_content(const std::string name);
     void report_error(const std::string, int level = 1);
     void report_webui_user(int userId, const served::request &req);
-    void fill_input_tuners_in_db();
-    void fill_output_tuners_in_db();
     std::string send_http_cmd(const std::string target, 
             const std::string host = "127.0.0.1" , 
             const std::string port = "10012",
             const std::string method = "get");
     const std::string req_parameters(const served::request &req);
-    const std::string get_content_path(const served::request &req, int id);
-    const json check_media_exists(const served::request &req, int id);
+    const std::string get_content_path(const served::request &req, uint64_t id);
+    const json check_media_exists(const served::request &req, uint64_t id);
     bool check_auth(const served::request &req);
     void test(served::response &res, const served::request &req);
     bool get_id(const served::request &req, std::string& id);
-    bool get_id(const served::request &req, int& id);
-    int get_id_from_body_and_url(const served::request &req);
+    bool get_id(const served::request &req, uint64_t& id);
+    uint64_t get_id_from_body_and_url(const served::request &req);
     bool save_file(served::response &res, const served::request &req, const std::string path);
     bool send_file(served::response &res, const served::request &req, const std::string path);
     std::pair<int,int> req_range(const served::request &req);
@@ -35,4 +34,5 @@ namespace Util {
     void sys_restart();
     void sys_stop();
     void sys_reboot();
+    const std::string get_url(const std::string url);
 }
