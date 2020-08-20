@@ -15,6 +15,9 @@ namespace Mongo {
     bool remove_id(const std::string col, int64_t id);
     bool replace_id(const std::string col, int64_t id, 
             const std::string doc);
+    bool insert_if_not_exists(const std::string col, 
+            const std::string filter, 
+            const std::string doc);
     bool insert_or_replace_id(const std::string col, int64_t id, 
             const std::string doc);
     bool replace(const std::string col, const std::string filter, 

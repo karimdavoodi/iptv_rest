@@ -274,9 +274,11 @@ namespace Hardware {
     }
     const bool detect_internet()
     { 
-        string out = Util::send_http_cmd("/", "www.iran.ir", "80", "head");
-        LOG(trace) << "internet:" << out.size();
-        return out.size() > 0;
+        try{
+            return Util::test_internet_connection("www.iran.ir", "80");
+        }catch(...){
+            return false;
+        }
     }
     const std::vector<std::string> detect_interfaces()
     {

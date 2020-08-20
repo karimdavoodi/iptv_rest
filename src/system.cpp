@@ -288,9 +288,10 @@ void system_backup_get(served::response &res, const served::request &req)
     if(name.size()){
         auto path = "Backup/" + name;
         SEND_FILE(path);	
+        res.set_header("Content-type", "application/octet-stream");
         res.set_status(200);
     }else{
-        ERRORSEND(res, 400, 1002, "Parameter required");
+        ERRORSEND(res, 400, 1019, "Parameter required");
     }
 }
 void system_backup_post(served::response &res, const served::request &req)
@@ -304,7 +305,7 @@ void system_backup_post(served::response &res, const served::request &req)
         Util::sys_backup(path);
         res.set_status(200);
     }else{
-        ERRORSEND(res, 400, 1002, "Parameter required");
+        ERRORSEND(res, 400, 1020, "Parameter required");
     }
 }
 void system_backup_put(served::response &res, const served::request &req)
@@ -316,7 +317,7 @@ void system_backup_put(served::response &res, const served::request &req)
         Util::sys_restore(path);
         res.set_status(200);
     }else{
-        ERRORSEND(res, 400, 1002, "Parameter required");
+        ERRORSEND(res, 400, 1021, "Parameter required");
     }
 }
 void system_backup_del(served::response &res, const served::request &req)
@@ -329,10 +330,10 @@ void system_backup_del(served::response &res, const served::request &req)
             boost::filesystem::remove(path);
             res.set_status(200);
         }else{
-            ERRORSEND(res, 400, 1002, "Fie not found!");
+            ERRORSEND(res, 400, 1022, "Fie not found!");
         }
     }else{
-        ERRORSEND(res, 400, 1002, "Parameter required");
+        ERRORSEND(res, 400, 1023, "Parameter required");
     }
 }
 void system_license_get(served::response &res, const served::request &req)

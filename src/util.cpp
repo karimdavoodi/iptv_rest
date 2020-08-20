@@ -202,6 +202,37 @@ namespace Util {
         }
         return "";
     }
+    bool test_internet_connection(const std::string host, const std::string protocol)
+    {
+        namespace beast = boost::beast; 
+        namespace http = beast::http;  
+        namespace net = boost::asio;  
+        using tcp = net::ip::tcp;    
+
+        boost::asio::io_context ioc;
+        tcp::resolver resolver(ioc);
+        auto endpoint = resolver.resolve(host, protocol);
+        boost::beast::tcp_stream stream(ioc);
+        boost::beast::flat_buffer buf;
+        // timeout 2 sec
+        stream.expires_after(std::chrono::seconds(2));
+        
+        stream.async_connect(endpoint, 
+                [&](boost::system::error_code ec, 
+                    tcp::resolver::results_type::endpoint_type){
+                if(ec == beast::error::timeout){
+                    LOG(error) << "TimeOut expire: " << host;
+                    return false;
+                }else if(ec){
+                    LOG(error) << "Not connect to " << host;
+                    return false;
+                }
+                stream.socket().shutdown(tcp::socket::shutdown_both, ec);
+                return true;
+                });
+        ioc.run();
+        return true;
+    }
     void sys_backup(const string fname)
     {
         string file = string(MEDIA_ROOT) + fname;
@@ -251,7 +282,7 @@ namespace Util {
         else return "";
 
     }
-    const json check_media_exists(const served::request &req, uint64_t id)
+    const json check_media_exists(const served::request &req, int64_t id)
     {
         std::string media_path = get_content_path(req, id);
         std::string poster_path = string(MEDIA_ROOT) + 
@@ -264,7 +295,7 @@ namespace Util {
         media_status["subtitle"]= boost::filesystem::exists(subtitle_path);
         return media_status;
     }
-    const string get_content_path(const served::request &req, uint64_t id)
+    const string get_content_path(const served::request &req, int64_t id)
     {
         try{
             string dir = "", ext = "";
@@ -356,7 +387,7 @@ namespace Util {
             auto auth_hdr = req.header("Authorization");
             if(auth_hdr.size() < 10){
                 LOG(trace) << "header Authorization not found!";
-                return true;
+                return true;   // FIXME
             } 
             auto auth = auth_hdr.substr(6); // remove 'Base '
             auto text = base64_decode(auth);
@@ -381,7 +412,7 @@ namespace Util {
                 report_error("Invalid user record for :"+user+" pass:"+pass);
                 return false;
             }
-            report_webui_user(j["_id"].get<uint64_t>(), req);
+            report_webui_user(j["_id"].get<int64_t>(), req);
             // FIXME : not check permission for test user
             if(user == "test" && pass == "test") return true;
             // check user expire
@@ -432,19 +463,19 @@ namespace Util {
         if(id.size() < 1) return false;
         return true;
     }
-    bool get_id(const served::request &req, uint64_t& id)
+    bool get_id(const served::request &req, int64_t& id)
     {
         id = 0;
         auto sid = req.params.get("id");
         if(sid.size() < 1) return false;
         for(auto c : sid)
             if(!isdigit(c)) return false;
-        id = stoull(sid);
+        id = stoll(sid);
         return true;
     }
-    uint64_t get_id_from_body_and_url(const served::request &req)
+    int64_t get_id_from_body_and_url(const served::request &req)
     {
-        uint64_t id;
+        int64_t id;
         try{
             if(!get_id(req, id)){
                 LOG(trace) << "Not exists 'id' in url";
@@ -455,7 +486,7 @@ namespace Util {
                 LOG(trace) << "Not exists '_id' in body json";
                 return -1;
             }
-            uint64_t _id = j["_id"];
+            int64_t _id = j["_id"];
             if(id != _id){
                 LOG(trace) << "Diffrent '_id' in body and 'id' in url";
                 return -1;
@@ -542,7 +573,7 @@ namespace Util {
         for(const auto it : tok){
             if(it.size()){
                 if(isdigit(it[0]))
-                    j[op].push_back(stoull(it));
+                    j[op].push_back(stoll(it));
                 else
                     j[op].push_back(remove_camma(it));
             } 
@@ -569,22 +600,22 @@ namespace Util {
                     auto end = req.query.get("end-id");
                     if(end.size()){
                         j["_id"] = json::object();
-                        j["_id"]["$gt"] = stoull(value);
-                        j["_id"]["$lt"] = stoull(end);
+                        j["_id"]["$gt"] = stoll(value);
+                        j["_id"]["$lt"] = stoll(end);
                     }
                 }
                 else if(name == "start-time"){
                     auto end = req.query.get("end-time");
                     if(end.size()){
                         j["time"] = json::object();
-                        j["time"]["$gt"] = stoull(value);
-                        j["time"]["$lt"] = stoull(end);
+                        j["time"]["$gt"] = stoll(value);
+                        j["time"]["$lt"] = stoll(end);
                     }
                 }else{
                     if(value.find(':') != string::npos ){
                         auto pos = value.find(':');
-                        auto start = stoull(value.substr(0, pos));
-                        auto end = stoull(value.substr(pos+1));
+                        auto start = stoll(value.substr(0, pos));
+                        auto end = stoll(value.substr(pos+1));
                         if(_not){
                             json gt,lt;
                             gt[name]["$gt"] = end; 
@@ -602,14 +633,14 @@ namespace Util {
                     }else{
                         if(_not){
                             if(isdigit(value[0]))
-                                j[name]["$ne"] = stoull(value);
+                                j[name]["$ne"] = stoll(value);
                             else if(value == "true" || value == "false")
                                 j[name]["$ne"] = (value == "true");
                             else
                                 j[name]["$ne"] = remove_camma(value);
                         }else{
                             if(isdigit(value[0]))
-                                j[name] = stoull(value);
+                                j[name] = stoll(value);
                             else if(value == "true" || value == "false")
                                 j[name] = (value == "true");
                             else

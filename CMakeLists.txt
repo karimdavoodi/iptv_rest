@@ -6,12 +6,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 add_definitions( 
-                #-fdiagnostics-color=always 
                  -fdiagnostics-show-location=every-line
                  -fdiagnostics-generate-patch 
                  -DBOOST_LOG_DYN_LINK=1
                  -O3
                  -Wall
+                 -DNDEBUG
                  #-g
                  )
 

@@ -37,7 +37,7 @@ namespace Mongo {
     {
         auto client = pool.acquire();
         mongocxx::database db = (*client)[DB_NAME];
-        LOG(debug) << col_name << ":" << doc;
+        //LOG(debug) << col_name << ":" << doc;
         auto result = db[col_name].count_documents(bsoncxx::from_json(doc));
         if(result > 0) return true;
         return false;
@@ -46,7 +46,7 @@ namespace Mongo {
     {
         auto client = pool.acquire();
         mongocxx::database db = (*client)[DB_NAME];
-        LOG(debug) << " col:"<< col_name << " id:" << id;
+        //LOG(debug) << " col:"<< col_name << " id:" << id;
         auto result = db[col_name].count_documents(make_document(kvp("_id", id)));
         if(result > 0) return true;
         return false;
@@ -66,7 +66,7 @@ namespace Mongo {
     }
     bool remove_mony(const std::string col, const std::string doc)
     {
-        LOG(debug) << " from col:" << col << " doc:" << doc;
+        LOG(debug) << "col:" << col << " doc:" << doc;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -79,7 +79,7 @@ namespace Mongo {
     }
     bool remove_id(const std::string col, int64_t id)
     {
-        LOG(debug) << " from col:" << col << " id:" << id;
+        LOG(debug) << "col:" << col << " id:" << id;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -92,7 +92,7 @@ namespace Mongo {
     }
     bool replace(const std::string col, const std::string filter, const std::string doc)
     {
-        LOG(debug) << "col:" << col << " filter:" << filter;
+        LOG(debug) << "col:" << col << " filter:" << filter << " doc:"<< doc;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -105,9 +105,31 @@ namespace Mongo {
             return false;
         }
     }
+    bool insert_if_not_exists(const std::string col, 
+            const std::string filter, 
+            const std::string doc)
+    {
+        LOG(debug) << "col:" << col << " filter:" << filter << " doc:"<< doc;
+        try{
+            auto client = pool.acquire();
+            mongocxx::database db = (*client)[DB_NAME];
+            mongocxx::options::update options {};
+            options.upsert(true);
+            auto ret = db[col].update_one(
+                    bsoncxx::from_json(filter),
+                    make_document(kvp("$setOnInsert", 
+                            bsoncxx::from_json(doc))),
+                    options);
+            return ret.value().modified_count() > 0;
+        }catch(std::exception& e){
+            LOG(error) << e.what() ;
+        }
+        return false;
+    }
     bool insert_or_replace_id(const std::string col, int64_t id, 
             const std::string doc)
     {
+        LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -124,7 +146,7 @@ namespace Mongo {
     }
     bool replace_id(const std::string col, int64_t id, const std::string doc)
     {
-        LOG(debug) << " id:" << id;
+        LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -139,7 +161,7 @@ namespace Mongo {
     }
     bool update_id(const std::string col, int64_t id, const std::string doc)
     {
-        LOG(debug) << " id:" << id;
+        LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -156,7 +178,7 @@ namespace Mongo {
     const std::string find_mony( const std::string col, const std::string doc)
     {
         try{
-            LOG(debug) << " col:" << col << " doc:" << doc;
+            //LOG(debug) << " col:" << col << " doc:" << doc;
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
             auto result = db[col].find(bsoncxx::from_json(doc));
@@ -174,7 +196,7 @@ namespace Mongo {
     const std::string find_one( const std::string col, const std::string doc)
     {
         try{
-            LOG(debug) << " in col:" << col << " doc:" << doc;
+            //LOG(debug) << "col:" << col << " doc:" << doc;
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
             auto result = db[col].find_one(bsoncxx::from_json(doc));
@@ -189,7 +211,7 @@ namespace Mongo {
     }
     const std::string find_id(const std::string col, int64_t id)
     {
-        LOG(debug) << "col:" << col << " id:" << id;
+        //LOG(debug) << "col:" << col << " id:" << id;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -207,7 +229,6 @@ namespace Mongo {
     {
         std::string col = "uniq_counter"; 
         int64_t id = 1;
-        LOG(debug) << "id:" << id;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];
@@ -220,6 +241,7 @@ namespace Mongo {
             if (result && !(result->view().empty())) {
                 bsoncxx::document::view  v(result->view());
                 int newId = v["count"].get_int32(); 
+                LOG(debug) << "id:" << newId;
                 return newId; 
             }
             return 1; 
@@ -230,7 +252,7 @@ namespace Mongo {
     }
     const std::string find_range(const std::string col, int begin, int end)
     {
-        LOG(debug) << " in col:" << col << 
+        LOG(debug) << "col:" << col << 
             " begin:" << begin << " end:" << end;
         try{
             auto client = pool.acquire();
@@ -258,8 +280,8 @@ namespace Mongo {
             const std::string filter,
             int begin, int end)
     {
-        LOG(debug) << " begin:" << begin << " end:" << end
-            << " col:" << col <<" filter:" << filter;
+        LOG(debug) << " col:" << col <<" filter:" << filter
+                   << " begin:" << begin << " end:" << end;
         try{
             auto client = pool.acquire();
             mongocxx::database db = (*client)[DB_NAME];

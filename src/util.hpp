@@ -16,18 +16,19 @@ namespace Util {
             const std::string port = "10012",
             const std::string method = "get");
     const std::string req_parameters(const served::request &req);
-    const std::string get_content_path(const served::request &req, uint64_t id);
-    const json check_media_exists(const served::request &req, uint64_t id);
+    const std::string get_content_path(const served::request &req, int64_t id);
+    const json check_media_exists(const served::request &req, int64_t id);
     bool check_auth(const served::request &req);
     void test(served::response &res, const served::request &req);
     bool get_id(const served::request &req, std::string& id);
-    bool get_id(const served::request &req, uint64_t& id);
-    uint64_t get_id_from_body_and_url(const served::request &req);
+    bool get_id(const served::request &req, int64_t& id);
+    int64_t get_id_from_body_and_url(const served::request &req);
     bool save_file(served::response &res, const served::request &req, const std::string path);
     bool send_file(served::response &res, const served::request &req, const std::string path);
     std::pair<int,int> req_range(const served::request &req);
     //std::string b64decode(const char* data, const size_t len);
     std::string base64_decode(std::string const& encoded_string);
+    bool test_internet_connection(const std::string host, const std::string protocol);
     void sys_backup(const std::string fname);
     void sys_restore(const std::string fname);
     void sys_update();

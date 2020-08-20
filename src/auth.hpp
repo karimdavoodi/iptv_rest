@@ -2,13 +2,14 @@
 #include <served/served.hpp>
 #include <boost/filesystem.hpp>
 #include "../third_party/json.hpp"
+#define LOG(level) BOOST_LOG_TRIVIAL(level) << "[" << __func__ << ":" <<__LINE__ << "] " 
 
 #define CHECK_AUTH                                                  \
     do{                                                             \
-       BOOST_LOG_TRIVIAL(trace) << __func__ ;                       \
+       LOG(trace) << __func__ ;                       \
        if(Util::check_auth(req) == false){                                \
             res.set_status(401);                                    \
-            BOOST_LOG_TRIVIAL(trace) << "Feild Auth";               \
+            LOG(trace) << "Feild Auth";               \
             return;                                                 \
        }                                                            \
     }while(false)  
@@ -22,7 +23,7 @@
         res.set_header("Content-type", "application/json");     \
         res << result;                                          \
         res.set_status(httpCode);                               \
-        BOOST_LOG_TRIVIAL(trace) << "Error: " << errorMessage;  \
+        LOG(error) << errorMessage;                             \
         return;                                                 \
     }while(false)  
 
@@ -30,44 +31,46 @@
     do{                                                         \
         if(!boost::filesystem::exists(path)){                   \
             boost::filesystem::create_directory(path);          \
-            BOOST_LOG_TRIVIAL(trace) << "Create " << path;      \
+            LOG(trace) << "Create " << path;      \
         }                                                       \
     }while(false)  
 
 #define GET_BODY_AS_j                                           \
         if(req.body().size() == 0){                             \
-            ERRORSEND(res, 400, 1001, "No input!");             \
+            ERRORSEND(res, 400, 1001, "Body is Empty!");        \
         }                                                       \
-        j = json::parse(req.body());                            \
+        try{                                                    \
+            j = json::parse(req.body());                        \
+        }catch(...){}                                           \
         if(j.is_null()){                                        \
-            ERRORSEND(res, 400, 1001, "No valid input!");       \
+            ERRORSEND(res, 400, 1002, "Body is not valid json!"); \
         }                                                       \
 
 
 #define CHECK_BODY_EXISTS_ID                                    \
-    json j;                                                         \
+    json j;                                                     \
     do{                                                         \
-        GET_BODY_AS_j                                             \
+        GET_BODY_AS_j                                           \
         if( j.count("_id") == 0 ){                              \
-            ERRORSEND(res, 400, 1002, "Invalid input JSON!");   \
+            ERRORSEND(res, 400, 1003, "Json dosn't have _id!"); \
         }                                                       \
     }while(false)  
 
 #define PUT_ID_COL(col)                                             \
     try{                                                            \
         CHECK_BODY_EXISTS_ID;                                       \
-        uint64_t id = Util::get_id_from_body_and_url(req);                     \
+        int64_t id = Util::get_id_from_body_and_url(req);           \
         if(id < 0 ){                                                \
-            ERRORSEND(res, 400, 1002, "Invalid id!");               \
+            ERRORSEND(res, 400, 1004, "Invalid id!");               \
         }                                                           \
         if(Mongo::exists_id(col, id)){                              \
-            Mongo::replace_id(col, id, req.body());              \
+            Mongo::replace_id(col, id, req.body());                 \
             res.set_status(200);                                    \
         }else{                                                      \
-            ERRORSEND(res, 400, 1003, "Exists, not insert!");       \
+            ERRORSEND(res, 400, 1005, "Record not exists!");        \
         }                                                           \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define PUT_ID1_COL(col)                                            \
@@ -76,21 +79,21 @@
         Mongo::insert_or_replace_id(col, 1, req.body());            \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define POST_ID_COL(col)                                            \
     json j;                                                         \
     try{                                                            \
         GET_BODY_AS_j                                               \
-        uint64_t _id = Mongo::get_uniq_id();                            \
+        int64_t _id = Mongo::get_uniq_id();                            \
         j["_id"] = _id;                                             \
         Mongo::insert(col, j.dump());                               \
         res.set_header("Content-Type", "application/json");         \
         res << "{ \"_id\":" + std::to_string(_id) + " }";           \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define POST_ID1_COL(col)                                           \
@@ -103,38 +106,38 @@
         res << "{ \"_id\": 1 }";                                    \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define DEL_ID_COL(col)                                             \
-    uint64_t id;                                                     \
+    int64_t id;                                                     \
     try{                                                            \
-        if(!Util::get_id(req, id) ){                                      \
-            ERRORSEND(res, 400, 1002, "Invalid id!");               \
+        if(!Util::get_id(req, id) ){                                \
+            ERRORSEND(res, 400, 1006, "Invalid id!");               \
         }                                                           \
         if(!Mongo::exists_id(col, id)){                             \
-            ERRORSEND(res, 400, 1002, "Not remove, not exists by _id!");\
+            ERRORSEND(res, 400, 1007, "Record not exists!");        \
         }                                                           \
         Mongo::remove_id(col, id);                               \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define DEL_ID1_COL(col)                                            \
     try{                                                            \
         if(!Mongo::exists_id(col, 1)){                              \
-            ERRORSEND(res, 400, 1002, "Not remove, not exists by id 1!");\
+            ERRORSEND(res, 400, 1008, "Not remove, not exists by id 1!");\
         }                                                           \
         Mongo::remove_id(col, 1);                                \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define GET_COL(col)                                             \
     try{                                                            \
-        uint64_t id;                                                     \
+        int64_t id;                                                     \
         res.set_header("Content-type", "application/json");         \
         if(Util::get_id(req, id)){                                 \
             res << Mongo::find_id(col, id);                       \
@@ -146,7 +149,7 @@
         }                                                           \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define GET_ID1_COL(col)                                            \
@@ -157,21 +160,21 @@
         res << result;                                              \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define FILE_NAME_ID(path, prefix, postfix)                         \
         std::string id;                                             \
         if(!Util::get_id(req, id)){                                       \
-            ERRORSEND(res, 400, 1003, "Invalid file id!");          \
+            ERRORSEND(res, 400, 1009, "Invalid file id!");          \
         }                                                           \
         std::string fname = std::string(path) +                     \
                             prefix + "_" + id + postfix;          
 
 #define GET_FILE_PATH                                               \
-        uint64_t id;                                                     \
+        int64_t id;                                                     \
         if(!Util::get_id(req, id)){                                       \
-            ERRORSEND(res, 400, 1003, "Invalid file id!");          \
+            ERRORSEND(res, 400, 1010, "Invalid file id!");          \
         }                                                           \
         std::string fname = Util::get_content_path(req, id);                   
 
@@ -179,24 +182,24 @@
     try{                                                            \
         GET_FILE_PATH                                               \
         if(fname == ""){                                            \
-            ERRORSEND(res, 403, 1004, "Can't find content ID");     \
+            ERRORSEND(res, 400, 1011, "Can't find content ID");     \
         }else if(!Util::send_file(res, req, fname)){                            \
-            ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
+            ERRORSEND(res, 400, 1012, "File not found: " + fname);  \
         }                                                           \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define RECV_ID_FILE                                                \
     try{                                                            \
         GET_FILE_PATH                                               \
         if(fname == ""){                                            \
-            ERRORSEND(res, 403, 1004, "Can't find content ID");     \
+            ERRORSEND(res, 400, 1013, "Can't find content ID");     \
         }else if(!Util::save_file(res, req, fname)){                \
-            ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
+            ERRORSEND(res, 400, 1014, "Can't save file: " + fname); \
         }                                                           \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define DEL_ID_FILE                                                  \
@@ -206,30 +209,30 @@
             boost::filesystem::remove(fname);                         \
             res.set_status(200);                                    \
         }else{                                                      \
-            ERRORSEND(res, 400, 1006, "File not found!");           \
+            ERRORSEND(res, 400, 1015, "File not found!");           \
         }                                                           \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define SEND_FILE(name)                                             \
     try{                                                            \
         std::string fname = std::string(MEDIA_ROOT) + name;         \
         if(!Util::send_file(res, req, fname)){                            \
-            ERRORSEND(res, 403, 1004, "File not found: " + fname);  \
+            ERRORSEND(res, 400, 1016, "File not found: " + fname);  \
         }                                                           \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define RECV_FILE(name)                                             \
     try{                                                            \
         std::string fname = std::string(MEDIA_ROOT) + name;         \
         if(!Util::save_file(res, req, fname)){                            \
-            ERRORSEND(res, 403, 1004, "Can't save file: " + fname); \
+            ERRORSEND(res, 400, 1017, "Can't save file: " + fname); \
         }                                                           \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
 
 #define DEL_FILE(name)                             \
@@ -239,8 +242,8 @@
             boost::filesystem::remove(fname);                         \
             res.set_status(200);                                    \
         }else{                                                      \
-            ERRORSEND(res, 400, 1006, "File not found!");           \
+            ERRORSEND(res, 400, 1018, "File not found!");           \
         }                                                           \
     }catch(std::exception& e){                                      \
-        BOOST_LOG_TRIVIAL(error) << e.what();                       \
+        LOG(error) << e.what();                       \
     }do{}while(false)                       
