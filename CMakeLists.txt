@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions( 
                  -fdiagnostics-show-location=every-line
-                 -fdiagnostics-generate-patch 
                  -DBOOST_LOG_DYN_LINK=1
                  -O3
                  -Wall
@@ -16,10 +15,13 @@ add_definitions(
                  )
 
 aux_source_directory(src SRC_LIST)
-add_executable(${PROJECT_NAME} ${SRC_LIST})
+add_executable(${PROJECT_NAME} 
+    ${SRC_LIST} 
+    )
 
 target_link_libraries(${PROJECT_NAME} 
-    -lserved
+    #-lserved
+    /home/karim/src/served/lib/libserved.a
     -lpthread
     -ldl
     )
@@ -39,7 +41,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CURLPP_INCLUDE_DIRS})
 
 
 add_custom_target(copy ALL 
-    COMMAND cp -f iptv_* /opt/sms/bin
+    COMMAND strip iptv_api && cp -f iptv_* /opt/sms/bin
     COMMENT "Copy to /opt/sms/bin"
     DEPENDS ${PROJECT_NAME}
     )

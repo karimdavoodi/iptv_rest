@@ -1,6 +1,3 @@
-#include "hardware.hpp"
-#include "mongo_driver.hpp"
-#include "util.hpp"
 #include <fstream>
 #include <algorithm>
 #include <time.h>
@@ -9,6 +6,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <cstdio>
+#include "hardware.hpp"
+#include "mongo_driver.hpp"
+#include "util.hpp"
 
 using namespace std;
 namespace Hardware {
@@ -80,10 +81,13 @@ namespace Hardware {
         ostringstream cmd;
         json res = json::object();
         res["content"] = json::array();
-        res["total"] = res["content"].size();
+        res["total"] = 0;
         try{
             json tuner = json::parse(tuner_json);
-            if(tuner["_id"].is_null()){
+            if(tuner["_id"].is_null() || 
+               !tuner["systemId"].is_number() ||
+               !tuner["frequencyId"].is_number() ||
+               !tuner["virtual"].is_boolean()){
                 LOG(error) << "Tuner is invalid:" << tuner_json;
                 res["error"] = "Tuners is invalid";
                 return res;
@@ -95,7 +99,7 @@ namespace Hardware {
             }
             auto freq_rec = json::parse(Mongo::find_id("live_satellites_frequencies", 
                                         tuner["frequencyId"]));
-            if(freq_rec["_id"].is_null()){
+            if(freq_rec["_id"].is_null() || freq_rec["parameters"].is_null()){
                 LOG(error) << "Freq is invalid";
                 res["error"] = "Frequency is invalid";
                 return res;
@@ -275,51 +279,135 @@ namespace Hardware {
     const bool detect_internet()
     { 
         try{
-            return Util::test_internet_connection("www.iran.ir", "80");
+            return Util::test_internet_connection("195.146.59.198", "80");
         }catch(...){
             return false;
         }
     }
-    const std::vector<std::string> detect_interfaces()
+    const nlohmann::json detect_interfaces()
     {
-        vector<string> interfaces;
+        json nics = json::array();
+        // Get Name of Interfaces
         for(const auto& path : boost::filesystem::directory_iterator("/sys/class/net/")){
             string link = boost::filesystem::read_symlink(path).string();
             if(link.find("devices/virtual/net/") == string::npos){
-                interfaces.push_back(path.path().filename().string());
+                json nic;
+                nic["name"] = path.path().filename().string();
+                nic["ip"] = "";
+                nic["mask"] = "";
+                nics.push_back(nic);
             }
         } 
-        LOG(trace) << "find interfaces num: " << interfaces.size();
-        std::sort(interfaces.begin(), interfaces.end());
-        return interfaces;
+
+        // Get IP Address 
+        istringstream in { Util::shell_out("ip addr show") }; 
+        string line;
+        while(getline(in, line)){
+        //  inet 192.168.43.154/24 brd 192.168.43.255 scope global dynamic noprefixroute wlo1
+            if(line.find("inet ") == string::npos) continue;
+            for(auto& nic : nics){
+                string name = nic["name"];
+                if(line.find(name) != string::npos){
+                    istringstream line_in {line};
+                    string addr;
+                    line_in >> addr; line_in >> addr;
+                    auto pos = addr.find("/");
+                    if(pos == string::npos){
+                        LOG(warning) << "Invalid ip addr:" << addr;
+                        break;
+                    }
+                    nic["ip"]   = addr.substr(0, pos);
+                    nic["mask"] = addr.substr(pos+1);
+                    break;
+                }
+            }
+        }
+        
+        LOG(trace) << "Find systen NIC:" << nics.size();
+        return nics;
     }
     void save_network(json& net)
     {
     // and add to /etc/netplan/01-network-manager-all.yaml
 
     }
+    bool valid_command_string(const string cmd)
+    {
+        if(cmd.find("&") != string::npos || 
+           cmd.find("|") != string::npos || 
+           cmd.find(";") != string::npos ){
+                LOG(error) << "Invalid command: " << cmd;
+                return false;
+        }
+        return true;
+    }
+    void convert_mask(string& mask)
+    {
+        if(mask == "255.255.255.255" ) mask = "32";
+        else if(mask == "255.255.255.0" ) mask = "24";
+        else if(mask == "255.255.0.0" ) mask = "16";
+        else if(mask == "255.0.0.0" ) mask = "8";
+        else{
+            int one_count = 0;
+            unsigned  n[4];
+            std::sscanf(mask.c_str(), "%u.%u.%u.%u", &n[0], &n[1], &n[2], &n[3]);
+            for(size_t i=0; i<4; ++i){
+                for(size_t j=0; j<9; ++j){
+                    if( ((n[i] >> j) & 0x01) == 1) one_count++;
+                }
+            }
+            mask = to_string(one_count);
+        } 
+    }
     void apply_network(json& net)
     {
-        if(net["interfaces"].is_null()){
-            LOG(error) << "Network config error";
-            return;
-        }
+        // Set Interfaces IP
         if(net["interfaces"].is_array()){
-            for(const auto& nic : net["interfaces"]){
+            for(auto& nic : net["interfaces"]){
                 string name = nic["name"];
                 string ip = nic["ip"];
-                if(!ip.size() || !name.size()) continue;
+                string mask = nic["mask"];
+                if(mask.find(".") != string::npos){
+                    convert_mask(mask);
+                }
+                if(!ip.size() || !name.size() || !mask.size()) continue;
                 string cmd = "ip address flush dev " + name;
                 Util::system(cmd); 
-                cmd = "ip address add " + ip + "/24 dev " + name; // TODO: apply real netmask 
+                cmd = "ip address add " + ip + "/" + mask +" dev " + name;  
                 Util::system(cmd); 
             }
         }
+        // Set Gateway
         string gw = net["gateway"];
         if(gw.size() > 0 ){
-            string cmd = "ip route add default via "+ gw;
+            string cmd = "/bin/ip route del default";
+            Util::system(cmd);
+            cmd = "/bin/ip route add default via "+ gw;
             Util::system(cmd);
         }
-        // TODO .... run all config 
+        // Set DNS ...
+        string dns = net["dns"];
+        if(dns.size() > 1){
+            ofstream dnsf("/etc/resolv.conf");
+            if(dnsf.is_open()){
+                dnsf << "nameserver " << dns;
+            }
+        }
+
+        // Set Static Routes
+        for(auto route : net["staticRoute"].get<vector<string>>()){ 
+            if(valid_command_string(route) && route.find(" via ") != string::npos){
+                // route = "192.168.1.0/24 via 192.168.43.1"
+                string cmd = "/bin/ip route add "  + string(route);
+                Util::system(cmd);
+            }
+        }
+        // Set Static iptabels t
+        for(auto rule : net["firewallRule"].get<vector<string>>()){ 
+            if(valid_command_string(rule)){
+                string cmd = "/usr/sbin/iptables "  + string(rule);
+                Util::system(cmd);
+            }
+        }
     }
 }

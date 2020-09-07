@@ -292,6 +292,8 @@ mux.handle("/storage/setting")
             .get (storage_setting_get)
             .put (storage_setting_put)
             .post(storage_setting_put);
+mux.handle("/storage/status")
+            .get (storage_status_get);
 mux.handle("/storage/contents/types/{id}")
             .get (storage_contents_types_get);
 mux.handle("/storage/contents/types")

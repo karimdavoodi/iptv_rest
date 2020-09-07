@@ -4,6 +4,8 @@
 void storage_setting_get(served::response &, const served::request &);
 void storage_setting_put(served::response &, const served::request &);
 
+void storage_status_get(served::response &, const served::request &);
+
 void storage_contents_types_get(served::response &, const served::request &);
 void storage_contents_types_put(served::response &, const served::request &);
 void storage_contents_types_post(served::response &, const served::request &);

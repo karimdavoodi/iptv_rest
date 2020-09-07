@@ -10,7 +10,7 @@ void status_information_get(served::response &res, const served::request &req)
     try{                                                        
         json result = json::object();                                     
         json license = json::parse(Mongo::find_id("system_license", 1));      
-        //LOG(trace) << license.dump(2);
+        bool license_valid = boost::filesystem::exists("/run/sms/license.json");
         auto stat = Util::send_http_cmd("/service_stat");
         result["_id"] = 1; 
         result["Running"] = stat.find("True") != string::npos; 
@@ -19,7 +19,8 @@ void status_information_get(served::response &res, const served::request &req)
             last_reset.substr(last_reset.find("\n")):"";
         result["SystemIP"] = Hardware::detect_ip();
         result["SystemInternet"] = Hardware::detect_internet();
-        result["Owner"] = license["license"]["General"]["Customer"];
+        result["Owner"] = license_valid ? license["license"]["General"]["Customer"]
+                                        : "NOT VALID";
         result["OwnerId"] = license["license"]["General"]["MMK_ID"];
         result["Serial"] = license["license"]["General"]["MMK_Serial"];
         result["LicenseExpire"] = license["license"]["General"]["Expire_Date"];

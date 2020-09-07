@@ -242,14 +242,16 @@ Query: in 'GET' method, use any field as parameter.
                     "time": epochtime,
                     "input":[
                         {
-                        "tuner": int,    # from live/tuners/input
+                        "tuner": int,    # from live/tuners/info
+                        "systemId": int, # from live/tuners/system
                         "signal": int,   # from 0 .. 65000
                         "snr": int       # from 0 .. 65000
                         },
                     ],
                     "output":[
                         {
-                        "tuner": int,   # from live/tuners/output
+                        "tuner": int,   # from live/tuners/info
+                        "systemId": int, # from live/tuners/system
                         "capacity": int # from 0 .. 100
                         },
                     ]
@@ -421,7 +423,7 @@ Query: in 'GET' method, use any field as parameter.
                 "multicastBase": int,        # Multicast class : 224 .. 239
                 "multicastInterface": int,   # interface id
                 "addressForNAT": string,     # ip:[port] address
-                "staticRoute": [string],     # string to pass to 'route' command
+                "staticRoute": [string],     # ex: "192.168.1.0/24 via 192.168.43.1" 
                 "firewallRule": [string]     # string to pass to 'iptables' command
             }
 ### System Users Profile 
@@ -692,6 +694,22 @@ Query: in 'GET' method, use any field as parameter.
             }
         Method: PUT, POST
         RequestBody: same as GET ResponsBody 
+
+        Description: Storage status
+        Path: /storage/status
+        Method: GET
+        ResponseBody: 
+            {
+                "_id": 1,
+                "timeShift":{
+                    "freeSizeGB":int,         # free size of TimeShift storage
+                    "freeRecordTime": int     # free record time ( in hour )
+                    },
+                "NPVR":{
+                    "freeSizeGB":int,         # free size of NPVR storage
+                    "freeRecordTime": int     # free record time ( in hour )
+                }
+            }
 
 
 ### Contents : Video, Audio, Book, AudioBook, Picture, Azan, TimeShift, NPVR, ... 
@@ -1083,13 +1101,13 @@ Query: in 'GET' method, use any field as parameter.
                 "_id": int,
                 "active": boolean,
                 "name": string, 
-                "preset": string,       # from  '','ultrafast','fast','medium','slow','veryslow' 
-                "videoCodec": string,   # from  '','h265','h264','mpeg2' 
-                "videoSize": string,    # from  '','4K', 'FHD', 'HD', 'SD', 'CD' 
+                "preset": string,       # from  'ultrafast','fast','medium','slow','veryslow' 
+                "videoCodec": string,   # from  'No Change','h265','h264','mpeg2' 
+                "videoSize": string,    # from  'No Change','4K', 'FHD', 'HD', 'SD', 'CD' 
                 "videoRate": int,       # from 1 .. 100000000  (in bps) 
                 "videoFps": int,        # from 1 .. 60
-                "videoProfile": string, # from  '','Baseline', 'Main', 'High'
-                "audioCodec": string,   # from  '','aac','mp3','mp2' 
+                "videoProfile": string, # from  'Baseline', 'Main', 'High'
+                "audioCodec": string,   # from  'No Change','aac','mp3','mp2' 
                 "audioRate": int,       # from 1 to 1000000 (in bps)
                 "extra": string 
             }
@@ -1594,6 +1612,7 @@ Query: in 'GET' method, use any field as parameter.
                 "_id": int,
                 "active": boolean,
                 "name": string, 
+                "userNumber": string,   # 'id' to use as RoomID, UnitId, ...    
                 "description": string,
                 "group": [int],         # from users/group
                 "connections": int, 
@@ -1675,6 +1694,7 @@ Query: in 'GET' method, use any field as parameter.
                 "group": [int],         # from users/group
                 "time": epochtime,
                 "weektime": [int],       # from system/weektime  
+                "start": epochtime,
                 "expire": epochtime,
                 "subject": string, 
                 "body": string,

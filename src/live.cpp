@@ -7,22 +7,53 @@
 #include "mongo_driver.hpp"
 using namespace std;
 
+void add_network_account_to_out_archive()
+{
+    return;
+
+    json net_accounts = json::parse(Mongo::find_mony("live_network_accounts", 
+                "{\"active\":true}"));
+    for(const auto& acc : net_accounts){
+        string url = acc["url"];
+        if(url.find("playlist=") == string::npos) 
+            continue;  // it's not mmk server
+        string archive_url = url + "&get_archive";
+        string out = Util::get_url(archive_url);  
+        if(out.size() > 50){
+            json list = json::parse(out);
+            // TODO: .... add to live_output_archive
+        }
+    }
+}
 void remove_output_channels_if_invalid(const std::string col)
 {
     try{
+        //Make map of type names
         std::map<long, std::string> type_map;
-
         json types = json::parse(Mongo::find_mony("live_inputs_types", "{}"));
         for(const auto type : types) 
             type_map[type["_id"]] = type["name"];
 
+        auto filter = json::object();
         json channels = json::parse(Mongo::find_mony(col, "{}"));
-        for(const auto& chan : channels){
-            auto input_id = chan["input"];
+        for(auto& chan : channels){
+
             auto type_name = type_map[ chan["inputType"] ];
             auto input_col = "live_inputs_" + type_name;
-            if(!Mongo::exists_id(input_col, input_id ))
+            
+            // remove if not EXISTS 
+            if(!Mongo::exists_id(input_col, chan["input"])){
                 Mongo::remove_id(col, chan["_id"]);
+            }else{
+                // disable if inactive
+                filter["_id"] = chan["input"];
+                filter["active"] = false;
+                if(Mongo::exists(input_col, filter.dump())){
+                    chan["active"] = false;
+                    Mongo::update_id(col, chan["_id"], chan.dump());
+                }
+
+            }
         }
     }catch(std::exception& e){                                      
         BOOST_LOG_TRIVIAL(error) << e.what();                       
@@ -63,7 +94,7 @@ void add_live_inputs_dvb(json& tuner)
 
             json dvb_chan;
             dvb_chan["_id"] = Mongo::get_uniq_id(); 
-            dvb_chan["active"] = true;
+            dvb_chan["active"] = tuner["active"];
             dvb_chan["logo"] = logo["_id"].is_number() ? logo["_id"].get<int64_t>() : 0; 
             dvb_chan["tv"] = chan["videoId"] > 0 ; 
             dvb_chan["dvbId"] = tuner["_id"]; 
@@ -206,7 +237,7 @@ void live_tuners_system_get(served::response &res , const served::request &req)
             j["inputDvb"] = false; 
             tuners.push_back(j);
         }
-        res << tuners.dump();
+        res << tuners.dump(2);
     }catch(std::exception& e){                                      
         BOOST_LOG_TRIVIAL(error) << e.what();                       
     }
@@ -225,7 +256,7 @@ void live_tuners_scan_get(served::response &res , const served::request &req)
     res.set_header("Content-type", "application/json");     
     json channs = Hardware::scan_input_tuner(tuner);
     if(channs["total"] > 0){
-        res << channs.dump();
+        res << channs.dump(2);
         res.set_status(200);
     }else{
         ERRORSEND(res, 400, 1026, channs["error"]);             \
@@ -359,7 +390,8 @@ void live_output_archive_get(served::response &res , const served::request &req)
 {
     CHECK_AUTH;
     remove_output_channels_if_invalid("live_output_archive");
-    GET_COL("live_");
+    add_network_account_to_out_archive();
+    GET_COL("live_output_archive");
 }
 ///////////////////////////
 void live_profiles_mix_post(served::response &res, const served::request &req)

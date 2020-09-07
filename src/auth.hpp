@@ -4,28 +4,27 @@
 #include "../third_party/json.hpp"
 #define LOG(level) BOOST_LOG_TRIVIAL(level) << "[" << __func__ << ":" <<__LINE__ << "] " 
 
-#define CHECK_AUTH                                                  \
-    do{                                                             \
-       LOG(trace) << __func__ ;                       \
-       if(Util::check_auth(req) == false){                                \
-            res.set_status(401);                                    \
-            LOG(trace) << "Feild Auth";               \
-            return;                                                 \
-       }                                                            \
-    }while(false)  
-
 #define ERRORSEND(res, httpCode, errorCode, errorMessage)       \
     do{                                                         \
         json jerror;                                            \
         jerror["errorCode"] = errorCode;                        \
         jerror["errorMessage"] = errorMessage;                  \
-        std::string result = jerror.dump(4);                    \
+        std::string result = jerror.dump(2);                    \
         res.set_header("Content-type", "application/json");     \
         res << result;                                          \
         res.set_status(httpCode);                               \
         LOG(error) << errorMessage;                             \
         return;                                                 \
     }while(false)  
+
+#define CHECK_AUTH                                              \
+    do{                                                         \
+       if(Util::check_auth(req) == false){                      \
+            ERRORSEND(res, 401, 1000, "Not Authorized!");       \
+            return;                                             \
+       }                                                        \
+    }while(false)  
+
 
 #define CHECK_PATH(path)                                        \
     do{                                                         \
@@ -61,7 +60,7 @@
         CHECK_BODY_EXISTS_ID;                                       \
         int64_t id = Util::get_id_from_body_and_url(req);           \
         if(id < 0 ){                                                \
-            ERRORSEND(res, 400, 1004, "Invalid id!");               \
+            ERRORSEND(res, 400, 1004, "Id not exist in body or url!");               \
         }                                                           \
         if(Mongo::exists_id(col, id)){                              \
             Mongo::replace_id(col, id, req.body());                 \
@@ -113,7 +112,7 @@
     int64_t id;                                                     \
     try{                                                            \
         if(!Util::get_id(req, id) ){                                \
-            ERRORSEND(res, 400, 1006, "Invalid id!");               \
+            ERRORSEND(res, 400, 1006, "Id not exists in url!");               \
         }                                                           \
         if(!Mongo::exists_id(col, id)){                             \
             ERRORSEND(res, 400, 1007, "Record not exists!");        \
@@ -166,7 +165,7 @@
 #define FILE_NAME_ID(path, prefix, postfix)                         \
         std::string id;                                             \
         if(!Util::get_id(req, id)){                                       \
-            ERRORSEND(res, 400, 1009, "Invalid file id!");          \
+            ERRORSEND(res, 400, 1009, "File id not exists in url!");          \
         }                                                           \
         std::string fname = std::string(path) +                     \
                             prefix + "_" + id + postfix;          
@@ -174,7 +173,7 @@
 #define GET_FILE_PATH                                               \
         int64_t id;                                                     \
         if(!Util::get_id(req, id)){                                       \
-            ERRORSEND(res, 400, 1010, "Invalid file id!");          \
+            ERRORSEND(res, 400, 1010, "File id not exists in url!");          \
         }                                                           \
         std::string fname = Util::get_content_path(req, id);                   
 

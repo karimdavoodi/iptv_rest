@@ -4,6 +4,21 @@
 #include "storage.hpp"
 using namespace std;
 
+void storage_status_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    json status;
+    status["_id"] = 1;
+    status["timeShift"] = json::object();
+    status["timeShift"]["freeSizeGB"] = 1000;
+    status["timeShift"]["freeRecordTime"] = 40;
+    status["NPVR"] = json::object();
+    status["NPVR"]["freeSizeGB"] = 1000;
+    status["NPVR"]["freeRecordTime"] = 40;
+    res.set_header("Content-Type", "application/json");
+    res.set_status(200);                                    
+    res << status.dump(2); 
+}
 void storage_setting_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;

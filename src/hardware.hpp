@@ -18,7 +18,7 @@ namespace Hardware {
     const long detect_uptime();
     const std::string detect_mmk_version();
     const bool detect_internet();
-    const std::vector<std::string> detect_interfaces();
+    const nlohmann::json detect_interfaces();
     void apply_network(nlohmann::json& net);
     void save_network(nlohmann::json& net);
     long file_date(const std::string file_path);

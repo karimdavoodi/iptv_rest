@@ -69,8 +69,8 @@ void system_network_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     try{                                                        
-        // Get current interfaces
-        auto nics = Hardware::detect_interfaces();
+        // Get current system interfaces
+        auto system_nics = Hardware::detect_interfaces();
 
         // Get from net config fron DB
         json net = json::parse(Mongo::find_id("system_network", 1));      
@@ -78,17 +78,17 @@ void system_network_get(served::response &res, const served::request &req)
             net["interfaces"] = json::array();
         json valid_nics = json::array();
         int i = 1;
-        for(const auto& interface : nics){
+        for(const auto& interface : system_nics){
             json nic = json::object();
             nic["_id"] = i++;
-            nic["name"] = interface;
-            nic["ip"] = "";
-            nic["mask"] = "";
+            nic["name"] = interface["name"];
+            nic["ip"] = interface["ip"];
+            nic["mask"] = interface["mask"];
             nic["description"] = "";
             for(const auto& _nic : net["interfaces"]){
                 if(nic["name"].get<string>() == _nic["name"].get<string>()){
-                    nic["ip"] = _nic["ip"];
-                    nic["mask"] = _nic["mask"];
+                    //nic["ip"] = _nic["ip"];   Don't overwrite DB ip to system ip
+                    //nic["mask"] = _nic["mask"];
                     nic["description"] = _nic["description"];
                     break;
                 }
@@ -110,6 +110,8 @@ void system_network_get(served::response &res, const served::request &req)
         res.set_header("Content-type", "application/json");     
         res << net.dump(2);                                          
         res.set_status(200);                                    
+        Mongo::update_id("system_network", 1, net.dump());
+
     }catch(std::exception& e){                                  
         LOG(error) << e.what();                   
     }                       
@@ -118,9 +120,13 @@ void system_network_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     PUT_ID1_COL("system_network");
-    json net = json::parse(req.body());
-    //Hardware::apply_network(net);  FIXME
-    Hardware::save_network(net);
+    try{
+        json net = json::parse(req.body());
+        Hardware::apply_network(net); 
+        //Hardware::save_network(net);  TODO: save as yaml
+    }catch(std::exception& e){                                  
+        LOG(error) << e.what();                   
+    }                       
 }
 void system_users_get(served::response &res, const served::request &req)
 {
@@ -145,14 +151,19 @@ void system_users_del(served::response &res, const served::request &req)
 void system_users_me_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    auto auth = req.header("Authorization").substr(6); // remove "Base "
+
+    auto auth_str = req.header("Authorization");
+    if(!auth_str.size()){
+        ERRORSEND(res, 401, 1000, "Not Authorized!"); 
+    }
+    auto auth = auth_str.substr(6); // remove "Base "
     auto text = Util::base64_decode(auth);
     auto pos = text.find(':');
     if(pos == std::string::npos) return;
     //res.set_header("Set-Cookie","key=123");
     auto user = text.substr(0,pos);
     res << Mongo::find_one("system_users","{\"user\": \"" + user + "\"}");
-    res.set_status(200);                                        \
+    res.set_status(200);                                        
 }
 void system_cities_get(served::response &res, const served::request &req)
 {

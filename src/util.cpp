@@ -71,13 +71,15 @@ namespace Util {
     void report_webui_user(int userId, const served::request &req)
     {
         try{
-            if(req.method() > 4) return;
+            if(req.method() > 4) return;    // log methods: get,put,post,delete
+            string api = req.url().path();
+            if(api.find("webui_state") != string::npos) return; // no log this api
             json j = json::object();
             j["_id"] = chrono::system_clock::now().time_since_epoch().count();
             j["systemId"] = get_systemId();
             j["time"] = long(time(NULL));
             j["user"] = userId; 
-            j["api"] = req.url().path();
+            j["api"] = api;
             j["operation"] = req.method(); 
             // TODO: prepare oldValue
             j["oldValue"] = "";
@@ -211,7 +213,10 @@ namespace Util {
 
         boost::asio::io_context ioc;
         tcp::resolver resolver(ioc);
+        
+        LOG(trace) << "BEFORE resolve";
         auto endpoint = resolver.resolve(host, protocol);
+        LOG(trace) << "AFTER resolve";
         boost::beast::tcp_stream stream(ioc);
         boost::beast::flat_buffer buf;
         // timeout 2 sec
@@ -300,7 +305,7 @@ namespace Util {
         try{
             string dir = "", ext = "";
             auto req_path = req.url().path();
-            LOG(trace) << "content path:" << req_path;
+            //LOG(trace) << "content path:" << req_path;
             if(req_path.find("/storage/contents/poster") != string::npos){
                 dir = "Poster/"; ext = ".jpg";
             }else if(req_path.find("/storage/contents/subtitle") != string::npos){
@@ -322,14 +327,14 @@ namespace Util {
             }
             json content_info = json::parse(Mongo::find_id("storage_contents_info",id));
             if(content_info["_id"].is_null() || content_info["type"].is_null()){
-                LOG(info) << "Invalid content info by id " << id;
+                LOG(error) << "Invalid content info by id " << id;
                 return "";
             }
 
             json content_type = json::parse(Mongo::find_id("storage_contents_types",
                         content_info["type"]));
             if(content_type["_id"].is_null()){
-                LOG(info) << "Invalid content type for id: " << id;
+                LOG(error) << "Invalid content type for id: " << id;
                 return "";
             }
             string content_fmt = "";
@@ -349,10 +354,11 @@ namespace Util {
                     json format = json::object();
                     format["format"] = content_fmt;
                     Mongo::update_id("storage_contents_info", id, format.dump() );
+                    LOG(debug) << "Update format of content " << id << " to " << content_fmt;    
                 }
             }
             if(!content_fmt.size()){
-                LOG(info) << "Can't get content format for id: " << id;
+                LOG(error) << "Can't get content format for id: " << id;
                 return "";
             }
 
@@ -386,7 +392,7 @@ namespace Util {
         try{
             auto auth_hdr = req.header("Authorization");
             if(auth_hdr.size() < 10){
-                LOG(trace) << "header Authorization not found!";
+                LOG(trace) << "header Authorization not found in:" << req.url().path();
                 return true;   // FIXME
             } 
             auto auth = auth_hdr.substr(6); // remove 'Base '
@@ -650,7 +656,7 @@ namespace Util {
                 }
             }
             LOG(trace) << j.dump(4);
-            return j.dump();
+            return j.dump(2);
         }catch(exception& e){
             LOG(trace) << "Exception: " << e.what();
             return "{}";
@@ -729,6 +735,7 @@ namespace Util {
             curlpp::Cleanup cleaner;
             curlpp::Easy request;
             request.setOpt(new curlpp::options::Url(url));
+            request.setOpt(new curlpp::options::Timeout(2));
 
             ostringstream out;
             out << request;
@@ -738,5 +745,15 @@ namespace Util {
             LOG(error) << e.what();
         }
         return "";
+    }
+    const std::string shell_out(const std::string cmd) {
+        std::array<char, 128> buffer;
+        std::string result;
+        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
+        if (!pipe) return "";
+        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+            result += buffer.data();
+        }
+        return result;
     }
 }

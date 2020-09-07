@@ -19,6 +19,7 @@
 #include <boost/log/attributes/current_process_name.hpp>
 #include <served/status.hpp>
 #include <thread>
+#include <tuple>
 #include "auth.hpp"
 #include "util.hpp"
 #include "hardware.hpp"
@@ -44,7 +45,9 @@ int main(int argc, char *argv[])
         LOG(error) << "Must run by root";
         return -1;
     }
-    LOG(info) << "Start Main";
+    string s;
+    
+    LOG(info) << "Start Main "; 
     Mongo::fill_defauls();
     try{
         served::multiplexer mux;
@@ -89,6 +92,7 @@ void get_users_access_list(served::response& res,
     using nlohmann::json;
     res.set_header("Content-Type", "application/json");
     json j = json::object();
+    
     auto endpoint_list = mux.get_endpoint_list();
     for ( const auto & endpoint : endpoint_list ){
         j[endpoint.first] = json::array();
@@ -96,6 +100,7 @@ void get_users_access_list(served::response& res,
             j[endpoint.first].push_back(method);
         }
     }
+    
     res << j.dump(2);
     res.set_status(200);
 
@@ -140,7 +145,6 @@ void do_before_api(served::response& res, const served::request& req)
 }
 
 void init_log(int argc, char* argv[]){
-
     namespace logging = boost::log;
     namespace keywords = boost::log::keywords;
     namespace attrs = boost::log::attributes;
