@@ -3,7 +3,7 @@
 #include <served/served.hpp>
 #include <boost/log/trivial.hpp>
 #include "../third_party/json.hpp"
-#define  MEDIA_ROOT "/opt/sms/www/iptv/media/"
+#include "config.hpp"
 using json = nlohmann::json;
 
 namespace Util {
@@ -37,4 +37,5 @@ namespace Util {
     void sys_stop();
     void sys_reboot();
     const std::string get_url(const std::string url);
+    void build_temp_records();
 }

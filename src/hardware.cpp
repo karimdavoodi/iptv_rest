@@ -1,5 +1,6 @@
 #include <fstream>
 #include <algorithm>
+#include <ios>
 #include <time.h>
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
@@ -104,8 +105,8 @@ namespace Hardware {
                 res["error"] = "Frequency is invalid";
                 return res;
             }
-            auto _id = tuner["systemId"]; 
-            auto parameters = freq_rec["parameters"];
+            int _id = tuner["systemId"]; 
+            string parameters = freq_rec["parameters"];
             if(!boost::filesystem::exists("/dev/dvb/adapter"+
                         to_string(_id)+"/frontend0")){
                 LOG(error) << "Tuner Not Exists:" << _id;
@@ -326,21 +327,6 @@ namespace Hardware {
         LOG(trace) << "Find systen NIC:" << nics.size();
         return nics;
     }
-    void save_network(json& net)
-    {
-    // and add to /etc/netplan/01-network-manager-all.yaml
-
-    }
-    bool valid_command_string(const string cmd)
-    {
-        if(cmd.find("&") != string::npos || 
-           cmd.find("|") != string::npos || 
-           cmd.find(";") != string::npos ){
-                LOG(error) << "Invalid command: " << cmd;
-                return false;
-        }
-        return true;
-    }
     void convert_mask(string& mask)
     {
         if(mask == "255.255.255.255" ) mask = "32";
@@ -358,6 +344,101 @@ namespace Hardware {
             }
             mask = to_string(one_count);
         } 
+    }
+    uint32_t net_addr(const string ip, const string mask)
+    {
+        uint32_t i_ip = 0;
+        uint32_t i_mask = stoi(mask);
+        inet_pton(AF_INET, ip.c_str(), &i_ip);
+        i_ip = ntohl(i_ip);
+        i_ip = i_ip >> (32 - i_mask);
+        
+        return i_ip;
+    }
+    void save_network(json& net)
+    {
+        string plan;
+        plan = "network:\n"
+                "    ethernets:\n";
+        if(net["interfaces"].is_array()){
+            for(auto& nic : net["interfaces"]){
+                string name = nic["name"];
+                string ip = nic["ip"];
+                string mask = nic["mask"];
+                if(!name.size() || !ip.size() || !mask.size()){
+                    LOG(error) << "Invalid NIC fileds IP:" << ip 
+                        << " mask:" << mask << " name:" << name;
+                    continue;
+                }
+                if(mask.find(".") != string::npos){
+                    convert_mask(mask);
+                }
+                plan += "        " + name + ":\n"
+                        "            " + "addresses:\n"
+                        "            - " + ip + "/" + mask + "\n";
+                if(!net["gateway"].is_null()){
+                    string gateway = net["gateway"];
+                    if(net_addr(ip, mask) == net_addr(gateway, mask)){
+                        plan += "            gateway4: " + gateway + "\n"; 
+                        plan += "            nameservers:\n";
+                        plan += "                addresses:\n";
+                        plan += "                - " + net["dns"].get<string>() + "\n"; 
+                    }else{
+                        plan += "            nameservers: {}\n";
+                    }
+                }
+            }
+        }
+        plan += "    version: 2\n";
+        LOG(debug) << plan;
+        for(const auto& file : boost::filesystem::directory_iterator("/etc/netplan")){
+            string config_file = file.path().string();
+            LOG(debug) << "Try to write net plan to " << config_file;
+            if(plan.find("wlp") != string::npos){
+                LOG(error) << "Not write in my system!";
+                return; // NOT SAVE IN MY PC
+            } 
+            ofstream out_file(config_file);
+            if(out_file.is_open()){
+                out_file << plan;
+                out_file.close();
+                LOG(debug) << "Write net plan to " << config_file;
+            }
+            break;
+        }
+
+    // and add to /etc/netplan/01-network-manager-all.yaml
+/*
+ * Sample YAML in /etc/netplan/01-network-manager-all.yaml 
+ network:
+  ethernets:
+    enp3s0f0:
+      addresses:
+      - 192.168.1.65/24
+      nameservers: {}
+    enp3s0f1:
+      addresses:
+      - 192.168.2.65/24
+      gateway4: 192.168.2.1
+      nameservers:
+        addresses:
+        - 1.1.1.1
+        search:
+        - 8.8.8.8
+  version: 2
+
+ 
+ * */
+    }
+    bool valid_command_string(const string cmd)
+    {
+        if(cmd.find("&") != string::npos || 
+           cmd.find("|") != string::npos || 
+           cmd.find(";") != string::npos ){
+                LOG(error) << "Invalid command: " << cmd;
+                return false;
+        }
+        return true;
     }
     void apply_network(json& net)
     {

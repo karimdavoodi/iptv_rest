@@ -2,7 +2,7 @@
 #include <served/served.hpp>
 #include <boost/filesystem.hpp>
 #include "../third_party/json.hpp"
-#define LOG(level) BOOST_LOG_TRIVIAL(level) << "[" << __func__ << ":" <<__LINE__ << "] " 
+#include "config.hpp"
 
 #define ERRORSEND(res, httpCode, errorCode, errorMessage)       \
     do{                                                         \
@@ -112,19 +112,23 @@
     int64_t id;                                                     \
     try{                                                            \
         if(!Util::get_id(req, id) ){                                \
-            ERRORSEND(res, 400, 1006, "Id not exists in url!");               \
+            ERRORSEND(res, 400, 1006, "Id not exists in url!");     \
+        }                                                           \
+        if(id < USER_RECORD_BASE_ID){                                          \
+            ERRORSEND(res, 400, 10036, "Not delete system record!");\
         }                                                           \
         if(!Mongo::exists_id(col, id)){                             \
             ERRORSEND(res, 400, 1007, "Record not exists!");        \
         }                                                           \
-        Mongo::remove_id(col, id);                               \
+        Mongo::remove_id(col, id);                                  \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
-        LOG(error) << e.what();                       \
+        LOG(error) << e.what();                                     \
     }do{}while(false)                       
 
 #define DEL_ID1_COL(col)                                            \
     try{                                                            \
+        ERRORSEND(res, 400, 10037, "Not delete system record!");    \
         if(!Mongo::exists_id(col, 1)){                              \
             ERRORSEND(res, 400, 1008, "Not remove, not exists by id 1!");\
         }                                                           \

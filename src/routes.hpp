@@ -191,6 +191,7 @@ BOOST_LOG_TRIVIAL(trace) << "Add route /report/* GET";
 mux.handle("/status/information").get(status_information_get);
 mux.handle("/report/tuners").get(report_tuners_get);
 mux.handle("/report/channels").get(report_channels_get);
+mux.handle("/report/output_channels").get(report_output_channels_get);
 mux.handle("/report/error").get(report_error_get);
 mux.handle("/report/survey").get(report_survey_get);
 mux.handle("/report/iptv_user").get(report_iptv_user_get);

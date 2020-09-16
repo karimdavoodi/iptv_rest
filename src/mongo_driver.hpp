@@ -2,10 +2,18 @@
 
 #include <iostream>
 #define  QUERY_SIZE 10
-#define LOG(level) BOOST_LOG_TRIVIAL(level) << "[" << __func__ << ":" <<__LINE__ << "] " 
+
+#include <mongocxx/client.hpp>
+#include <mongocxx/pool.hpp>
+#include <mongocxx/instance.hpp>
+#include <bsoncxx/builder/basic/document.hpp>
+#include <bsoncxx/builder/basic/kvp.hpp>
+
 
 namespace Mongo {
+
     void fill_defauls();
+    bool count(const std::string col, const std::string filter);
     bool exists(const std::string col, const std::string filter);
     bool exists_id(const std::string col, int64_t id);
     bool insert(const std::string col, const std::string filter);

@@ -122,8 +122,8 @@ void system_network_put(served::response &res, const served::request &req)
     PUT_ID1_COL("system_network");
     try{
         json net = json::parse(req.body());
-        Hardware::apply_network(net); 
-        //Hardware::save_network(net);  TODO: save as yaml
+        //Hardware::apply_network(net); 
+        Hardware::save_network(net);
     }catch(std::exception& e){                                  
         LOG(error) << e.what();                   
     }                       
@@ -391,6 +391,7 @@ void system_restart_get(served::response &res, const served::request &req)
         res.set_status(served::status_2XX::OK);
     else
         res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
+    Util::build_temp_records();
 }
 void system_stop_get(served::response &res, const served::request &req)
 {

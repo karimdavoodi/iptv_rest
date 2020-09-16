@@ -71,7 +71,11 @@ namespace Util {
     void report_webui_user(int userId, const served::request &req)
     {
         try{
-            if(req.method() > 4) return;    // log methods: get,put,post,delete
+            int method = req.method();
+            if(method != served::method::PUT &&
+               method != served::method::POST &&
+               method != served::method::DELETE 
+             ) return;    // log methods: put,post,delete
             string api = req.url().path();
             if(api.find("webui_state") != string::npos) return; // no log this api
             json j = json::object();
@@ -214,29 +218,27 @@ namespace Util {
         boost::asio::io_context ioc;
         tcp::resolver resolver(ioc);
         
-        LOG(trace) << "BEFORE resolve";
         auto endpoint = resolver.resolve(host, protocol);
-        LOG(trace) << "AFTER resolve";
         boost::beast::tcp_stream stream(ioc);
         boost::beast::flat_buffer buf;
         // timeout 2 sec
         stream.expires_after(std::chrono::seconds(2));
-        
+        bool result = false; 
         stream.async_connect(endpoint, 
                 [&](boost::system::error_code ec, 
                     tcp::resolver::results_type::endpoint_type){
                 if(ec == beast::error::timeout){
-                    LOG(error) << "TimeOut expire: " << host;
-                    return false;
+                    LOG(error) << "test_internet_connection, Timeout expire " << host;
+                    return;
                 }else if(ec){
-                    LOG(error) << "Not connect to " << host;
-                    return false;
+                    LOG(error) << "test_internet_connection, Not connect to " << host;
+                    return;
                 }
                 stream.socket().shutdown(tcp::socket::shutdown_both, ec);
-                return true;
+                result = true;
                 });
         ioc.run();
-        return true;
+        return result;
     }
     void sys_backup(const string fname)
     {
@@ -262,7 +264,7 @@ namespace Util {
     }
     const string content_type_to_postfix(const string type)
     {
-        std::map<string, string> types = {
+        static std::map<string, string> types = {
             {"application/json", "json"}, 
             {"audio/mp4a-latm", "aac"}, 
             {"audio/mpeg", "mp3"},  
@@ -430,7 +432,7 @@ namespace Util {
             // check permissions
             auto path = req.url().path();
             //LOG(trace) << path;
-            if(path == "/system/users_me") return true;
+            if(path.find("/system/users_me") != string::npos) return true;
             for(const auto& p : j["accessList"].items()){
                 if(is_path_equal(path,p.key())){
                     auto req_method = served::method_to_string(req.method());
@@ -455,9 +457,9 @@ namespace Util {
         s << "Content-type: "<< req.header("Content-type")  << "\n";
         s << "Content-Length: "<< req.header("Content-length")  << "\n";
         s << "Param:";
-        for(const auto p : req.params) s << p.first << "->" << p.second << " ";
+        for(const auto& p : req.params) s << p.first << "->" << p.second << " ";
         s << "\nQuery:" << req.query.get("id") << "\n";
-        for(const auto q : req.query) s << q.first << "->" << q.second << " ";
+        for(const auto& q : req.query) s << q.first << "->" << q.second << " ";
         s << "\nSourcs: " << req.source() << "\n";
         s << "Body size:" << req.body().size() << "\n";
         LOG(trace) << s.str();
@@ -576,7 +578,7 @@ namespace Util {
         boost::tokenizer<boost::escaped_list_separator<char>>  tok(value);
         json j = json::object();
         j[op] = json::array();
-        for(const auto it : tok){
+        for(const auto& it : tok){
             if(it.size()){
                 if(isdigit(it[0]))
                     j[op].push_back(stoll(it));
@@ -755,5 +757,84 @@ namespace Util {
             result += buffer.data();
         }
         return result;
+    }
+    const std::string get_channel_name(const json& input_chan, const string input_type_name)
+    {   
+        if(input_type_name == "dvb"){
+            json channel = json::parse(Mongo::find_id("live_satellites_channels", 
+                        input_chan["channelId"])); 
+            if(!channel["name"].is_null()) 
+                return channel["name"];
+        }
+        else if(input_type_name == "network"){
+            json channel = json::parse(Mongo::find_id("live_network_channels", 
+                        input_chan["channelId"])); 
+            if(!channel["name"].is_null()) 
+                return channel["name"];
+        }
+        return "NAME";
+    }
+    void fill_output_channels(map<int, string>& type_map, const string out_type)
+    {
+        json channels = json::parse(Mongo::find_mony(
+                    "live_output_" + out_type, "{\"active\":true}"));
+
+        for(const auto& chan : channels){
+            // get input channel
+            string input_type = type_map[chan["inputType"].get<int>()];
+            json in_chan = json::parse(Mongo::find_id(
+                        "live_inputs_" + input_type, chan["input"]));
+            if(in_chan["_id"].is_null()){
+                LOG(error) << "Not found input channel type " << input_type 
+                    << " id:" << chan["input"];
+                continue;
+            }
+            string name = "";
+            if(!in_chan["name"].is_null()){
+                name = in_chan["name"];
+            }else{
+                name = get_channel_name(in_chan, input_type);
+            }
+            // check timeshift
+            json t_filter;
+            t_filter["active"] = true;
+            t_filter["input"] = chan["input"];
+            int timeshift_count = Mongo::count(
+                    "live_output_archive", t_filter.dump() );
+
+            // fill 
+            json ch;
+            ch["_id"] = chan["_id"];
+            ch["name"] = name;
+            ch["logo"] = in_chan["logo"];
+            ch["tv"] = in_chan["tv"];
+            ch["description"] = chan["description"];
+            ch["inputTypeDesc"] = input_type;
+            ch["outputTypeDesc"] = out_type;
+            ch["inputId"] = chan["input"];
+            ch["inputStatus"] = 0;
+            ch["inputSnapshot"] = 0;
+            ch["hasTimeshift"] = timeshift_count > 0 ;
+            //LOG(trace) << in_chan.dump(2);
+            //LOG(trace) << ch.dump(2);
+            Mongo::insert("report_output_channels", ch.dump());
+        }
+    }
+    void build_report_output_channels()
+    {
+        map<int, string> type_map;
+        json types = json::parse(Mongo::find_mony("live_inputs_types", "{}"));
+        for(const auto& type: types){
+            type_map[type["_id"].get<int>()] = type["name"];
+        }
+
+        Mongo::remove_mony("report_output_channels", "{}");
+
+        fill_output_channels(type_map, "dvb");
+        fill_output_channels(type_map, "network");
+    }
+    void build_temp_records()
+    {
+        build_report_output_channels();
     }
 }

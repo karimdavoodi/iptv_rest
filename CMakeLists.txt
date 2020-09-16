@@ -20,7 +20,6 @@ add_executable(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME} 
-    #-lserved
     /home/karim/src/served/lib/libserved.a
     -lpthread
     -ldl

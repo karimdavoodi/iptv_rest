@@ -18,7 +18,7 @@ void status_information_get(served::response &res, const served::request &req)
         result["LastReset"] = last_reset.size()?
             last_reset.substr(last_reset.find("\n")):"";
         result["SystemIP"] = Hardware::detect_ip();
-        result["SystemInternet"] = Hardware::detect_internet();
+        result["SystemInternet"] = Util::test_internet_connection("195.146.59.198", "80");
         result["Owner"] = license_valid ? license["license"]["General"]["Customer"]
                                         : "NOT VALID";
         result["OwnerId"] = license["license"]["General"]["MMK_ID"];
@@ -86,4 +86,40 @@ void report_webui_state_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     POST_ID_COL("report_webui_state");
+}
+void report_output_channels_get(served::response &res, const served::request &req)
+{
+    CHECK_AUTH;
+    try{                                                         
+        // get query
+        res.set_header("Content-type", "application/json");    
+        auto [from, to] = Util::req_range(req);           
+        const std::string parameters = Util::req_parameters(req);
+        json channels_totoal = json::parse(Mongo::find_filter_range(
+                    "report_output_channels",             
+                    parameters , from, to));                     
+        if(channels_totoal["content"].is_null()){
+            res << "";
+            res.set_status(403);                               
+            return;
+        }
+        json channels = channels_totoal["content"];
+        // update stat fields
+
+        for(auto& chan : channels){
+            json report = json::parse(Mongo::find_filter_range(
+                        "report_channels",             
+                        "{\"inputId\":"+to_string(chan["inputId"])+"}" , 
+                        -1, 0));                     
+            if(!report["_id"].is_null()){
+                chan["inputStatus"] = report["status"]; 
+                chan["inputSnapshot"] = report["snapshot"];
+            }
+        }
+        res << channels.dump(2);
+        res.set_status(200);                               
+
+    }catch(std::exception& e){                            
+        LOG(error) << e.what();                     
+    }
 }

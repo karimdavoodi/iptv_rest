@@ -120,8 +120,10 @@ Query: in 'GET' method, use any field as parameter.
                     "platform":int,      # from storage/contents/platforms
                     "component":int      # from launcher/components/info
                     "category":int,      # from storage/contents/categories
-                    "content":int,       # from storage/contents/info or live/output/* 
+                    "content":int,       # from storage/contents/info 
+                    "channel":int,       # from live/output/network
                     "operation": int,    # from report/operations
+                    "bandwidth": int     # in kbps
                     },
                 ]
             }
@@ -223,9 +225,33 @@ Query: in 'GET' method, use any field as parameter.
                     "time": epochtime,
                     "inputId": int,
                     "inputType": int,   # live/inputs/types
-                    "status": int       # from 0 .. 100, helth percent of input channels 
+                    "status": int,      # from 0 .. 100, helth percent of input channels 
+                    "snapshot": int     # from storage/contents/info if status == 100
                     },
                 ]
+            }
+
+        Path: /report/output_channels
+        Method: GET
+        Parameters: [from=int&to=int] and all record's fields
+        ResponseBody: 
+            {
+                "total":int,
+                "content":[    
+                        {
+                           "_id": int,                 # ID of channel
+                           "name": string,
+                           "logo": int,                # from storage/contents/media/ID
+                           "tv": boolean,
+                           "description": string, 
+                           "inputId": int,             
+                           "hasTimeshift": boolean,
+                           "outputTypeDesc": string,   # from 'dvb', 'network'
+                           "inputTypeDesc": string,    # from input types: 'mix', 'dvb', ..    
+                           "inputStatus": int,         # from 0 .. 100
+                           "inputSnapshot": int        # from storage/contents/media/ID
+                        }
+                 ]
             }
 ### Tuners Usage
         Description: Get log of Components activity.
@@ -374,10 +400,10 @@ Query: in 'GET' method, use any field as parameter.
                         "components":[int]  # launcher/components/info
                      }
                     "map":{
-                        "server": string,
+                        "server": string,   # url
                         "lat": float,
                         "lon": float,
-                        "zoom":int
+                        "zoom":int          # from 1 .. 100 
                      }
             }
         Description: List of cities for weather and prayerTime
@@ -1414,6 +1440,7 @@ Query: in 'GET' method, use any field as parameter.
             }
 
 
+
 ### Launcher ############################################# 
 ### Components 
         Description: Types of fonst 
@@ -1648,7 +1675,7 @@ Query: in 'GET' method, use any field as parameter.
         RequestBody: 
             {
                 "_id": int,
-                "user": int,            # from users/user
+                "user": [int],            # from users/user
                 "time": epochtime,
                 "subject": string, 
                 "body": string,

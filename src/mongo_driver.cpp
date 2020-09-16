@@ -1,11 +1,14 @@
+/*
+ *   TODO: implement transaction 
+ *      like /home/karim/src/mongocxx/mongo-cxx-driver/examples/mongocxx/with_transaction.cpp
+ *   TODO: implement bulk mode
+ *      like examples/mongocxx/bulk_write.cpp
+ * */
 #include "mongo_driver.hpp"
 #include <boost/log/trivial.hpp>
-#include <mongocxx/client.hpp>
-#include <mongocxx/instance.hpp>
 #include <mongocxx/logger.hpp>
 #include <mongocxx/options/client.hpp>
 #include <mongocxx/uri.hpp>
-#include <mongocxx/pool.hpp>
 
 #include <bsoncxx/builder/basic/document.hpp>
 #include <bsoncxx/builder/basic/kvp.hpp>
@@ -15,16 +18,13 @@
 #include <string>
 #include <utility>
 #include <mutex>
-#define DB_NAME "iptv"
-//#define SERVER  "mongodb://172.17.0.1:27017"  // in Docker
-#define SERVER  "mongodb://0.0.0.0:27017"
-#define MAX_QUERY_LEN 100
-namespace Mongo {
-    static mongocxx::instance inst{};
-    static mongocxx::pool pool{mongocxx::uri{SERVER}};
+#include "config.hpp"
 
+namespace Mongo {
     using bsoncxx::builder::basic::make_document;
     using bsoncxx::builder::basic::kvp;
+    static mongocxx::instance inst{};
+    static mongocxx::pool pool{mongocxx::uri{SERVER}};
     void fill_defauls(){
         try{
             if(!exists_id("uniq_counter", 1)){    
@@ -33,6 +33,12 @@ namespace Mongo {
         }catch(std::exception& e){
             std::cout << e.what() << '\n';
         }
+    }
+    bool count(const std::string col_name, const std::string doc)
+    {
+        auto client = pool.acquire();
+        mongocxx::database db = (*client)[DB_NAME];
+        return db[col_name].count_documents(bsoncxx::from_json(doc));
     }
     bool exists(const std::string col_name, const std::string doc)
     {
@@ -303,7 +309,8 @@ namespace Mongo {
             }else{
                 // get from end of collection
                 begin = -1 * begin;
-                options.skip(total - begin);
+                int skip = total - begin;
+                options.skip(skip >= 0 ? skip : 0);
                 if(begin > MAX_QUERY_LEN )
                     options.limit(MAX_QUERY_LEN);
             }

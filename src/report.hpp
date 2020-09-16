@@ -10,4 +10,4 @@ void report_error_get(served::response &res, const served::request &req);
 void report_survey_get(served::response &res, const served::request &req);
 void report_webui_state_get(served::response &res, const served::request &req);
 void report_webui_state_post(served::response &res, const served::request &req);
-
+void report_output_channels_get(served::response &res, const served::request &req);
