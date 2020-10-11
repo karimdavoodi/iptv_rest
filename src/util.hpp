@@ -19,7 +19,7 @@ namespace Util {
     const std::string req_parameters(const served::request &req);
     const std::string get_content_path(const served::request &req, int64_t id);
     const json check_media_exists(const served::request &req, int64_t id);
-    bool check_auth(const served::request &req);
+    bool check_auth(served::response &res, const served::request &req);
     void test(served::response &res, const served::request &req);
     bool get_id(const served::request &req, std::string& id);
     bool get_id(const served::request &req, int64_t& id);
@@ -38,4 +38,5 @@ namespace Util {
     void sys_reboot();
     const std::string get_url(const std::string url);
     void build_temp_records();
+    bool remove_file(const std::string path);
 }

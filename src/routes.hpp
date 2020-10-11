@@ -1,5 +1,5 @@
 //////////////  LAUNCHER    /////////////////////////////////////////////////////
-BOOST_LOG_TRIVIAL(trace) << "Add route /launcher/* ";
+LOG(trace) << "Add route /launcher/* ";
 mux.handle("/launcher/components/info/{id}")
         .get(launcher_components_info_get)
         .del(launcher_components_info_del)
@@ -30,7 +30,7 @@ mux.handle("/launcher/setting")
         .post(launcher_setting_post)
         .get (launcher_setting_get);
 ////////////////////// USERS //////////////////////////////////////////////////
-BOOST_LOG_TRIVIAL(trace) << "Add route /users/* ALL_METHODS";
+LOG(trace) << "Add route /users/* ALL_METHODS";
 mux.handle("/users/group/{id}")
         .get (users_group_get)
         .put (users_group_put)
@@ -67,7 +67,7 @@ mux.handle("/users/message/broadcast")
         .post(users_message_broadcast_post)
         .get (users_message_broadcast_get);
 ////////////////////// LIVE //////////////////////////////////////////////////
-BOOST_LOG_TRIVIAL(trace) << "Add route /live/* ALL_METHODS";
+LOG(trace) << "Add route /live/* ALL_METHODS";
 
 mux.handle("/live/satellites/names")      
     .get(live_satellites_names_get);
@@ -187,7 +187,7 @@ mux.handle("/live/output/archive")
 	.post(live_output_archive_post);
 
 ////////////////////// REPORT //////////////////////////////////////////////////
-BOOST_LOG_TRIVIAL(trace) << "Add route /report/* GET";
+LOG(trace) << "Add route /report/* GET";
 mux.handle("/status/information").get(status_information_get);
 mux.handle("/report/tuners").get(report_tuners_get);
 mux.handle("/report/channels").get(report_channels_get);
@@ -202,7 +202,7 @@ mux.handle("/report/webui_state")
         .post(report_webui_state_post);
 
 ////////////////////// SYSTEM //////////////////////////////////////////////////
-BOOST_LOG_TRIVIAL(trace) << "Add route /system/* GET";
+LOG(trace) << "Add route /system/* GET";
 mux.handle("/system/operations").get(system_operations_get);
 mux.handle("/system/general").get(system_general_get);
 mux.handle("/system/sensor/{id}")
@@ -288,7 +288,7 @@ mux.handle("/system/restart")
 mux.handle("/system/stop")
             .get(system_stop_get);
 ////////////////////// STORAGE //////////////////////////////////////////////////
-BOOST_LOG_TRIVIAL(trace) << "Add route /storage/* GET";
+LOG(trace) << "Add route /storage/* GET";
 mux.handle("/storage/setting")
             .get (storage_setting_get)
             .put (storage_setting_put)

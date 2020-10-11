@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(iptv_api)
+#set(CMAKE_CXX_COMPILER  "/usr/bin/clang++-10")
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -8,7 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions( 
                  -fdiagnostics-show-location=every-line
                  -DBOOST_LOG_DYN_LINK=1
-                 -O3
                  -Wall
                  -DNDEBUG
                  #-g

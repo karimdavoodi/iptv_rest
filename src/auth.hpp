@@ -19,7 +19,7 @@
 
 #define CHECK_AUTH                                              \
     do{                                                         \
-       if(Util::check_auth(req) == false){                      \
+       if(Util::check_auth(res, req) == false){                 \
             ERRORSEND(res, 401, 1000, "Not Authorized!");       \
             return;                                             \
        }                                                        \
@@ -40,7 +40,9 @@
         }                                                       \
         try{                                                    \
             j = json::parse(req.body());                        \
-        }catch(...){}                                           \
+        }catch(...){                                            \
+            ERRORSEND(res, 400, 1002, "Body is not valid json!"); \
+        }                                                       \
         if(j.is_null()){                                        \
             ERRORSEND(res, 400, 1002, "Body is not valid json!"); \
         }                                                       \
@@ -208,8 +210,7 @@
 #define DEL_ID_FILE                                                  \
     try{                                                            \
         GET_FILE_PATH                                               \
-        if(boost::filesystem::exists(fname)){                         \
-            boost::filesystem::remove(fname);                         \
+        if(Util::remove_file(fname)){                         \
             res.set_status(200);                                    \
         }else{                                                      \
             ERRORSEND(res, 400, 1015, "File not found!");           \
@@ -241,8 +242,7 @@
 #define DEL_FILE(name)                             \
     try{                                                            \
         std::string fname = std::string(MEDIA_ROOT) + name;         \
-        if(boost::filesystem::exists(fname)){                         \
-            boost::filesystem::remove(fname);                         \
+        if(Util::remove_file(fname)){                         \
             res.set_status(200);                                    \
         }else{                                                      \
             ERRORSEND(res, 400, 1018, "File not found!");           \

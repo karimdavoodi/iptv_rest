@@ -1503,7 +1503,14 @@ Query: in 'GET' method, use any field as parameter.
                     "key": value,       # value from : 'user_id', 'user_name', 'platform', 
                     ...                 #              'partner_user', 'partner_pass'
                 ],
-                "category":[int]   # from storage/contents/categories
+                "category":[int],        # from storage/contents/categories
+                "background": int,       # from storage/contents/info type image
+                "slidShow":{
+                    "active": boolean,
+                    "content":[int],     # from storage/contents/categories type image
+                    "style":string,      # from 'None','Wipe','Push','Split','Fade'
+                    "time":int           # in second 5 .. 1000
+                }
             }
 
 ### Components Arrange
@@ -1591,7 +1598,13 @@ Query: in 'GET' method, use any field as parameter.
                 },
                 "unitName": string,       # from 'Room', 'TV', 'Bed', 'Seat', 'Unit' 
                 "clientHotspot": string,  # from 'AccessPoint', 'TV/STB'
-                "defaultChannel": int     # from live/output/*
+                "defaultChannel": int,     # from live/output/*
+                "slidShow":{
+                    "active": boolean,
+                    "content":[int],     # from storage/contents/categories type image
+                    "style":string,      # from 'None','Wipe','Push','Split','Fade'
+                    "time":int           # in second 5 .. 1000
+                }
             }
 
 ### Users ################################################

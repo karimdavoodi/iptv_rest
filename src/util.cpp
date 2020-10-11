@@ -389,7 +389,7 @@ namespace Util {
         auto perm1 = perm.substr(0,id_pos_perm);
         return path1 == perm1;
     }
-    bool check_auth(const served::request &req)
+    bool check_auth(served::response &response, const served::request &req)
     {
         try{
             auto auth_hdr = req.header("Authorization");
@@ -420,6 +420,15 @@ namespace Util {
                 report_error("Invalid user record for :"+user+" pass:"+pass);
                 return false;
             }
+            /*
+            // Cookie
+            if(auto cookie = req.header("Cookie"); !cookie.size()){
+                LOG(error) << "Not exists Cookie in " << req.url().path();
+            }else{
+                LOG(debug) << "Cookie in " << req.url().path() << ":" << cookie;
+            } 
+            response.set_header("Set-Cookie","123456; HttpOnly;");
+            */
             report_webui_user(j["_id"].get<int64_t>(), req);
             // FIXME : not check permission for test user
             if(user == "test" && pass == "test") return true;
@@ -836,5 +845,16 @@ namespace Util {
     void build_temp_records()
     {
         build_report_output_channels();
+    }
+    bool remove_file(const std::string path)
+    {
+        if(boost::filesystem::exists(path)){
+            boost::filesystem::remove(path);
+            LOG(info) << "Removed file:" << path;
+            return true;
+        }else{
+            LOG(warning) << "Not removed, file not exists:" << path;
+            return false;
+        }
     }
 }

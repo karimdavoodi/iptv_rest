@@ -3,6 +3,7 @@
 #include "util.hpp"
 #include "report.hpp"
 #include "hardware.hpp"
+#include <chrono>
 using namespace std;
 void status_information_get(served::response &res, const served::request &req)
 {
@@ -85,7 +86,18 @@ void report_webui_state_get(served::response &res, const served::request &req)
 void report_webui_state_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
-    POST_ID_COL("report_webui_state");
+    try{                                                       
+        json j;                                                    
+        GET_BODY_AS_j                                          
+        int64_t _id = std::chrono::system_clock::now().time_since_epoch().count();                   
+        j["_id"] = _id;                                        
+        Mongo::insert("report_webui_state", j.dump());       
+        res.set_header("Content-Type", "application/json");    
+        res << "{ \"_id\":" + std::to_string(_id) + " }";      
+        res.set_status(200);                                   
+    }catch(std::exception& e){                                 
+        LOG(error) << e.what();                      
+    }
 }
 void report_output_channels_get(served::response &res, const served::request &req)
 {

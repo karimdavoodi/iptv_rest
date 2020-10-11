@@ -47,16 +47,16 @@ int main(int argc, char *argv[])
     
     LOG(info) << "Start Main "; 
     Mongo::fill_defauls();
-    
+        
     try{
         served::multiplexer mux;
         
         // Add ALL APIs to multiplexer
         #include "routes.hpp"
-
+        
         // Only for test parameters
         mux.handle("/test").get(Util::test); 
-
+        
         // List API
         mux.handle("/system/users_accesslist")
             .get([&](served::response& res, 
@@ -70,8 +70,11 @@ int main(int argc, char *argv[])
         // Call AFTER any API (for debugging)
         mux.use_after([&](served::response& res, 
                           served::request& req){
-                if(argc == 3)  // debug mode
-                    LOG(trace) << "RESULT:\n" <<  res.to_buffer();
+                if(argc == 3){
+                    // debug mode
+                    LOG(trace) << "RESULT:" ;
+                    LOG(trace) << res.to_buffer();
+                } 
                 });
 
         LOG(info) << "Listen on:" << port;
@@ -147,7 +150,7 @@ void init_log(int argc, char* argv[]){
     logging::add_common_attributes();
     logging::core::get()->add_global_attribute(
             "Process", attrs::current_process_name());
-    auto log_out = (argc == 2) ? "/dev/stdout" : "/tmp/iptv_api.log";
+    auto log_out = (argc >= 2) ? "/dev/stdout" : "/tmp/iptv_api.log";
     
     logging::add_file_log
         (

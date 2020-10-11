@@ -160,7 +160,6 @@ void system_users_me_get(served::response &res, const served::request &req)
     auto text = Util::base64_decode(auth);
     auto pos = text.find(':');
     if(pos == std::string::npos) return;
-    //res.set_header("Set-Cookie","key=123");
     auto user = text.substr(0,pos);
     res << Mongo::find_one("system_users","{\"user\": \"" + user + "\"}");
     res.set_status(200);                                        
@@ -337,8 +336,7 @@ void system_backup_del(served::response &res, const served::request &req)
     auto name = req.query.get("name");
     if(name.size()){
         auto path = string(MEDIA_ROOT) +  "Backup/" + name;
-        if(boost::filesystem::exists(path)){
-            boost::filesystem::remove(path);
+        if(Util::remove_file(path)){
             res.set_status(200);
         }else{
             ERRORSEND(res, 400, 1022, "Fie not found!");

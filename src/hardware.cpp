@@ -76,6 +76,26 @@ namespace Hardware {
     {
         return "";
     }
+    void kill_fromdvb_before_scan(int adapter_id)
+    {
+        try{
+            string stat = Util::get_file_content("/tmp/dvbstat_" + 
+                    to_string(adapter_id)+".txt");
+            if(stat.size() > 5){
+                //              pid
+                //"%u %u %u lock %d %c\n",
+                auto space = stat.find(' ');
+                for(int i=1; i<4; ++i){
+                    space = stat.find(' ', space+1);
+                }
+                int fromdvb_pid = stoi(stat.substr(space+1, stat.find(' ',space+1)));
+                LOG(info) << "Kill fromdvb to unlock tuner id " << adapter_id;
+                kill(fromdvb_pid, SIGTERM);
+            }
+        }catch(std::exception& e){
+            LOG(error) << e.what();
+        }
+    }
     const json scan_input_tuner(const std::string& tuner_json)
     {
         int num = 0;
@@ -86,9 +106,9 @@ namespace Hardware {
         try{
             json tuner = json::parse(tuner_json);
             if(tuner["_id"].is_null() || 
-               !tuner["systemId"].is_number() ||
-               !tuner["frequencyId"].is_number() ||
-               !tuner["virtual"].is_boolean()){
+                    !tuner["systemId"].is_number() ||
+                    !tuner["frequencyId"].is_number() ||
+                    !tuner["virtual"].is_boolean()){
                 LOG(error) << "Tuner is invalid:" << tuner_json;
                 res["error"] = "Tuners is invalid";
                 return res;
@@ -99,7 +119,7 @@ namespace Hardware {
                 return res;
             }
             auto freq_rec = json::parse(Mongo::find_id("live_satellites_frequencies", 
-                                        tuner["frequencyId"]));
+                        tuner["frequencyId"]));
             if(freq_rec["_id"].is_null() || freq_rec["parameters"].is_null()){
                 LOG(error) << "Freq is invalid";
                 res["error"] = "Frequency is invalid";
@@ -113,6 +133,7 @@ namespace Hardware {
                 res["error"] = "Tuner not exists";
                 return res;
             }
+            kill_fromdvb_before_scan(_id);
             auto cfg_file = "/tmp/scan_freq_"+to_string(_id);
             auto out_file = "/tmp/scan_chans_"+to_string(_id);
             ofstream freq(cfg_file);
@@ -154,7 +175,7 @@ namespace Hardware {
 
                 for(size_t i=0; i<8; ++i) 
                     ++it;
-                
+
                 chan["scrambled"]  = (it->at(0) == '0') ? false : true;
                 chan["serviceId"]  = *(++it); //9
                 chan["videoId"]  = 0; //TODO
@@ -164,7 +185,7 @@ namespace Hardware {
                 num++;
             }
         }catch(std::exception& e){
-            LOG(error) << "Exception:" << e.what();
+            LOG(error) << e.what();
         }
         res["total"] = num;
         if(num == 0) res["error"] = "Channel not found!";
@@ -304,7 +325,7 @@ namespace Hardware {
         istringstream in { Util::shell_out("ip addr show") }; 
         string line;
         while(getline(in, line)){
-        //  inet 192.168.43.154/24 brd 192.168.43.255 scope global dynamic noprefixroute wlo1
+            //  inet 192.168.43.154/24 brd 192.168.43.255 scope global dynamic noprefixroute wlo1
             if(line.find("inet ") == string::npos) continue;
             for(auto& nic : nics){
                 string name = nic["name"];
@@ -323,7 +344,7 @@ namespace Hardware {
                 }
             }
         }
-        
+
         LOG(trace) << "Find systen NIC:" << nics.size();
         return nics;
     }
@@ -352,14 +373,14 @@ namespace Hardware {
         inet_pton(AF_INET, ip.c_str(), &i_ip);
         i_ip = ntohl(i_ip);
         i_ip = i_ip >> (32 - i_mask);
-        
+
         return i_ip;
     }
     void save_network(json& net)
     {
         string plan;
         plan = "network:\n"
-                "    ethernets:\n";
+            "    ethernets:\n";
         if(net["interfaces"].is_array()){
             for(auto& nic : net["interfaces"]){
                 string name = nic["name"];
@@ -374,8 +395,8 @@ namespace Hardware {
                     convert_mask(mask);
                 }
                 plan += "        " + name + ":\n"
-                        "            " + "addresses:\n"
-                        "            - " + ip + "/" + mask + "\n";
+                    "            " + "addresses:\n"
+                    "            - " + ip + "/" + mask + "\n";
                 if(!net["gateway"].is_null()){
                     string gateway = net["gateway"];
                     if(net_addr(ip, mask) == net_addr(gateway, mask)){
@@ -407,36 +428,36 @@ namespace Hardware {
             break;
         }
 
-    // and add to /etc/netplan/01-network-manager-all.yaml
-/*
- * Sample YAML in /etc/netplan/01-network-manager-all.yaml 
- network:
-  ethernets:
-    enp3s0f0:
-      addresses:
-      - 192.168.1.65/24
-      nameservers: {}
-    enp3s0f1:
-      addresses:
-      - 192.168.2.65/24
-      gateway4: 192.168.2.1
-      nameservers:
-        addresses:
-        - 1.1.1.1
-        search:
-        - 8.8.8.8
-  version: 2
+        // and add to /etc/netplan/01-network-manager-all.yaml
+        /*
+         * Sample YAML in /etc/netplan/01-network-manager-all.yaml 
+network:
+ethernets:
+enp3s0f0:
+addresses:
+- 192.168.1.65/24
+nameservers: {}
+enp3s0f1:
+addresses:
+- 192.168.2.65/24
+gateway4: 192.168.2.1
+nameservers:
+addresses:
+- 1.1.1.1
+search:
+- 8.8.8.8
+version: 2
 
- 
- * */
+
+         * */
     }
     bool valid_command_string(const string cmd)
     {
         if(cmd.find("&") != string::npos || 
-           cmd.find("|") != string::npos || 
-           cmd.find(";") != string::npos ){
-                LOG(error) << "Invalid command: " << cmd;
-                return false;
+                cmd.find("|") != string::npos || 
+                cmd.find(";") != string::npos ){
+            LOG(error) << "Invalid command: " << cmd;
+            return false;
         }
         return true;
     }
