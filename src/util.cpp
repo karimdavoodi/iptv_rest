@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include <exception>
-#include <fstream>
 #include <string>
 #include <thread>
 #include <served/served.hpp>
@@ -16,7 +15,6 @@
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
-#include <curlpp/Exception.hpp>
 
 #include "mongo_driver.hpp"
 #include "util.hpp"
@@ -48,14 +46,14 @@ namespace Util {
             return 0;
         }
     }
-    void system(const std::string cmd)
+    void system(const std::string& cmd)
     {
         LOG(trace) << "Run shell command:" << cmd;
         if(std::system(cmd.c_str())){
             LOG(error) << "Error in run " << cmd;
         }
     }
-    const std::string get_file_content(const std::string name)
+    std::string get_file_content(const std::string name)
     {
         if(boost::filesystem::exists(name)){
             ifstream file(name);
@@ -81,7 +79,7 @@ namespace Util {
             json j = json::object();
             j["_id"] = chrono::system_clock::now().time_since_epoch().count();
             j["systemId"] = get_systemId();
-            j["time"] = long(time(NULL));
+            j["time"] = long(time(nullptr));
             j["user"] = userId; 
             j["api"] = api;
             j["operation"] = req.method(); 

@@ -35,7 +35,7 @@
     }while(false)  
 
 #define GET_BODY_AS_j                                           \
-        if(req.body().size() == 0){                             \
+        if(req.body().empty()){                                 \
             ERRORSEND(res, 400, 1001, "Body is Empty!");        \
         }                                                       \
         try{                                                    \
@@ -97,19 +97,6 @@
         LOG(error) << e.what();                       \
     }do{}while(false)                       
 
-#define POST_ID1_COL(col)                                           \
-    json j;                                                         \
-    try{                                                            \
-        GET_BODY_AS_j                                               \
-        j["_id"] = 1;                                               \
-        Mongo::insert_or_replace_id(col, 1, j.dump());              \
-        res.set_header("Content-Type", "application/json");         \
-        res << "{ \"_id\": 1 }";                                    \
-        res.set_status(200);                                        \
-    }catch(std::exception& e){                                      \
-        LOG(error) << e.what();                       \
-    }do{}while(false)                       
-
 #define DEL_ID_COL(col)                                             \
     int64_t id;                                                     \
     try{                                                            \
@@ -128,17 +115,6 @@
         LOG(error) << e.what();                                     \
     }do{}while(false)                       
 
-#define DEL_ID1_COL(col)                                            \
-    try{                                                            \
-        ERRORSEND(res, 400, 10037, "Not delete system record!");    \
-        if(!Mongo::exists_id(col, 1)){                              \
-            ERRORSEND(res, 400, 1008, "Not remove, not exists by id 1!");\
-        }                                                           \
-        Mongo::remove_id(col, 1);                                \
-        res.set_status(200);                                        \
-    }catch(std::exception& e){                                      \
-        LOG(error) << e.what();                       \
-    }do{}while(false)                       
 
 #define GET_COL(col)                                             \
     try{                                                            \
@@ -168,14 +144,6 @@
         LOG(error) << e.what();                       \
     }do{}while(false)                       
 
-#define FILE_NAME_ID(path, prefix, postfix)                         \
-        std::string id;                                             \
-        if(!Util::get_id(req, id)){                                       \
-            ERRORSEND(res, 400, 1009, "File id not exists in url!");          \
-        }                                                           \
-        std::string fname = std::string(path) +                     \
-                            prefix + "_" + id + postfix;          
-
 #define GET_FILE_PATH                                               \
         int64_t id;                                                     \
         if(!Util::get_id(req, id)){                                       \
@@ -186,7 +154,7 @@
 #define SEND_ID_FILE                                                \
     try{                                                            \
         GET_FILE_PATH                                               \
-        if(fname == ""){                                            \
+        if(fname.empty()){                                            \
             ERRORSEND(res, 400, 1011, "Can't find content ID");     \
         }else if(!Util::send_file(res, req, fname)){                            \
             ERRORSEND(res, 400, 1012, "File not found: " + fname);  \
@@ -239,14 +207,3 @@
         LOG(error) << e.what();                       \
     }do{}while(false)                       
 
-#define DEL_FILE(name)                             \
-    try{                                                            \
-        std::string fname = std::string(MEDIA_ROOT) + name;         \
-        if(Util::remove_file(fname)){                         \
-            res.set_status(200);                                    \
-        }else{                                                      \
-            ERRORSEND(res, 400, 1018, "File not found!");           \
-        }                                                           \
-    }catch(std::exception& e){                                      \
-        LOG(error) << e.what();                       \
-    }do{}while(false)                       

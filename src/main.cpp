@@ -1,15 +1,11 @@
 #include <chrono>
-#include <cstdlib>
 #include <exception>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
 #include <served/methods.hpp>
 #include <served/request.hpp>
 #include <served/response.hpp>
 #include <served/served.hpp>
-#include <csignal>
-#include <boost/filesystem.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>

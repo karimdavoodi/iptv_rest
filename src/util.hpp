@@ -7,8 +7,8 @@
 using json = nlohmann::json;
 
 namespace Util {
-    void system(const std::string cmd);
-    const std::string get_file_content(const std::string name);
+    void system(const std::string& cmd);
+    std::string get_file_content(const std::string name);
     const std::string shell_out(const std::string cmd);
     void report_error(const std::string, int level = 1);
     void report_webui_user(int userId, const served::request &req);

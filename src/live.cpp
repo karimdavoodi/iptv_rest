@@ -1,5 +1,4 @@
 #include <exception>
-#include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
@@ -76,7 +75,7 @@ void func_del_from_outputs_and_processed(int64_t id)
 }
 void func_del_from_outputs_and_processed(const vector<int64_t>& id_list)
 {
-    if(!id_list.size()) return;
+    if(id_list.empty()) return;
     LOG(trace) << "Delete from all processed and output this Channel size:" << id_list.size();
     json filter;
     filter["input"] = json::object();
@@ -113,7 +112,7 @@ void add_network_account_to_out_archive(json& account)
     }
     if(archive_chan_list.is_null() || 
         !archive_chan_list.is_array() || 
-        !archive_chan_list.size()){
+        archive_chan_list.empty()){
         LOG(warning) << "The output of " << archive_url << " is not valid.";
         return;
     }
@@ -142,7 +141,7 @@ void add_network_account_to_out_archive(json& account)
         }
     }
 }
-void remove_or_disable_output_channels_if_needs(const std::string col)
+void remove_or_disable_output_channels_if_needs(const std::string& col)
 {
     try{
 
@@ -228,12 +227,12 @@ void func_add_tuner_info(json& tuner)
         json channels_list = json::parse(Mongo::find_mony("live_satellites_channels", 
                     ffilter));
 
-        if(!channels_list.size()){ 
+        if(channels_list.empty()){
             LOG(debug) << "Channel list is empty";
             return;
         }
         for(const auto& chan : channels_list){
-            string filter = "{\"type\":8, \"name\":\"" + chan["name"].get<string>() + "\"}";
+            string filter = R"({"type":8, "name":")" + chan["name"].get<string>() + "\"}";
             json logo = json::parse(Mongo::find_one("storage_contents_info", filter));
 
             json dvb_chan;
@@ -279,13 +278,13 @@ void func_del_network_account(int64_t account_id)
         LOG(error) << e.what();                       
     }
 }
-json get_iptv_account_channels(const std::string url)
+json get_iptv_account_channels(const std::string& url)
 {
     json list = json::array();
     try{
         LOG(trace) << "Try to get channels of url:" << url;
         string ans = Util::get_url(url);
-        if(!ans.size()) return list;
+        if(ans.empty()) return list;
         //  #EXTINF:1000771,IRIB TV1000671
         //  http://:8771/live.ts
         istringstream in(ans);
@@ -294,10 +293,10 @@ json get_iptv_account_channels(const std::string url)
         while(getline(in, line)){
             if(line.size() < 5 ) continue;
             else if(line.find("#EXTINF") != string::npos){
-                auto pos = line.find_last_of(",");
-                if(pos == string::npos) pos = line.find_last_of(":");
+                auto pos = line.find_last_of(',');
+                if(pos == string::npos) pos = line.find_last_of(':');
                 chan_name = line.substr(pos+1);
-            }else if(line.find("#") == 0 ){ 
+            }else if(line.find('#') == 0 ){
                 continue;
             }else if(char first = std::tolower(line[0]) ;
                     first == 'h' ||  // http, https 
@@ -320,7 +319,7 @@ void func_add_network_account(json account)
 {
     try{
         LOG(trace) << "Try to add channels of network account:" << account["_id"];
-        auto is_radio = [](const string ch_name) -> bool {
+        auto is_radio = [](const string& ch_name) -> bool {
             string name = ch_name;
             std::transform(name.begin(), name.end(), name.begin(),[](auto c){
                     return std::tolower(c);
@@ -331,7 +330,7 @@ void func_add_network_account(json account)
                 return false;
         };
         json channels_list = get_iptv_account_channels(account["url"]);
-        if(!channels_list.size()) return;
+        if(channels_list.empty()) return;
         for(const auto& chan : channels_list){
             string name = chan["name"]; 
             json net_chan;
@@ -342,7 +341,7 @@ void func_add_network_account(json account)
             Mongo::insert("live_network_channels", net_chan.dump());
 
             json logo = json::parse(Mongo::find_one("storage_contents_info", 
-                                            "{\"type\":8, \"name\":\"" + name + "\"}" ));
+                                            R"({"type":8, "name":")" + name + "\"}" ));
             json input_net;
             input_net["_id"] = net_chan["_id"]; // same as up record 
             input_net["active"] = true;
@@ -364,7 +363,7 @@ void func_add_network_account(json account)
         LOG(error) << e.what();                       
     }
 }
-void add_to_output_network(int64_t type_id, const string type_name)
+void add_to_output_network(int64_t type_id, const string& type_name)
 {
     try{
         string input_col = "live_inputs_" + type_name;
@@ -416,7 +415,7 @@ void live_tuners_system_get(served::response &res , const served::request &req)
     try{                                                            
         res.set_header("Content-type", "application/json");         
         res.set_status(200);                                        
-        auto is_dvbt = [](std::string name){
+        auto is_dvbt = [](const std::string& name){
             return name.find("0x62") != std::string::npos;
         };
         auto in_dvb_vec = Hardware::detect_input_tuners();

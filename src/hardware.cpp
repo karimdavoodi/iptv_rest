@@ -1,10 +1,9 @@
 #include <fstream>
 #include <algorithm>
 #include <ios>
-#include <time.h>
+#include <ctime>
 #include <boost/tokenizer.hpp>
 #include <boost/filesystem.hpp>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <cstdio>
@@ -14,15 +13,15 @@
 
 using namespace std;
 namespace Hardware {
-    long file_date(const std::string file_path)
+    long file_date(const std::string& file_path)
     {
-        struct stat st;
+        struct stat st {};
         if(!stat(file_path.c_str(), &st)){
             return st.st_mtim.tv_sec;
         }
         return 0;
     }
-    const std::vector<pair<int,string>> detect_output_tuners()
+    std::vector<pair<int,string>> detect_output_tuners()
     {
         vector<pair<int,string>> list;
         try{
@@ -31,7 +30,7 @@ namespace Hardware {
                     for(int j=0; j<5; ++j){
                         auto dev = "/dev/tbsmod" + to_string(i) + "/mod" + to_string(j);
                         if(boost::filesystem::exists(dev)){
-                            list.push_back({1000 + i*100 + j, dev});
+                            list.emplace_back(1000 + i*100 + j, dev);
                         }
                     }
                 }
@@ -40,7 +39,7 @@ namespace Hardware {
             for(size_t i=0; i<32; ++i){
                 auto dev = "/dev/usb-it950x"+to_string(i); 
                 if(boost::filesystem::exists(dev)){
-                    list.push_back({2000 + i, dev});
+                    list.emplace_back(2000 + i, dev);
                 }
             }
         }catch(std::exception& e){
@@ -49,7 +48,7 @@ namespace Hardware {
         LOG(trace) << "Detect output tuner:" << list.size();
         return list;
     }
-    const vector<pair<int,string>> detect_input_tuners()
+    vector<pair<int,string>> detect_input_tuners()
     {
         vector<pair<int,string>> list;
         try{
@@ -63,7 +62,7 @@ namespace Hardware {
                     string vendor_id = Util::get_file_content(vendor_file);
                     string device_id = Util::get_file_content(device_file);
                     string name = vendor_id + ":" + device_id;
-                    list.push_back(make_pair(i,name));
+                    list.emplace_back(i,name);
                 }
             }
         }catch(std::exception& e){
@@ -72,7 +71,7 @@ namespace Hardware {
         LOG(trace) << "Detect input tuner:" << list.size();
         return list;
     }
-    const std::string detect_network()
+    std::string detect_network()
     {
         return "";
     }

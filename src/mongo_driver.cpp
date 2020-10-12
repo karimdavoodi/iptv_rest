@@ -7,7 +7,6 @@
 #include "mongo_driver.hpp"
 #include <boost/log/trivial.hpp>
 #include <mongocxx/logger.hpp>
-#include <mongocxx/options/client.hpp>
 #include <mongocxx/uri.hpp>
 
 #include <bsoncxx/builder/basic/document.hpp>
@@ -16,8 +15,6 @@
 #include <bsoncxx/stdx/make_unique.hpp>
 #include <exception>
 #include <string>
-#include <utility>
-#include <mutex>
 #include "config.hpp"
 
 namespace Mongo {
@@ -27,20 +24,20 @@ namespace Mongo {
     static mongocxx::pool pool{mongocxx::uri{SERVER}};
     void fill_defauls(){
         try{
-            if(!exists_id("uniq_counter", 1)){    
-                insert("uniq_counter", "{ \"_id\":1, \"count\":100000 }");
+            if(!exists_id("uniq_counter", 1)){
+                insert("uniq_counter", R"({ "_id":1, "count":100000 })");
             }
         }catch(std::exception& e){
             std::cout << e.what() << '\n';
         }
     }
-    bool count(const std::string col_name, const std::string doc)
+    bool count(const std::string& col_name, const std::string& doc)
     {
         auto client = pool.acquire();
         mongocxx::database db = (*client)[DB_NAME];
         return db[col_name].count_documents(bsoncxx::from_json(doc));
     }
-    bool exists(const std::string col_name, const std::string doc)
+    bool exists(const std::string& col_name, const std::string& doc)
     {
         auto client = pool.acquire();
         mongocxx::database db = (*client)[DB_NAME];
@@ -49,7 +46,7 @@ namespace Mongo {
         if(result > 0) return true;
         return false;
     }
-    bool exists_id(const std::string col_name, int64_t id)
+    bool exists_id(const std::string& col_name, int64_t id)
     {
         auto client = pool.acquire();
         mongocxx::database db = (*client)[DB_NAME];
@@ -58,7 +55,7 @@ namespace Mongo {
         if(result > 0) return true;
         return false;
     }
-    bool insert(const std::string col, const std::string doc)
+    bool insert(const std::string& col, const std::string& doc)
     {
         LOG(debug) << " in col:" << col << " doc:" << doc;
         try{
@@ -71,7 +68,7 @@ namespace Mongo {
             return false;
         }
     }
-    bool remove_mony(const std::string col, const std::string doc)
+    bool remove_mony(const std::string& col, const std::string& doc)
     {
         LOG(debug) << "col:" << col << " doc:" << doc;
         try{
@@ -84,7 +81,7 @@ namespace Mongo {
             return false;
         }
     }
-    bool remove_id(const std::string col, int64_t id)
+    bool remove_id(const std::string& col, int64_t id)
     {
         LOG(debug) << "col:" << col << " id:" << id;
         try{
@@ -97,7 +94,7 @@ namespace Mongo {
             return false;
         }
     }
-    bool replace(const std::string col, const std::string filter, const std::string doc)
+    bool replace(const std::string& col, const std::string& filter, const std::string& doc)
     {
         LOG(debug) << "col:" << col << " filter:" << filter << " doc:"<< doc;
         try{
@@ -112,9 +109,9 @@ namespace Mongo {
             return false;
         }
     }
-    bool insert_if_not_exists(const std::string col, 
-            const std::string filter, 
-            const std::string doc)
+    bool insert_if_not_exists(const std::string& col,
+            const std::string& filter,
+            const std::string& doc)
     {
         LOG(debug) << "col:" << col << " filter:" << filter << " doc:"<< doc;
         try{
@@ -133,8 +130,8 @@ namespace Mongo {
         }
         return false;
     }
-    bool insert_or_replace_id(const std::string col, int64_t id, 
-            const std::string doc)
+    bool insert_or_replace_id(const std::string& col, int64_t id,
+            const std::string& doc)
     {
         LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
         try{
@@ -151,7 +148,7 @@ namespace Mongo {
         }
         return false;
     }
-    bool replace_id(const std::string col, int64_t id, const std::string doc)
+    bool replace_id(const std::string& col, int64_t id, const std::string& doc)
     {
         LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
         try{
@@ -166,7 +163,7 @@ namespace Mongo {
         }
         return false;
     }
-    bool update_id(const std::string col, int64_t id, const std::string doc)
+    bool update_id(const std::string& col, int64_t id, const std::string& doc)
     {
         LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
         try{
@@ -182,7 +179,7 @@ namespace Mongo {
         }
         return false;
     }
-    const std::string find_mony( const std::string col, const std::string doc)
+    std::string find_mony( const std::string& col, const std::string& doc)
     {
         try{
             //LOG(debug) << " col:" << col << " doc:" << doc;
@@ -193,14 +190,14 @@ namespace Mongo {
             for(const auto& e : result){
                 result_str += bsoncxx::to_json(e) + ","; 
             }
-            if(result_str.size() > 0) result_str.pop_back();
+            if(!result_str.empty()) result_str.pop_back();
             return "[" + result_str + "]";
         }catch(std::exception& e){
             LOG(error) << e.what();
         }
         return "[]";
     }
-    const std::string find_one( const std::string col, const std::string doc)
+    std::string find_one( const std::string& col, const std::string& doc)
     {
         try{
             //LOG(debug) << "col:" << col << " doc:" << doc;
@@ -216,7 +213,7 @@ namespace Mongo {
         }
         return "{}";
     }
-    const std::string find_id(const std::string col, int64_t id)
+    std::string find_id(const std::string& col, int64_t id)
     {
         //LOG(debug) << "col:" << col << " id:" << id;
         try{
@@ -265,7 +262,7 @@ namespace Mongo {
             return 1;
         }
     }
-    const std::string find_range(const std::string col, int begin, int end)
+    std::string find_range(const std::string& col, int begin, int end)
     {
         LOG(debug) << "col:" << col << 
             " begin:" << begin << " end:" << end;
@@ -278,21 +275,23 @@ namespace Mongo {
             bsoncxx::document::view  v;
             int total = db[col].count_documents(v);
             auto result = db[col].find(v, options);
-            std::string result_str = "";
+            std::string result_str;
             for(auto e : result){
                 result_str += bsoncxx::to_json(e) + ","; 
             }
-            if(result_str.size() > 0) result_str.pop_back();
+            if(!result_str.empty()) result_str.pop_back();
             result_str =  "{ \"total\": " + std::to_string(total) + 
                 ", \"content\":[" + result_str + "] }";
             return result_str;
         }catch(std::exception& e){
             LOG(error) <<  e.what();
-            return "{ \"total\": 0, \"content\":[] }";
+            return R"({ "total": 0, "content":[] })";
         }
     }
-    const std::string find_filter_range(const std::string col, 
-            const std::string filter,
+
+
+    std::string find_filter_range(const std::string& col,
+            const std::string& filter,
             int begin, int end)
     {
         LOG(debug) << " col:" << col <<" filter:" << filter
@@ -315,17 +314,17 @@ namespace Mongo {
                     options.limit(MAX_QUERY_LEN);
             }
             auto result = db[col].find( bsoncxx::from_json(filter),options);
-            std::string result_str = "";
+            std::string result_str;
             for(auto e : result){
                 result_str += bsoncxx::to_json(e) + ","; 
             }
-            if(result_str.size() > 0)
+            if(!result_str.empty())
                 result_str.pop_back();
             return "{ \"total\": " + std::to_string(total) + 
                 ",\"content\":[" + result_str + "] }";
         }catch(std::exception& e){
             LOG(error) << e.what();
-            return "{ \"total\": 0, \"content\":[] }";
+            return R"({ "total": 0, "content":[] })";
         }
     }
 }

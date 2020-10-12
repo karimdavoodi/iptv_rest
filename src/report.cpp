@@ -16,8 +16,8 @@ void status_information_get(served::response &res, const served::request &req)
         result["_id"] = 1; 
         result["Running"] = stat.find("True") != string::npos; 
         auto last_reset = Util::send_http_cmd("/last_reset");
-        result["LastReset"] = last_reset.size()?
-            last_reset.substr(last_reset.find("\n")):"";
+        result["LastReset"] = !last_reset.empty()?
+            last_reset.substr(last_reset.find('\n')):"";
         result["SystemIP"] = Hardware::detect_ip();
         result["SystemInternet"] = Util::test_internet_connection("195.146.59.198", "80");
         result["Owner"] = license_valid ? license["license"]["General"]["Customer"]

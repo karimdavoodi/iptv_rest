@@ -3,9 +3,9 @@
 #include <vector>
 #include "../third_party/json.hpp"
 namespace Hardware {
-    const std::vector<std::pair<int,std::string>> detect_input_tuners();
-    const std::vector<std::pair<int,std::string>> detect_output_tuners();
-    const std::string detect_network();
+    std::vector<std::pair<int,std::string>> detect_input_tuners();
+    std::vector<std::pair<int,std::string>> detect_output_tuners();
+    std::string detect_network();
     const nlohmann::json scan_input_tuner(const std::string&);
     const std::string detect_cpu_model();
     const int detect_cpu_core_number();
@@ -21,5 +21,5 @@ namespace Hardware {
     const nlohmann::json detect_interfaces();
     void apply_network(nlohmann::json& net);
     void save_network(nlohmann::json& net);
-    long file_date(const std::string file_path);
+    long file_date(const std::string& file_path);
 }

@@ -125,7 +125,7 @@ void storage_info_get(served::response &res, const served::request &req)
 
     try{                                                         
         int64_t id;                                                  
-        std::string result = "";
+        std::string result;
         res.set_header("Content-type", "application/json");      
         if(Util::get_id(req, id)){                               
             result =  Mongo::find_id(col, id);                      
@@ -135,7 +135,7 @@ void storage_info_get(served::response &res, const served::request &req)
             result =  Mongo::find_filter_range(col, parameters, from, to);                         
         }   
         // Add media status
-        if(result.size()){
+        if(!result.empty()){
             json list = json::parse(result);
             if(!list["content"].is_null()){
                 for(auto& item : list["content"] ){

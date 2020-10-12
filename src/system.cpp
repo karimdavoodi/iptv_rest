@@ -13,10 +13,10 @@
 #include "system.hpp"
 #include "hardware.hpp"
 #include <chrono>
-#include <time.h>
+#include <ctime>
 using namespace std;
 time_t currentTime = 0;
-string currentZone = "";
+string currentZone;
 void system_general_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
@@ -28,7 +28,7 @@ void system_location_get(served::response &res, const served::request &req)
     try{                                                        
         json net = json::parse(Mongo::find_id("system_location", 1));      
         // Read system time and zone
-        currentTime = time(NULL);
+        currentTime = time(nullptr);
         net["systemTime"] = long(currentTime);
         ifstream zone("/etc/timezone");
         if(zone.is_open()) zone >> currentZone; 
@@ -47,11 +47,11 @@ void system_location_put(served::response &res, const served::request &req)
     PUT_ID1_COL("system_location");
     try{
         json system_location = json::parse(req.body());
-        time_t now = system_location["systemTime"].get<long>();
-        string tzone = system_location["timeZone"].get<string>();
+        auto now = system_location["systemTime"].get<long>();
+        auto tzone = system_location["timeZone"].get<string>();
         if(now != currentTime){
             LOG(info) << "Set time:" << now;
-            struct timespec n;
+            struct timespec n {};
             n.tv_sec = now;
             n.tv_nsec = 0;
             clock_settime(CLOCK_REALTIME, &n); // FIXME: not work
@@ -153,7 +153,7 @@ void system_users_me_get(served::response &res, const served::request &req)
 	CHECK_AUTH;
 
     auto auth_str = req.header("Authorization");
-    if(!auth_str.size()){
+    if(auth_str.empty()){
         ERRORSEND(res, 401, 1000, "Not Authorized!"); 
     }
     auto auth = auth_str.substr(6); // remove "Base "
@@ -277,7 +277,7 @@ void system_backup_list_get(served::response &res, const served::request &req)
     auto path = string(MEDIA_ROOT) + "Backup/";
     CHECK_PATH(path);
     json list = json::array();
-    for(auto file : boost::filesystem::directory_iterator(path)){
+    for(const auto& file : boost::filesystem::directory_iterator(path)){
         string name = file.path().filename().c_str();
         json item = json::object();
         item["name"] = (string)file.path().filename().c_str();
@@ -295,7 +295,7 @@ void system_backup_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     auto name = req.query.get("name");
-    if(name.size()){
+    if(!name.empty()){
         auto path = "Backup/" + name;
         SEND_FILE(path);	
         res.set_header("Content-type", "application/octet-stream");
@@ -308,7 +308,7 @@ void system_backup_post(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     auto name = req.query.get("name");
-    if(name.size()){
+    if(!name.empty()){
         auto path = "Backup/" + name;
         if(path.find(".gz") == string::npos)
             path = path + ".gz";
@@ -322,7 +322,7 @@ void system_backup_put(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     auto name = req.query.get("name");
-    if(name.size()){
+    if(!name.empty()){
         auto path = "Backup/" + name;
         Util::sys_restore(path);
         res.set_status(200);
@@ -334,7 +334,7 @@ void system_backup_del(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     auto name = req.query.get("name");
-    if(name.size()){
+    if(!name.empty()){
         auto path = string(MEDIA_ROOT) +  "Backup/" + name;
         if(Util::remove_file(path)){
             res.set_status(200);
@@ -385,7 +385,7 @@ void system_logout_get(served::response &res, const served::request &req)
 void system_restart_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    if(Util::send_http_cmd("/start") != "")
+    if(!Util::send_http_cmd("/start").empty())
         res.set_status(served::status_2XX::OK);
     else
         res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
@@ -394,7 +394,7 @@ void system_restart_get(served::response &res, const served::request &req)
 void system_stop_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    if(Util::send_http_cmd("/stop") != "")
+    if(!Util::send_http_cmd("/stop").empty())
         res.set_status(served::status_2XX::OK);
     else
         res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
@@ -402,7 +402,7 @@ void system_stop_get(served::response &res, const served::request &req)
 void system_reboot_get(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
-    if(Util::send_http_cmd("/reboot") != "")
+    if(!Util::send_http_cmd("/reboot").empty())
         res.set_status(served::status_2XX::OK);
     else
         res.set_status(served::status_5XX::INTERNAL_SERVER_ERROR);
