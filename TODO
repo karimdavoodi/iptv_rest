@@ -1,4 +1,0 @@
-Change in served:
-    - ignore 'throw' in multiplex.cpp
-    - change Server header
-
