@@ -88,15 +88,15 @@ void launcher_setting_del(served::response &res, const served::request &req)
         if(id < USER_RECORD_BASE_ID){                            
             ERRORSEND(res, 400, 1056, "Not delete system records!");
         }                                                     
-        auto launcher = json::parse(Mongo::find_id("launcher_setting", id));
+        auto launcher = json::parse(db.find_id("launcher_setting", id));
         if(launcher["_id"].is_number()){
             for(auto menu_id : launcher["menu"]){
-                auto menu = json::parse(Mongo::find_id("launcher_menu", menu_id));
+                auto menu = json::parse(db.find_id("launcher_menu", menu_id));
                 if(menu["_id"].is_number()){
                     for(auto component_id : menu["components"]){
-                        Mongo::remove_id("launcher_components_info", component_id);
+                        db.remove_id("launcher_components_info", component_id);
                     }
-                    Mongo::remove_id("launcher_menu", menu_id);
+                    db.remove_id("launcher_menu", menu_id);
                 }
             }
         }

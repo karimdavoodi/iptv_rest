@@ -5,10 +5,10 @@
 #include <boost/filesystem/operations.hpp>
 using namespace std;
 
-void del_all_media_related_records(const served::request &req, int64_t id)
+void del_all_media_related_records(Mongo& db, const served::request &req, int64_t id)
 {
     try{
-        auto media_path = Util::get_content_path(req, id);
+        auto media_path = Util::get_content_path(db, req, id);
         Util::remove_file(media_path);
 
         // TODO: do only for VIDEO and AUDIO type!
@@ -20,7 +20,7 @@ void del_all_media_related_records(const served::request &req, int64_t id)
                 Util::remove_file(MEDIA_ROOT "Poster/" + to_string(id) + ".jpg");
             }            
             // Also remove form inputs/archive  
-            json archive_channels = json::parse(Mongo::find_mony("live_inputs_archive", "{}"));
+            json archive_channels = json::parse(db.find_mony("live_inputs_archive", "{}"));
             for(auto& chan : archive_channels){
                 if(chan["contents"].is_null()) continue;
                 json new_contents = json::array();
@@ -35,7 +35,7 @@ void del_all_media_related_records(const served::request &req, int64_t id)
                 if(new_contents.size() != chan["contents"].size()){
                     chan["contents"].clear();
                     chan["contents"] = new_contents;
-                    Mongo::update_id("live_inputs_archive", chan["_id"], chan.dump());
+                    db.update_id("live_inputs_archive", chan["_id"], chan.dump());
                 }
             }
         }
@@ -128,21 +128,21 @@ void storage_info_get(served::response &res, const served::request &req)
         std::string result;
         res.set_header("Content-type", "application/json");      
         if(Util::get_id(req, id)){                               
-            result =  Mongo::find_id(col, id);                      
+            result =  db.find_id(col, id);                      
         }else{                                                   
             auto [from, to] = Util::req_range(req);              
             const std::string parameters = Util::req_parameters(req); 
-            result =  Mongo::find_filter_range(col, parameters, from, to);                         
+            result =  db.find_filter_range(col, parameters, from, to);                         
         }   
         // Add media status
         if(!result.empty()){
             json list = json::parse(result);
             if(!list["content"].is_null()){
                 for(auto& item : list["content"] ){
-                    item["files_exist"] = Util::check_media_exists(req, item["_id"]);
+                    item["files_exist"] = Util::check_media_exists(db, req, item["_id"]);
                 }
             }else if(!list["_id"].is_null()){
-                    list["files_exist"] = Util::check_media_exists(req, list["_id"]);
+                    list["files_exist"] = Util::check_media_exists(db, req, list["_id"]);
             }
             res << list.dump(2); 
         }
@@ -169,12 +169,14 @@ void storage_info_del(served::response &res, const served::request &req)
         if(!Util::get_id(req, id)){      
             ERRORSEND(res, 400, 1006, "Id not exists in url!");  
         }                                                       
-        del_all_media_related_records(req, id);
+        del_all_media_related_records(db, req, id);
     }                                                       
     DEL_ID_COL("storage_contents_info");
 }
 void storage_media_get(served::response &res, const served::request &req)
 {
+
+    Mongo db;
     //CHECK_AUTH;
     SEND_ID_FILE;
 }
@@ -195,6 +197,7 @@ void storage_media_del(served::response &res, const served::request &req)
 }
 void storage_poster_get(served::response &res, const served::request &req)
 {
+    Mongo db;
     //CHECK_AUTH;
     SEND_ID_FILE;
 }
@@ -215,6 +218,7 @@ void storage_poster_del(served::response &res, const served::request &req)
 }
 void storage_subtitle_get(served::response &res, const served::request &req)
 {
+    Mongo db;
     //CHECK_AUTH;
     SEND_ID_FILE;
 }

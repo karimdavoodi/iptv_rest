@@ -62,18 +62,18 @@ using namespace std;
  *          func_del_from_outputs(channelId)
  *
  * */
-void func_del_from_outputs_and_processed(int64_t id)
+void func_del_from_outputs_and_processed(Mongo& db, int64_t id)
 {
     LOG(trace) << "Delete from all processed and output this Channel id:" << id;
     auto filter = "{\"input\":" + to_string(id) + "}";
-    Mongo::remove_mony("live_output_dvb", filter );
-    Mongo::remove_mony("live_output_archive", filter );
-    Mongo::remove_mony("live_output_network", filter );
-    Mongo::remove_mony("live_inputs_mix", filter );
-    Mongo::remove_mony("live_inputs_scramble", filter );
-    Mongo::remove_mony("live_inputs_transcode", filter );
+    db.remove_mony("live_output_dvb", filter );
+    db.remove_mony("live_output_archive", filter );
+    db.remove_mony("live_output_network", filter );
+    db.remove_mony("live_inputs_mix", filter );
+    db.remove_mony("live_inputs_scramble", filter );
+    db.remove_mony("live_inputs_transcode", filter );
 }
-void func_del_from_outputs_and_processed(const vector<int64_t>& id_list)
+void func_del_from_outputs_and_processed(Mongo& db, const vector<int64_t>& id_list)
 {
     if(id_list.empty()) return;
     LOG(trace) << "Delete from all processed and output this Channel size:" << id_list.size();
@@ -85,14 +85,14 @@ void func_del_from_outputs_and_processed(const vector<int64_t>& id_list)
     string filter_str = filter.dump();
     LOG(trace) << "Filter is " << filter_str;
         
-    Mongo::remove_mony("live_output_dvb", filter_str );
-    Mongo::remove_mony("live_output_archive", filter_str );
-    Mongo::remove_mony("live_output_network", filter_str );
-    Mongo::remove_mony("live_inputs_mix", filter_str );
-    Mongo::remove_mony("live_inputs_scramble", filter_str );
-    Mongo::remove_mony("live_inputs_transcode", filter_str );
+    db.remove_mony("live_output_dvb", filter_str );
+    db.remove_mony("live_output_archive", filter_str );
+    db.remove_mony("live_output_network", filter_str );
+    db.remove_mony("live_inputs_mix", filter_str );
+    db.remove_mony("live_inputs_scramble", filter_str );
+    db.remove_mony("live_inputs_transcode", filter_str );
 }
-void add_network_account_to_out_archive(json& account)
+void add_network_account_to_out_archive(Mongo& db, json& account)
 {
     string url = account["url"];
     LOG(trace) << "Try to add IPTV accounts channels to output archive by url :" << url;
@@ -116,7 +116,7 @@ void add_network_account_to_out_archive(json& account)
         LOG(warning) << "The output of " << archive_url << " is not valid.";
         return;
     }
-    json input_net_chans = json::parse(Mongo::find_mony("live_inputs_network",
+    json input_net_chans = json::parse(db.find_mony("live_inputs_network",
         "{\"accountId\":" + to_string(account["_id"].get<int64_t>()) + "}"));
     for(auto& net_chan : input_net_chans){
         for(auto& archive_chan : archive_chan_list){
@@ -125,7 +125,7 @@ void add_network_account_to_out_archive(json& account)
             LOG(trace) << "Comp " << net_chan["name"] << ":" << archive_chan["name"];
             if(net_chan["name"] == archive_chan["name"]){
                 json chan;
-                chan["_id"] = Mongo::get_uniq_id(); 
+                chan["_id"] = db.get_uniq_id(); 
                 chan["active"] = net_chan["active"];
                 chan["description"] = "From master " + 
                     (account["name"].is_string() ? account["name"].get<string>() : "");
@@ -135,13 +135,13 @@ void add_network_account_to_out_archive(json& account)
                 chan["programName"] = "";
                 chan["timeShift"] = archive_chan["timeShift"];
                 chan["virtual"] = true;
-                Mongo::insert("live_output_archive", chan.dump());
+                db.insert("live_output_archive", chan.dump());
                 break;
             }
         }
     }
 }
-void remove_or_disable_output_channels_if_needs(const std::string& col)
+void remove_or_disable_output_channels_if_needs(Mongo& db, const std::string& col)
 {
     try{
 
@@ -152,35 +152,35 @@ void remove_or_disable_output_channels_if_needs(const std::string& col)
 
         //Make map of type names
         std::map<long, std::string> type_map;
-        json types = json::parse(Mongo::find_mony("live_inputs_types", "{}"));
+        json types = json::parse(db.find_mony("live_inputs_types", "{}"));
         for(const auto& type : types) 
             type_map[type["_id"]] = type["name"];
 
         auto filter = json::object();
-        json channels = json::parse(Mongo::find_mony(col, "{}"));
+        json channels = json::parse(db.find_mony(col, "{}"));
         //vector<mongocxx::model::delete_one> ops;
         for(auto& chan : channels){
 
             auto type_name = type_map[ chan["inputType"] ];
             auto input_col = "live_inputs_" + type_name;
             
-            string in_chan_str = Mongo::find_id(input_col, chan["input"]);
+            string in_chan_str = db.find_id(input_col, chan["input"]);
             if(in_chan_str.size() < 10){
                 // not exists input. remove output
-                Mongo::remove_id(col, chan["_id"]);
+                db.remove_id(col, chan["_id"]);
             }else{
                 // check if active field is differ
                 json in_chan = json::parse(in_chan_str);
                 if(in_chan["active"] != chan["active"]){
                     chan["active"] = in_chan["active"];
-                    Mongo::update_id(col, chan["_id"], chan.dump());
+                    db.update_id(col, chan["_id"], chan.dump());
                 }
             }
         }
         /*
         if(ops.size()){
             // Create bulk DB operation
-            auto client = Mongo::pool.acquire();
+            auto client = db.pool.acquire();
             auto colection = (*client)[DB_NAME][col];
             auto bulk = colection.create_bulk_write(); 
             for(auto& op : ops){
@@ -194,26 +194,26 @@ void remove_or_disable_output_channels_if_needs(const std::string& col)
         LOG(error) << e.what();                       
     }
 }
-void func_del_tuner_info(int64_t tuner_id)
+void func_del_tuner_info(Mongo& db, int64_t tuner_id)
 {
     try{
         LOG(trace) << "Try to remove channels of tuner id: " << tuner_id;
         string filter = "{\"dvbId\":" + to_string(tuner_id) + "}";
-        json chan_list = json::parse(Mongo::find_mony("live_inputs_dvb", filter));
+        json chan_list = json::parse(db.find_mony("live_inputs_dvb", filter));
 
         vector<int64_t> id_list;
         for(const auto& chan : chan_list){
             id_list.push_back(chan["_id"].get<int64_t>());
         }
-        func_del_from_outputs_and_processed(id_list);
+        func_del_from_outputs_and_processed(db, id_list);
          
-        Mongo::remove_mony("live_inputs_dvb", filter);
-        Mongo::remove_mony("live_output_dvb", filter);
+        db.remove_mony("live_inputs_dvb", filter);
+        db.remove_mony("live_output_dvb", filter);
     }catch(std::exception& e){                                      
         LOG(error) << e.what();                       
     }
 }
-void func_add_tuner_info(json& tuner)
+void func_add_tuner_info(Mongo& db, json& tuner)
 {
     try{
         if(tuner["systemId"] >= 1000 ){
@@ -224,7 +224,7 @@ void func_add_tuner_info(json& tuner)
         LOG(trace) << "Try to add channels tuner id: " << tuner["_id"];
         string ffilter = "{\"frequencyId\":" + 
             to_string(tuner["frequencyId"].get<int64_t>()) + "}";
-        json channels_list = json::parse(Mongo::find_mony("live_satellites_channels", 
+        json channels_list = json::parse(db.find_mony("live_satellites_channels", 
                     ffilter));
 
         if(channels_list.empty()){
@@ -233,10 +233,10 @@ void func_add_tuner_info(json& tuner)
         }
         for(const auto& chan : channels_list){
             string filter = R"({"type":8, "name":")" + chan["name"].get<string>() + "\"}";
-            json logo = json::parse(Mongo::find_one("storage_contents_info", filter));
+            json logo = json::parse(db.find_one("storage_contents_info", filter));
 
             json dvb_chan;
-            dvb_chan["_id"] = Mongo::get_uniq_id(); 
+            dvb_chan["_id"] = db.get_uniq_id(); 
             dvb_chan["active"] = tuner["active"];
             dvb_chan["logo"] = logo["_id"].is_number() ? logo["_id"].get<int64_t>() : 0; 
             dvb_chan["tv"] = chan["videoId"] > 0 ; 
@@ -244,41 +244,41 @@ void func_add_tuner_info(json& tuner)
 
             if(tuner["virtual"].is_null() || tuner["virtual"] == false){
                 dvb_chan["channelId"] = chan["_id"]; 
-                Mongo::insert("live_inputs_dvb", dvb_chan.dump());
+                db.insert("live_inputs_dvb", dvb_chan.dump());
             }else{
                 dvb_chan["description"] = ""; 
                 dvb_chan["input"] = 0; 
                 dvb_chan["inputType"] = 0; 
                 dvb_chan["category"] = json::array(); 
                 dvb_chan["serviceId"] = chan["serviceId"]; 
-                Mongo::insert("live_output_dvb", dvb_chan.dump());
+                db.insert("live_output_dvb", dvb_chan.dump());
             }
         }
     }catch(std::exception& e){                                      
         LOG(error) << e.what();                       
     }
 }
-void func_del_network_account(int64_t account_id)
+void func_del_network_account(Mongo& db, int64_t account_id)
 {
     try{
 
         LOG(trace) << "Try to remove channels of network account:" << account_id;
         string filter = "{\"accountId\":" + to_string(account_id) + "}";
-        json chan_list = json::parse(Mongo::find_mony("live_inputs_network", filter));
+        json chan_list = json::parse(db.find_mony("live_inputs_network", filter));
 
         vector<int64_t> id_list;
         for(const auto& chan : chan_list){
             id_list.push_back(chan["_id"].get<int64_t>());
         }
-        func_del_from_outputs_and_processed(id_list);
+        func_del_from_outputs_and_processed(db, id_list);
          
-        Mongo::remove_mony("live_network_channels", filter);
-        Mongo::remove_mony("live_inputs_network", filter);
+        db.remove_mony("live_network_channels", filter);
+        db.remove_mony("live_inputs_network", filter);
     }catch(std::exception& e){                                      
         LOG(error) << e.what();                       
     }
 }
-json get_iptv_account_channels(const std::string& url)
+json get_iptv_account_channels(Mongo& db, const std::string& url)
 {
     json list = json::array();
     try{
@@ -317,7 +317,8 @@ json get_iptv_account_channels(const std::string& url)
 }
 void func_add_network_account(json account)
 {
-    try{
+    try{ 
+        Mongo db;
         LOG(trace) << "Try to add channels of network account:" << account["_id"];
         auto is_radio = [](const string& ch_name) -> bool {
             string name = ch_name;
@@ -329,18 +330,18 @@ void func_add_network_account(json account)
             else
                 return false;
         };
-        json channels_list = get_iptv_account_channels(account["url"]);
+        json channels_list = get_iptv_account_channels(db, account["url"]);
         if(channels_list.empty()) return;
         for(const auto& chan : channels_list){
             string name = chan["name"]; 
             json net_chan;
-            net_chan["_id"] = Mongo::get_uniq_id(); 
+            net_chan["_id"] = db.get_uniq_id(); 
             net_chan["name"] = name; 
             net_chan["url"] = chan["url"]; 
             net_chan["accountId"] = account["_id"]; 
-            Mongo::insert("live_network_channels", net_chan.dump());
+            db.insert("live_network_channels", net_chan.dump());
 
-            json logo = json::parse(Mongo::find_one("storage_contents_info", 
+            json logo = json::parse(db.find_one("storage_contents_info", 
                                             R"({"type":8, "name":")" + name + "\"}" ));
             json input_net;
             input_net["_id"] = net_chan["_id"]; // same as up record 
@@ -356,27 +357,27 @@ void func_add_network_account(json account)
             input_net["webPage"] = false;
             input_net["logo"] = logo["_id"].is_number() ? logo["_id"].get<int64_t>() : 0; 
             input_net["tv"] = ! is_radio(name);
-            Mongo::insert("live_inputs_network", input_net.dump());
+            db.insert("live_inputs_network", input_net.dump());
         }
-        add_network_account_to_out_archive(account);
+        add_network_account_to_out_archive(db, account);
     }catch(std::exception& e){                                      
         LOG(error) << e.what();                       
     }
 }
-void add_to_output_network(int64_t type_id, const string& type_name)
+void add_to_output_network(Mongo& db, int64_t type_id, const string& type_name)
 {
     try{
         string input_col = "live_inputs_" + type_name;
         LOG(trace) << "Try to add to live_output_network from:" << input_col;
         auto is_active =  "{\"active\":true}";
-        json inputs = json::parse(Mongo::find_mony(input_col,is_active));
+        json inputs = json::parse(db.find_mony(input_col,is_active));
         for(const auto& chan : inputs){
             auto input_id = chan["_id"].get<int64_t>();
             auto filter = "{\"input\":" + to_string(input_id) + "}";
 
-            if(!Mongo::exists("live_output_network", filter)){
+            if(!db.exists("live_output_network", filter)){
                 json item;
-                item["_id"] = Mongo::get_uniq_id();
+                item["_id"] = db.get_uniq_id();
                 item["active"] = true; 
                 item["description"] = ""; 
                 item["input"] = input_id; 
@@ -386,7 +387,7 @@ void add_to_output_network(int64_t type_id, const string& type_name)
                 item["hls"] = false; 
                 item["http"] = false; 
                 item["rtsp"] = false; 
-                Mongo::insert("live_output_network", item.dump());
+                db.insert("live_output_network", item.dump());
             }
         }
     }catch(std::exception& e){                                      
@@ -451,12 +452,12 @@ void live_tuners_scan_get(served::response &res , const served::request &req)
     if(!Util::get_id(req, id) ){
         ERRORSEND(res, 400, 1024, "Invalid tuner id!");
     }
-    auto tuner = Mongo::find_id("live_tuners_info", id);
+    auto tuner = db.find_id("live_tuners_info", id);
     if(tuner.size() < 10 ){
         ERRORSEND(res, 400, 1025, "Invalid tuner!");
     }
     res.set_header("Content-type", "application/json");     
-    json channs = Hardware::scan_input_tuner(tuner);
+    json channs = Hardware::scan_input_tuner(db, tuner);
     if(channs["total"] > 0){
         res << channs.dump(2);
         res.set_status(200);
@@ -464,36 +465,36 @@ void live_tuners_scan_get(served::response &res , const served::request &req)
         ERRORSEND(res, 400, 1026, channs["error"]);             \
     }
 }
-void func_del_input_dvb_if_invalid()
+void func_del_input_dvb_if_invalid(Mongo& db)
 {
-    json chan_list = json::parse(Mongo::find_mony("live_inputs_dvb", "{}"));
+    json chan_list = json::parse(db.find_mony("live_inputs_dvb", "{}"));
 
     vector<int64_t> id_list;
     for(const auto& chan : chan_list){
         auto tuner_id = chan["dvbId"];
-        if(!Mongo::exists_id("live_tuners_info", tuner_id)){
+        if(!db.exists_id("live_tuners_info", tuner_id)){
             id_list.push_back(chan["_id"]);
+            db.remove_id("live_inputs_dvb", chan["_id"]);
         }
-        Mongo::remove_id("live_inputs_dvb", chan["_id"]);
     }
     
-    func_del_from_outputs_and_processed(id_list);
+    func_del_from_outputs_and_processed(db, id_list);
 }
-void func_del_input_net_if_invalid()
+void func_del_input_net_if_invalid(Mongo& db)
 {
-    json chan_list = json::parse(Mongo::find_mony("live_inputs_network", "{}"));
+    json chan_list = json::parse(db.find_mony("live_inputs_network", "{}"));
 
     vector<int64_t> id_list;
     for(const auto& chan : chan_list){
         if(chan["type"] == "MST"){
             auto account_id = chan["accountId"];
-            if(!Mongo::exists_id("live_network_accounts", account_id)){
+            if(!db.exists_id("live_network_accounts", account_id)){
                 id_list.push_back(chan["_id"]);
             }
-            Mongo::remove_id("live_inputs_network", chan["_id"]);
+            db.remove_id("live_inputs_network", chan["_id"]);
         }
     }
-    func_del_from_outputs_and_processed(id_list);
+    func_del_from_outputs_and_processed(db, id_list);
 }
 void live_tuners_scan_bw_get(served::response &res , const served::request &req)
 {
@@ -538,7 +539,7 @@ void live_tuners_info_get(served::response &res , const served::request &req)
 void live_inputs_dvb_get(served::response &res , const served::request &req)
 {
     CHECK_AUTH;
-    func_del_input_dvb_if_invalid();
+    func_del_input_dvb_if_invalid(db);
     GET_COL("live_inputs_dvb");
 }
 void live_inputs_archive_get(served::response &res , const served::request &req)
@@ -549,7 +550,7 @@ void live_inputs_archive_get(served::response &res , const served::request &req)
 void live_inputs_network_get(served::response &res , const served::request &req)
 {
     CHECK_AUTH;
-    func_del_input_net_if_invalid();
+    func_del_input_net_if_invalid(db);
     GET_COL("live_inputs_network");
 }
 void live_inputs_transcode_get(served::response &res , const served::request &req)
@@ -570,19 +571,19 @@ void live_inputs_mix_get(served::response &res , const served::request &req)
 void live_output_dvb_get(served::response &res , const served::request &req)
 {
     CHECK_AUTH;
-    remove_or_disable_output_channels_if_needs("live_output_dvb");
+    remove_or_disable_output_channels_if_needs(db, "live_output_dvb");
     GET_COL("live_output_dvb");
 }
 void live_output_network_get(served::response &res , const served::request &req)
 {
     CHECK_AUTH;
 
-    remove_or_disable_output_channels_if_needs("live_output_network");
+    remove_or_disable_output_channels_if_needs(db, "live_output_network");
 
     // add inputs 
-    json types = json::parse(Mongo::find_mony("live_inputs_types", "{}"));
+    json types = json::parse(db.find_mony("live_inputs_types", "{}"));
     for(const auto& type : types){
-        add_to_output_network(type["_id"], type["name"]);
+        add_to_output_network(db, type["_id"], type["name"]);
     }
 
     GET_COL("live_output_network");
@@ -590,7 +591,7 @@ void live_output_network_get(served::response &res , const served::request &req)
 void live_output_archive_get(served::response &res , const served::request &req)
 {
     CHECK_AUTH;
-    remove_or_disable_output_channels_if_needs("live_output_archive");
+    remove_or_disable_output_channels_if_needs(db, "live_output_archive");
     GET_COL("live_output_archive");
 }
 ///////////////////////////
@@ -622,7 +623,7 @@ void live_tuners_info_post(served::response &res, const served::request &req)
     CHECK_AUTH;
     POST_ID_COL("live_tuners_info");
     if(j["systemId"] < 1000 )
-        func_add_tuner_info(j);
+        func_add_tuner_info(db, j);
     // TODO: ... 
 }
 void live_inputs_dvb_post(served::response &res, const served::request &req)
@@ -696,12 +697,12 @@ void live_network_accounts_put(served::response &res, const served::request &req
     }                                            
     bool changed = false;
     json new_rec = json::parse(req.body());   
-    json old_rec = json::parse(Mongo::find_id("live_network_accounts", id));
+    json old_rec = json::parse(db.find_id("live_network_accounts", id));
     if(new_rec["url"] != old_rec["url"]) 
         changed = true;
 
     if(changed)
-        func_del_network_account(id);
+        func_del_network_account(db, id);
 
     PUT_ID_COL("live_network_accounts");
 
@@ -720,17 +721,17 @@ void live_tuners_info_put(served::response &res, const served::request &req)
     }                                            
     bool changed = false;
     json new_rec = json::parse(req.body());   
-    json old_rec = json::parse(Mongo::find_id("live_tuners_info", id));
+    json old_rec = json::parse(db.find_id("live_tuners_info", id));
     if(new_rec["frequencyId"] != old_rec["frequencyId"]) 
         changed = true;
 
     if(changed)
-        func_del_tuner_info(id);
+        func_del_tuner_info(db, id);
 
     PUT_ID_COL("live_tuners_info");
 
     if(changed)
-        func_add_tuner_info(new_rec);
+        func_add_tuner_info(db, new_rec);
 }
 void live_inputs_dvb_put(served::response &res, const served::request &req)
 {
@@ -797,49 +798,49 @@ void live_network_accounts_del(served::response &res, const served::request &req
 {
     CHECK_AUTH;
     DEL_ID_COL("live_network_accounts");
-    func_del_network_account(id);
+    func_del_network_account(db, id);
 }
 void live_tuners_info_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     DEL_ID_COL("live_tuners_info");
-    func_del_tuner_info(id);
+    func_del_tuner_info(db, id);
 }
 void live_inputs_dvb_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     DEL_ID_COL("live_inputs_dvb");
-    func_del_from_outputs_and_processed(id);
+    func_del_from_outputs_and_processed(db, id);
 }
 void live_inputs_archive_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     DEL_ID_COL("live_inputs_archive");
-    func_del_from_outputs_and_processed(id);
+    func_del_from_outputs_and_processed(db, id);
 }
 void live_inputs_network_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     DEL_ID_COL("live_inputs_network");
-    func_del_from_outputs_and_processed(id);
+    func_del_from_outputs_and_processed(db, id);
 }
 void live_inputs_transcode_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     DEL_ID_COL("live_inputs_transcode");
-    func_del_from_outputs_and_processed(id);
+    func_del_from_outputs_and_processed(db, id);
 }
 void live_inputs_scramble_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     DEL_ID_COL("live_inputs_scramble");
-    func_del_from_outputs_and_processed(id);
+    func_del_from_outputs_and_processed(db, id);
 }
 void live_inputs_mix_del(served::response &res, const served::request &req)
 {
     CHECK_AUTH;
     DEL_ID_COL("live_inputs_mix");
-    func_del_from_outputs_and_processed(id);
+    func_del_from_outputs_and_processed(db, id);
 }
 void live_output_dvb_del(served::response &res, const served::request &req)
 {
@@ -857,25 +858,3 @@ void live_output_archive_del(served::response &res, const served::request &req)
     DEL_ID_COL("live_output_archive");
 }
 
-/*
-   void live_tuners_input_scan_get(served::response &res, const served::request &req)
-   {
-   CHECK_AUTH;
-   int64_t id;
-   if(!Util::get_id(req, id) ){
-   ERRORSEND(res, 400, 1002, "Invalid id!");
-   }
-   auto tuner = Mongo::find_id("live_tuners_input", id);
-   if(tuner.size() < 10 ){
-   ERRORSEND(res, 400, 1002, "Invalid tuner!");
-   }
-   res.set_header("Content-type", "application/json");     
-   json channs = Hardware::scan_input_tuner(tuner);
-   if(channs["total"] > 0){
-   res << channs.dump();
-   res.set_status(200);
-   }else{
-   ERRORSEND(res, 400, 1008, channs["error"]);             \
-   }
-   }
-   */

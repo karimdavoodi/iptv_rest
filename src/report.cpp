@@ -10,7 +10,7 @@ void status_information_get(served::response &res, const served::request &req)
 	CHECK_AUTH;
     try{                                                        
         json result = json::object();                                     
-        json license = json::parse(Mongo::find_id("system_license", 1));      
+        json license = json::parse(db.find_id("system_license", 1));      
         bool license_valid = boost::filesystem::exists("/run/sms/license.json");
         auto stat = Util::send_http_cmd("/service_stat");
         result["_id"] = 1; 
@@ -18,7 +18,7 @@ void status_information_get(served::response &res, const served::request &req)
         auto last_reset = Util::send_http_cmd("/last_reset");
         result["LastReset"] = !last_reset.empty()?
             last_reset.substr(last_reset.find('\n')):"";
-        result["SystemIP"] = Hardware::detect_ip();
+        result["SystemIP"] = Hardware::detect_ip(db);
         result["SystemInternet"] = Util::test_internet_connection("195.146.59.198", "80");
         result["Owner"] = license_valid ? license["license"]["General"]["Customer"]
                                         : "NOT VALID";
@@ -91,7 +91,7 @@ void report_webui_state_post(served::response &res, const served::request &req)
         GET_BODY_AS_j                                          
         int64_t _id = std::chrono::system_clock::now().time_since_epoch().count();                   
         j["_id"] = _id;                                        
-        Mongo::insert("report_webui_state", j.dump());       
+        db.insert("report_webui_state", j.dump());       
         res.set_header("Content-Type", "application/json");    
         res << "{ \"_id\":" + std::to_string(_id) + " }";      
         res.set_status(200);                                   
@@ -107,7 +107,7 @@ void report_output_channels_get(served::response &res, const served::request &re
         res.set_header("Content-type", "application/json");    
         auto [from, to] = Util::req_range(req);           
         const std::string parameters = Util::req_parameters(req);
-        json channels_totoal = json::parse(Mongo::find_filter_range(
+        json channels_totoal = json::parse(db.find_filter_range(
                     "report_output_channels",             
                     parameters , from, to));                     
         if(channels_totoal["content"].is_null()){
@@ -119,7 +119,7 @@ void report_output_channels_get(served::response &res, const served::request &re
         // update stat fields
 
         for(auto& chan : channels){
-            json report = json::parse(Mongo::find_filter_range(
+            json report = json::parse(db.find_filter_range(
                         "report_channels",             
                         "{\"inputId\":"+to_string(chan["inputId"])+"}" , 
                         -1, 0));                     

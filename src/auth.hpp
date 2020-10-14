@@ -18,8 +18,9 @@
     }while(false)  
 
 #define CHECK_AUTH                                              \
+    Mongo db;                                                  \
     do{                                                         \
-       if(Util::check_auth(res, req) == false){                 \
+       if(Util::check_auth(db, res, req) == false){             \
             ERRORSEND(res, 401, 1000, "Not Authorized!");       \
             return;                                             \
        }                                                        \
@@ -64,8 +65,8 @@
         if(id < 0 ){                                                \
             ERRORSEND(res, 400, 1004, "Id not exist in body or url!");               \
         }                                                           \
-        if(Mongo::exists_id(col, id)){                              \
-            Mongo::replace_id(col, id, req.body());                 \
+        if(db.exists_id(col, id)){                              \
+            db.replace_id(col, id, req.body());                 \
             res.set_status(200);                                    \
         }else{                                                      \
             ERRORSEND(res, 400, 1005, "Record not exists!");        \
@@ -77,7 +78,7 @@
 #define PUT_ID1_COL(col)                                            \
     try{                                                            \
         CHECK_BODY_EXISTS_ID;                                       \
-        Mongo::insert_or_replace_id(col, 1, req.body());            \
+        db.insert_or_replace_id(col, 1, req.body());            \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
         LOG(error) << e.what();                       \
@@ -87,9 +88,9 @@
     json j;                                                         \
     try{                                                            \
         GET_BODY_AS_j                                               \
-        int64_t _id = Mongo::get_uniq_id();                            \
+        int64_t _id = db.get_uniq_id();                            \
         j["_id"] = _id;                                             \
-        Mongo::insert(col, j.dump());                               \
+        db.insert(col, j.dump());                               \
         res.set_header("Content-Type", "application/json");         \
         res << "{ \"_id\":" + std::to_string(_id) + " }";           \
         res.set_status(200);                                        \
@@ -106,10 +107,10 @@
         if(id < USER_RECORD_BASE_ID){                                          \
             ERRORSEND(res, 400, 10036, "Not delete system record!");\
         }                                                           \
-        if(!Mongo::exists_id(col, id)){                             \
+        if(!db.exists_id(col, id)){                             \
             ERRORSEND(res, 400, 1007, "Record not exists!");        \
         }                                                           \
-        Mongo::remove_id(col, id);                                  \
+        db.remove_id(col, id);                                  \
         res.set_status(200);                                        \
     }catch(std::exception& e){                                      \
         LOG(error) << e.what();                                     \
@@ -121,11 +122,11 @@
         int64_t id;                                                     \
         res.set_header("Content-type", "application/json");         \
         if(Util::get_id(req, id)){                                 \
-            res << Mongo::find_id(col, id);                       \
+            res << db.find_id(col, id);                       \
         }else{                                                     \
             auto [from, to] = Util::req_range(req);                \
             const std::string parameters = Util::req_parameters(req); \
-            res << Mongo::find_filter_range(col,                    \
+            res << db.find_filter_range(col,                    \
                 parameters , from, to);                             \
         }                                                           \
         res.set_status(200);                                        \
@@ -136,7 +137,7 @@
 #define GET_ID1_COL(col)                                            \
     try{                                                            \
         std::string result;                                         \
-        result = Mongo::find_id(col, 1);                            \
+        result = db.find_id(col, 1);                            \
         res.set_header("Content-type", "application/json");         \
         res << result;                                              \
         res.set_status(200);                                        \
@@ -149,7 +150,7 @@
         if(!Util::get_id(req, id)){                                       \
             ERRORSEND(res, 400, 1010, "File id not exists in url!");          \
         }                                                           \
-        std::string fname = Util::get_content_path(req, id);                   
+        std::string fname = Util::get_content_path(db, req, id);                   
 
 #define SEND_ID_FILE                                                \
     try{                                                            \

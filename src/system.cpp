@@ -26,7 +26,7 @@ void system_location_get(served::response &res, const served::request &req)
 {
 	CHECK_AUTH;
     try{                                                        
-        json net = json::parse(Mongo::find_id("system_location", 1));      
+        json net = json::parse(db.find_id("system_location", 1));      
         // Read system time and zone
         currentTime = time(nullptr);
         net["systemTime"] = long(currentTime);
@@ -73,7 +73,7 @@ void system_network_get(served::response &res, const served::request &req)
         auto system_nics = Hardware::detect_interfaces();
 
         // Get from net config fron DB
-        json net = json::parse(Mongo::find_id("system_network", 1));      
+        json net = json::parse(db.find_id("system_network", 1));      
         if(net["interfaces"].is_null())
             net["interfaces"] = json::array();
         json valid_nics = json::array();
@@ -110,7 +110,7 @@ void system_network_get(served::response &res, const served::request &req)
         res.set_header("Content-type", "application/json");     
         res << net.dump(2);                                          
         res.set_status(200);                                    
-        Mongo::update_id("system_network", 1, net.dump());
+        db.update_id("system_network", 1, net.dump());
 
     }catch(std::exception& e){                                  
         LOG(error) << e.what();                   
@@ -161,7 +161,7 @@ void system_users_me_get(served::response &res, const served::request &req)
     auto pos = text.find(':');
     if(pos == std::string::npos) return;
     auto user = text.substr(0,pos);
-    res << Mongo::find_one("system_users","{\"user\": \"" + user + "\"}");
+    res << db.find_one("system_users","{\"user\": \"" + user + "\"}");
     res.set_status(200);                                        
 }
 void system_cities_get(served::response &res, const served::request &req)

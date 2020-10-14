@@ -95,7 +95,7 @@ namespace Hardware {
             LOG(error) << e.what();
         }
     }
-    const json scan_input_tuner(const std::string& tuner_json)
+    const json scan_input_tuner(Mongo& db, const std::string& tuner_json)
     {
         int num = 0;
         ostringstream cmd;
@@ -117,7 +117,7 @@ namespace Hardware {
                 res["error"] = "Tuners is virtual";
                 return res;
             }
-            auto freq_rec = json::parse(Mongo::find_id("live_satellites_frequencies", 
+            auto freq_rec = json::parse(db.find_id("live_satellites_frequencies", 
                         tuner["frequencyId"]));
             if(freq_rec["_id"].is_null() || freq_rec["parameters"].is_null()){
                 LOG(error) << "Freq is invalid";
@@ -241,10 +241,10 @@ namespace Hardware {
         LOG(trace) << __func__;
         return time(NULL); 
     }
-    const std::string detect_ip()
+    const std::string detect_ip(Mongo& db)
     { 
         json ips = json::array();
-        json net = json::parse(Mongo::find_id("system_network",1));
+        json net = json::parse(db.find_id("system_network",1));
         if(!net.is_null()){
             for(const auto& nic : net["interfaces"]){
                 if(!nic["ip"].is_null()){

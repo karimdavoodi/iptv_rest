@@ -24,6 +24,8 @@
 #define PORT "8139"
 #define THREADS 4
 using namespace std;
+
+
 void init_log(int argc, char* argv[]);
 void do_before(served::response &res, const served::request &req);
 void get_users_access_list(served::response& res, 
@@ -32,7 +34,7 @@ void get_users_access_list(served::response& res,
 
 int main(int argc, char *argv[])
 {
-
+    Mongo db;
     string port = (argc >= 2) ? argv[1] : PORT;
     init_log(argc, argv);
     if( geteuid() != 0 ){
@@ -42,7 +44,7 @@ int main(int argc, char *argv[])
     string s;
     
     LOG(info) << "Start Main "; 
-    Mongo::fill_defauls();
+    db.fill_defauls();
         
     try{
         served::multiplexer mux;

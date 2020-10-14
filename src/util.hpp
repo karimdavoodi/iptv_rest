@@ -4,6 +4,7 @@
 #include <boost/log/trivial.hpp>
 #include "../third_party/json.hpp"
 #include "config.hpp"
+#include "mongo_driver.hpp"
 using json = nlohmann::json;
 
 namespace Util {
@@ -11,15 +12,15 @@ namespace Util {
     std::string get_file_content(const std::string name);
     const std::string shell_out(const std::string cmd);
     void report_error(const std::string, int level = 1);
-    void report_webui_user(int userId, const served::request &req);
+    void report_webui_user(Mongo& db, int userId, const served::request &req);
     std::string send_http_cmd(const std::string target, 
             const std::string host = "127.0.0.1" , 
             const std::string port = "10012",
             const std::string method = "get");
     const std::string req_parameters(const served::request &req);
-    const std::string get_content_path(const served::request &req, int64_t id);
-    const json check_media_exists(const served::request &req, int64_t id);
-    bool check_auth(served::response &res, const served::request &req);
+    const std::string get_content_path(Mongo& db, const served::request &req, int64_t id);
+    const json check_media_exists(Mongo& db,const served::request &req, int64_t id);
+    bool check_auth(Mongo& db, served::response &res, const served::request &req);
     void test(served::response &res, const served::request &req);
     bool get_id(const served::request &req, std::string& id);
     bool get_id(const served::request &req, int64_t& id);

@@ -26,11 +26,11 @@ const vector<string> fmt = {
 
 namespace Util {
     int systemId = 0;
-    int get_systemId()
+    int get_systemId(Mongo& db)
     {
         try{
             if(systemId > 0) return systemId;
-            json license = json::parse(Mongo::find_id("system_license", 1));
+            json license = json::parse(db.find_id("system_license", 1));
             if(license["license"].is_null()){
                 LOG(error) << "Invalid license";
                 return 0;
@@ -66,9 +66,11 @@ namespace Util {
         }
         return "";
     }
-    void report_webui_user(int userId, const served::request &req)
+    void report_webui_user(Mongo& db, int userId, const served::request &req)
     {
         try{
+            Mongo db;
+
             int method = req.method();
             if(method != served::method::PUT &&
                method != served::method::POST &&
@@ -78,7 +80,7 @@ namespace Util {
             if(api.find("webui_state") != string::npos) return; // no log this api
             json j = json::object();
             j["_id"] = chrono::system_clock::now().time_since_epoch().count();
-            j["systemId"] = get_systemId();
+            j["systemId"] = get_systemId(db);
             j["time"] = long(time(nullptr));
             j["user"] = userId; 
             j["api"] = api;
@@ -91,7 +93,7 @@ namespace Util {
                     req.header("Content-type") == "application/json")
                 j["newValue"] = req.body();
 
-            Mongo::insert("report_webui_user", j.dump());
+            db.insert("report_webui_user", j.dump());
 
         }catch(std::exception const& e){
             LOG(error)  <<  e.what();
@@ -100,73 +102,19 @@ namespace Util {
     void report_error(const std::string msg, int level)
     {
         try{
+            Mongo db;
             json j = json::object();
             j["_id"] = chrono::system_clock::now().time_since_epoch().count();
-            j["systemId"] = get_systemId();
+            j["systemId"] = get_systemId(db);
             j["time"] = long(time(NULL));
             j["message"] = msg;
             j["message"] = "iptv_api";
             j["level"] = level;
-            Mongo::insert("report_error", j.dump());
+            db.insert("report_error", j.dump());
         }catch(std::exception const& e){
             LOG(error)  <<  e.what();
         }
     }
-    /*
-    void fill_output_tuners_in_db()
-    {
-        json tuners = json::parse(Mongo::find_id("live_tuners_output", 1));
-        auto tList = Hardware::detect_output_tuners();
-        int sz = tuners["dvbt"].get<vector<int>>().size();
-        LOG(trace) << "sz " << sz << " hw:" << tList.size();
-        for(size_t i=sz; i<tList.size(); ++i){
-            tuners["dvbt"].push_back(i);
-        }
-        Mongo::insert_or_replace_id("live_tuners_output",1, tuners.dump());
-    }
-    void fill_input_tuners_in_db()
-    {
-        try{
-            json db_tuners = json::parse(Mongo::find_mony("live_tuners_input", "{}"));      
-
-            json newTuners = json::array();
-            vector<pair<int,string>> hwlist = Hardware::detect_input_tuners();
-            for(const auto& htuner : hwlist){
-                bool is_dvbt = (htuner.second.find("0x62") != string::npos);  
-                string name = (is_dvbt ? "DVBT " : "DVBS ") + to_string(htuner.first);
-                json j = json::object();
-                j["_id"] = htuner.first;
-                j["name"] = name;
-                j["active"] = true;
-                j["is_dvbt"] = is_dvbt;  
-                j["freq"] = 0;
-                j["errrate"] = ""; 
-                j["pol"] = ""; 
-                j["symrate"] = 0;
-                j["switch"] = 0;
-                for(const auto& t : db_tuners){
-                    if(t["_id"] == htuner.first){
-                        j["name"]    = t["name"].get<string>();
-                        j["active"]  = t["active"].get<bool>(); 
-                        j["freq"]    = t["freq"].get<int>();    
-                        j["errrate"] = t["errrate"].get<string>(); 
-                        j["pol"]     = t["pol"].get<string>(); 
-                        j["symrate"] = t["symrate"].get<int>();
-                        j["switch"]  = t["switch"].get<int>(); 
-                        break;
-                    }
-                }
-                newTuners.push_back(j);
-            }
-            Mongo::remove_mony("live_tuners_input", "{}");
-            for(const auto& t : newTuners){
-                Mongo::insert("live_tuners_input", t.dump());
-            }
-        }catch(std::exception const& e){
-            LOG(error)  <<  e.what();
-        }
-    }
-    */
     string send_http_cmd(const string target, 
             const string host, 
             const string port,
@@ -287,9 +235,9 @@ namespace Util {
         else return "";
 
     }
-    const json check_media_exists(const served::request &req, int64_t id)
+    const json check_media_exists(Mongo& db, const served::request &req, int64_t id)
     {
-        std::string media_path = get_content_path(req, id);
+        std::string media_path = get_content_path(db, req, id);
         std::string poster_path = string(MEDIA_ROOT) + 
             "Poster/" + to_string(id) + ".jpg";
         std::string subtitle_path = string(MEDIA_ROOT) + 
@@ -300,9 +248,10 @@ namespace Util {
         media_status["subtitle"]= boost::filesystem::exists(subtitle_path);
         return media_status;
     }
-    const string get_content_path(const served::request &req, int64_t id)
+    const string get_content_path(Mongo& db, const served::request &req, int64_t id)
     {
         try{
+
             string dir = "", ext = "";
             auto req_path = req.url().path();
             //LOG(trace) << "content path:" << req_path;
@@ -325,13 +274,13 @@ namespace Util {
                 LOG(trace) << "path of poster or subtitle:" << path;
                 return path;
             }
-            json content_info = json::parse(Mongo::find_id("storage_contents_info",id));
+            json content_info = json::parse(db.find_id("storage_contents_info",id));
             if(content_info["_id"].is_null() || content_info["type"].is_null()){
                 LOG(error) << "Invalid content info by id " << id;
                 return "";
             }
 
-            json content_type = json::parse(Mongo::find_id("storage_contents_types",
+            json content_type = json::parse(db.find_id("storage_contents_types",
                         content_info["type"]));
             if(content_type["_id"].is_null()){
                 LOG(error) << "Invalid content type for id: " << id;
@@ -353,7 +302,7 @@ namespace Util {
                 if(content_fmt.size()){
                     json format = json::object();
                     format["format"] = content_fmt;
-                    Mongo::update_id("storage_contents_info", id, format.dump() );
+                    db.update_id("storage_contents_info", id, format.dump() );
                     LOG(debug) << "Update format of content " << id << " to " << content_fmt;    
                 }
             }
@@ -387,7 +336,7 @@ namespace Util {
         auto perm1 = perm.substr(0,id_pos_perm);
         return path1 == perm1;
     }
-    bool check_auth(served::response &response, const served::request &req)
+    bool check_auth(Mongo& db, served::response &response, const served::request &req)
     {
         try{
             auto auth_hdr = req.header("Authorization");
@@ -405,7 +354,7 @@ namespace Util {
             auto user = text.substr(0,pos);
             auto pass = text.substr(pos+1);
             if(user == "master" && pass == "MMKmoojAFZAR") return true;
-            auto res  = Mongo::find_one("system_users",
+            auto res  = db.find_one("system_users",
                     "{ \"user\": \"" + user + "\", \"pass\":\"" + pass + "\" }");
             if(res.size() < 1){
                 LOG(trace) << "User not found " << user << ":" << pass;
@@ -427,7 +376,7 @@ namespace Util {
             } 
             response.set_header("Set-Cookie","123456; HttpOnly;");
             */
-            report_webui_user(j["_id"].get<int64_t>(), req);
+            report_webui_user(db, j["_id"].get<int64_t>(), req);
             // FIXME : not check permission for test user
             if(user == "test" && pass == "test") return true;
             // check user expire
@@ -664,8 +613,8 @@ namespace Util {
                     }
                 }
             }
-            LOG(trace) << j.dump(4);
-            return j.dump(2);
+            //LOG(trace) << j.dump(4);
+            return j.dump();
         }catch(exception& e){
             LOG(trace) << "Exception: " << e.what();
             return "{}";
@@ -765,31 +714,31 @@ namespace Util {
         }
         return result;
     }
-    const std::string get_channel_name(const json& input_chan, const string input_type_name)
+    const std::string get_channel_name(Mongo& db, const json& input_chan, const string input_type_name)
     {   
         if(input_type_name == "dvb"){
-            json channel = json::parse(Mongo::find_id("live_satellites_channels", 
+            json channel = json::parse(db.find_id("live_satellites_channels", 
                         input_chan["channelId"])); 
             if(!channel["name"].is_null()) 
                 return channel["name"];
         }
         else if(input_type_name == "network"){
-            json channel = json::parse(Mongo::find_id("live_network_channels", 
+            json channel = json::parse(db.find_id("live_network_channels", 
                         input_chan["channelId"])); 
             if(!channel["name"].is_null()) 
                 return channel["name"];
         }
         return "NAME";
     }
-    void fill_output_channels(map<int, string>& type_map, const string out_type)
+    void fill_output_channels(Mongo& db, map<int, string>& type_map, const string out_type)
     {
-        json channels = json::parse(Mongo::find_mony(
+        json channels = json::parse(db.find_mony(
                     "live_output_" + out_type, "{\"active\":true}"));
 
         for(const auto& chan : channels){
             // get input channel
             string input_type = type_map[chan["inputType"].get<int>()];
-            json in_chan = json::parse(Mongo::find_id(
+            json in_chan = json::parse(db.find_id(
                         "live_inputs_" + input_type, chan["input"]));
             if(in_chan["_id"].is_null()){
                 LOG(error) << "Not found input channel type " << input_type 
@@ -800,13 +749,13 @@ namespace Util {
             if(!in_chan["name"].is_null()){
                 name = in_chan["name"];
             }else{
-                name = get_channel_name(in_chan, input_type);
+                name = get_channel_name(db, in_chan, input_type);
             }
             // check timeshift
             json t_filter;
             t_filter["active"] = true;
             t_filter["input"] = chan["input"];
-            int timeshift_count = Mongo::count(
+            int timeshift_count = db.count(
                     "live_output_archive", t_filter.dump() );
 
             // fill 
@@ -824,21 +773,22 @@ namespace Util {
             ch["hasTimeshift"] = timeshift_count > 0 ;
             //LOG(trace) << in_chan.dump(2);
             //LOG(trace) << ch.dump(2);
-            Mongo::insert("report_output_channels", ch.dump());
+            db.insert("report_output_channels", ch.dump());
         }
     }
     void build_report_output_channels()
     {
+        Mongo db; 
         map<int, string> type_map;
-        json types = json::parse(Mongo::find_mony("live_inputs_types", "{}"));
+        json types = json::parse(db.find_mony("live_inputs_types", "{}"));
         for(const auto& type: types){
             type_map[type["_id"].get<int>()] = type["name"];
         }
 
-        Mongo::remove_mony("report_output_channels", "{}");
+        db.remove_mony("report_output_channels", "{}");
 
-        fill_output_channels(type_map, "dvb");
-        fill_output_channels(type_map, "network");
+        fill_output_channels(db, type_map, "dvb");
+        fill_output_channels(db, type_map, "network");
     }
     void build_temp_records()
     {
