@@ -100,9 +100,9 @@ void system_network_get(served::response &res, const served::request &req)
         net["_id"] = 1;
         if(net["dns"].is_null()) net["dns"] = "";
         if(net["gateway"].is_null()) net["gateway"] = "";
-        if(net["mainInterface"].is_null()) net["mainInterface"] = "";
-        if(net["multicastBase"].is_null()) net["multicastBase"] = "";
-        if(net["multicastInterface"].is_null()) net["multicastInterface"] = "";
+        if(net["mainInterface"].is_null()) net["mainInterface"] = 1;
+        if(net["multicastBase"].is_null()) net["multicastBase"] = 239;
+        if(net["multicastInterface"].is_null()) net["multicastInterface"] = 1;
         if(net["addressForNAT"].is_null()) net["addressForNAT"] = "";
         if(net["staticRoute"].is_null()) net["staticRoute"] = json::array();
         if(net["firewallRule"].is_null()) net["firewallRule"] = json::array();
@@ -127,6 +127,11 @@ void system_network_put(served::response &res, const served::request &req)
     }catch(std::exception& e){                                  
         LOG(error) << e.what();                   
     }                       
+}
+void system_ui_pages_get(served::response &res, const served::request &req)
+{
+	CHECK_AUTH;
+    GET_COL("system_ui_pages");
 }
 void system_users_get(served::response &res, const served::request &req)
 {
@@ -360,6 +365,8 @@ void system_license_put(served::response &res, const served::request &req)
             LOG(debug) << "Copy " << from << " to /opt/sms/lic.bin";
             boost::filesystem::copy_file(from, "/opt/sms/lic.bin", 
                     boost::filesystem::copy_option::overwrite_if_exists);
+            boost::filesystem::remove("/opt/sms/lic.json");
+            boost::filesystem::remove("/opt/sms/lic.id");
         }
     }catch(std::exception& e){                                  
         LOG(error) << e.what();                   

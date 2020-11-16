@@ -66,12 +66,16 @@ void func_del_from_outputs_and_processed(Mongo& db, int64_t id)
 {
     LOG(trace) << "Delete from all processed and output this Channel id:" << id;
     auto filter = "{\"input\":" + to_string(id) + "}";
-    db.remove_mony("live_output_dvb", filter );
-    db.remove_mony("live_output_archive", filter );
-    db.remove_mony("live_output_network", filter );
-    db.remove_mony("live_inputs_mix", filter );
-    db.remove_mony("live_inputs_scramble", filter );
-    db.remove_mony("live_inputs_transcode", filter );
+    for(auto col : {
+            "live_output_dvb", 
+            "live_output_archive",
+            "live_output_network",
+            "live_inputs_mix",
+            "live_inputs_scramble", 
+            "live_inputs_transcode"
+            }){
+        db.remove_mony(col, filter );
+    }
 }
 void func_del_from_outputs_and_processed(Mongo& db, const vector<int64_t>& id_list)
 {
@@ -85,12 +89,16 @@ void func_del_from_outputs_and_processed(Mongo& db, const vector<int64_t>& id_li
     string filter_str = filter.dump();
     LOG(trace) << "Filter is " << filter_str;
         
-    db.remove_mony("live_output_dvb", filter_str );
-    db.remove_mony("live_output_archive", filter_str );
-    db.remove_mony("live_output_network", filter_str );
-    db.remove_mony("live_inputs_mix", filter_str );
-    db.remove_mony("live_inputs_scramble", filter_str );
-    db.remove_mony("live_inputs_transcode", filter_str );
+    for(auto col : {
+            "live_output_dvb", 
+            "live_output_archive",
+            "live_output_network",
+            "live_inputs_mix",
+            "live_inputs_scramble", 
+            "live_inputs_transcode"
+            }){
+        db.remove_mony(col, filter_str );
+    }
 }
 void add_network_account_to_out_archive(Mongo& db, json& account)
 {
@@ -144,7 +152,7 @@ void add_network_account_to_out_archive(Mongo& db, json& account)
 void remove_or_disable_output_channels_if_needs(Mongo& db, const std::string& col)
 {
     try{
-
+        vector<int64_t> remove_list;
         LOG(trace) << "Try to remove unvalid channels from " << col;
         // TODO: complete BULK mode DB operaton
         using bsoncxx::builder::basic::kvp;
@@ -167,7 +175,7 @@ void remove_or_disable_output_channels_if_needs(Mongo& db, const std::string& co
             string in_chan_str = db.find_id(input_col, chan["input"]);
             if(in_chan_str.size() < 10){
                 // not exists input. remove output
-                db.remove_id(col, chan["_id"]);
+                remove_list.push_back(chan["_id"]);
             }else{
                 // check if active field is differ
                 json in_chan = json::parse(in_chan_str);
@@ -177,19 +185,14 @@ void remove_or_disable_output_channels_if_needs(Mongo& db, const std::string& co
                 }
             }
         }
-        /*
-        if(ops.size()){
-            // Create bulk DB operation
-            auto client = db.pool.acquire();
-            auto colection = (*client)[DB_NAME][col];
-            auto bulk = colection.create_bulk_write(); 
-            for(auto& op : ops){
-                bulk.append(op);
-            }
-            bulk.execute();
+        if(!remove_list.empty()){
+            json filter;
+            filter["_id"] = json::object();
+            filter["_id"]["$in"] = json::array();
+            for(auto id : remove_list)
+                filter["_id"]["$in"].push_back(id);
+            db.remove_mony(col, filter.dump());
         }
-        */
-
     }catch(std::exception& e){                                      
         LOG(error) << e.what();                       
     }
@@ -203,7 +206,7 @@ void func_del_tuner_info(Mongo& db, int64_t tuner_id)
 
         vector<int64_t> id_list;
         for(const auto& chan : chan_list){
-            id_list.push_back(chan["_id"].get<int64_t>());
+            id_list.push_back(chan["_id"]);
         }
         func_del_from_outputs_and_processed(db, id_list);
          
@@ -410,6 +413,52 @@ void live_satellites_channels_get(served::response &res , const served::request 
     CHECK_AUTH;
     GET_COL("live_satellites_channels");
 }
+void live_satellites_names_post(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    POST_ID_COL("live_satellites_names");
+}
+void live_satellites_frequencies_post(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    POST_ID_COL("live_satellites_frequencies");
+}
+void live_satellites_channels_post(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    POST_ID_COL("live_satellites_channels");
+}
+void live_satellites_names_del(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    DEL_ID_COL("live_satellites_names");
+}
+void live_satellites_frequencies_del(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    DEL_ID_COL("live_satellites_frequencies");
+}
+void live_satellites_channels_del(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    DEL_ID_COL("live_satellites_channels");
+}
+void live_satellites_names_put(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    PUT_ID_COL("live_satellites_names");
+}
+void live_satellites_frequencies_put(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    PUT_ID_COL("live_satellites_frequencies");
+}
+void live_satellites_channels_put(served::response &res , const served::request &req)
+{
+    CHECK_AUTH;
+    PUT_ID_COL("live_satellites_channels");
+}
+
 void live_tuners_system_get(served::response &res , const served::request &req)
 {
     CHECK_AUTH;
@@ -490,8 +539,8 @@ void func_del_input_net_if_invalid(Mongo& db)
             auto account_id = chan["accountId"];
             if(!db.exists_id("live_network_accounts", account_id)){
                 id_list.push_back(chan["_id"]);
+                db.remove_id("live_inputs_network", chan["_id"]);
             }
-            db.remove_id("live_inputs_network", chan["_id"]);
         }
     }
     func_del_from_outputs_and_processed(db, id_list);

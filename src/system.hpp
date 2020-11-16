@@ -9,6 +9,8 @@ void system_location_post(served::response &, const served::request &);
 void system_network_get(served::response &, const served::request &);
 void system_network_put(served::response &, const served::request &);
 
+void system_ui_pages_get(served::response &, const served::request &);
+
 void system_users_get(served::response &, const served::request &);
 void system_users_put(served::response &, const served::request &);
 void system_users_del(served::response &, const served::request &);

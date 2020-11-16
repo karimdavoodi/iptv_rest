@@ -69,12 +69,30 @@ mux.handle("/users/message/broadcast")
 ////////////////////// LIVE //////////////////////////////////////////////////
 LOG(trace) << "Add route /live/* ALL_METHODS";
 
+mux.handle("/live/satellites/names/{id}")      
+	.get(live_satellites_names_get)
+	.put(live_satellites_names_put)
+	.del(live_satellites_names_del);
 mux.handle("/live/satellites/names")      
-    .get(live_satellites_names_get);
-mux.handle("/live/satellites/frequencies")
-    .get(live_satellites_frequencies_get);
-mux.handle("/live/satellites/channels")   
-    .get(live_satellites_channels_get);
+	.get(live_satellites_names_get)
+	.post(live_satellites_names_post);
+
+mux.handle("/live/satellites/frequencies/{id}")      
+	.get(live_satellites_frequencies_get)
+	.put(live_satellites_frequencies_put)
+	.del(live_satellites_frequencies_del);
+mux.handle("/live/satellites/frequencies")      
+	.get(live_satellites_frequencies_get)
+	.post(live_satellites_frequencies_post);
+
+mux.handle("/live/satellites/channels/{id}")      
+	.get(live_satellites_channels_get)
+	.put(live_satellites_channels_put)
+	.del(live_satellites_channels_del);
+mux.handle("/live/satellites/channels")      
+	.get(live_satellites_channels_get)
+	.post(live_satellites_channels_post);
+
 mux.handle("/live/tuners/system")         
     .get(live_tuners_system_get);
 mux.handle("/live/tuners/scan/{id}")      
@@ -222,6 +240,10 @@ mux.handle("/system/network")
             .get (system_network_get)
             .put (system_network_put)
             .post(system_network_put);
+mux.handle("/system/ui_pages/{id}")
+            .get (system_ui_pages_get);
+mux.handle("/system/ui_pages")
+            .get (system_ui_pages_get);
 mux.handle("/system/users/{id}")
             .get (system_users_get)
             .put (system_users_put)

@@ -343,7 +343,9 @@ namespace Hardware {
                 }
             }
         }
-
+        std::sort(nics.begin(), nics.end(), [](const json& a, const json& b){ 
+                return a["name"].get<string>() < b["name"].get<string>(); 
+                });
         LOG(trace) << "Find systen NIC:" << nics.size();
         return nics;
     }

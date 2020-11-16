@@ -11,7 +11,7 @@ void status_information_get(served::response &res, const served::request &req)
     try{                                                        
         json result = json::object();                                     
         json license = json::parse(db.find_id("system_license", 1));      
-        bool license_valid = boost::filesystem::exists("/run/sms/license.json");
+        bool license_valid = boost::filesystem::exists("/opt/sms/lic.json");
         auto stat = Util::send_http_cmd("/service_stat");
         result["_id"] = 1; 
         result["Running"] = stat.find("True") != string::npos; 
@@ -111,13 +111,13 @@ void report_output_channels_get(served::response &res, const served::request &re
                     "report_output_channels",             
                     parameters , from, to));                     
         if(channels_totoal["content"].is_null()){
-            res << "";
+            res << "[]";
             res.set_status(403);                               
             return;
         }
-        json channels = channels_totoal["content"];
+        /*
         // update stat fields
-
+        json channels = channels_totoal["content"];
         for(auto& chan : channels){
             json report = json::parse(db.find_filter_range(
                         "report_channels",             
@@ -128,7 +128,8 @@ void report_output_channels_get(served::response &res, const served::request &re
                 chan["inputSnapshot"] = report["snapshot"];
             }
         }
-        res << channels.dump(2);
+        */
+        res << channels_totoal["content"].dump(2);
         res.set_status(200);                               
 
     }catch(std::exception& e){                            

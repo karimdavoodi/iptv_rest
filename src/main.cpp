@@ -106,7 +106,7 @@ void get_users_access_list(served::response& res,
 
 }
 void do_before(served::response &res, const served::request &req) {
-  LOG(trace) << "URL:" << req.url().URI();
+  LOG(trace) << "URL:" << req.url().URI() << " : " << served::method_to_string(req.method());
   if (req.method() != served::method::OPTIONS) {
     res.set_status(served::status_4XX::NOT_FOUND);
   } else {

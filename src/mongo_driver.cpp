@@ -19,23 +19,16 @@
 #include <exception>
 #include <string>
 #include "config.hpp"
+#include "mongocxx/client.hpp"
 
 using bsoncxx::builder::basic::make_document;
 using bsoncxx::builder::basic::kvp;
 
 mongocxx::instance inst{};
-mongocxx::pool pool{ mongocxx::uri{} };
         
 Mongo::Mongo(){ 
     try{
-        auto client = pool.try_acquire();
-        if(!client.has_value()){
-            LOG(error) << "Not get client!";
-            db_valid = false;
-        }else{
-            db = (* client.value() ) [DB_NAME];
-            db_valid = true;
-        }
+        db = client[DB_NAME];
     }catch(std::exception& e){
         LOG(error) << e.what();
     }
@@ -51,26 +44,22 @@ void Mongo::fill_defauls(){
 }
 bool Mongo::count(const std::string& col_name, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     return db[col_name].count_documents(bsoncxx::from_json(doc));
 }
 bool Mongo::exists(const std::string& col_name, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     auto result = db[col_name].count_documents(bsoncxx::from_json(doc));
     if(result > 0) return true;
     return false;
 }
 bool Mongo::exists_id(const std::string& col_name, int64_t id)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     auto result = db[col_name].count_documents(make_document(kvp("_id", id)));
     if(result > 0) return true;
     return false;
 }
 bool Mongo::insert(const std::string& col, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << " in col:" << col << " doc:" << doc;
     try{
         auto ret = db[col].insert_one(bsoncxx::from_json(doc));
@@ -82,7 +71,6 @@ bool Mongo::insert(const std::string& col, const std::string& doc)
 }
 bool Mongo::remove_mony(const std::string& col, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << " doc:" << doc;
     try{
         auto ret = db[col].delete_many(bsoncxx::from_json(doc));
@@ -94,7 +82,6 @@ bool Mongo::remove_mony(const std::string& col, const std::string& doc)
 }
 bool Mongo::remove_id(const std::string& col, int64_t id)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << " id:" << id;
     try{
         auto ret = db[col].delete_one(make_document(kvp("_id", id)));
@@ -106,7 +93,6 @@ bool Mongo::remove_id(const std::string& col, int64_t id)
 }
 bool Mongo::replace(const std::string& col, const std::string& filter, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << " filter:" << filter << " doc:"<< doc;
     try{
 
@@ -122,7 +108,6 @@ bool Mongo::insert_if_not_exists(const std::string& col,
         const std::string& filter,
         const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << " filter:" << filter << " doc:"<< doc;
     try{
         mongocxx::options::update options {};
@@ -141,7 +126,6 @@ bool Mongo::insert_if_not_exists(const std::string& col,
 bool Mongo::insert_or_replace_id(const std::string& col, int64_t id,
         const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
     try{
         mongocxx::options::replace options {};
@@ -157,7 +141,6 @@ bool Mongo::insert_or_replace_id(const std::string& col, int64_t id,
 }
 bool Mongo::replace_id(const std::string& col, int64_t id, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
     try{
         auto ret = db[col].replace_one(make_document(kvp("_id", id)) ,
@@ -171,7 +154,6 @@ bool Mongo::replace_id(const std::string& col, int64_t id, const std::string& do
 }
 bool Mongo::update_id(const std::string& col, int64_t id, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << " id:" << id << " doc:"<< doc;
     try{
         auto ret = db[col].update_one(
@@ -186,7 +168,6 @@ bool Mongo::update_id(const std::string& col, int64_t id, const std::string& doc
 }
 std::string Mongo::find_mony( const std::string& col, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     try{
         //LOG(debug) << " col:" << col << " doc:" << doc;
         auto result = db[col].find(bsoncxx::from_json(doc));
@@ -203,7 +184,6 @@ std::string Mongo::find_mony( const std::string& col, const std::string& doc)
 }
 std::string Mongo::find_one( const std::string& col, const std::string& doc)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     try{
         //LOG(debug) << "col:" << col << " doc:" << doc;
         auto result = db[col].find_one(bsoncxx::from_json(doc));
@@ -218,7 +198,6 @@ std::string Mongo::find_one( const std::string& col, const std::string& doc)
 }
 std::string Mongo::find_id(const std::string& col, int64_t id)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     //LOG(debug) << "col:" << col << " id:" << id;
     try{
         auto result = db[col].find_one(make_document(kvp("_id", id)));
@@ -233,7 +212,6 @@ std::string Mongo::find_id(const std::string& col, int64_t id)
 }
 int64_t Mongo::get_uniq_id()
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     std::string col = "uniq_counter"; 
     try{
         mongocxx::options::find_one_and_update options {};
@@ -265,7 +243,6 @@ int64_t Mongo::get_uniq_id()
 }
 std::string Mongo::find_range(const std::string& col, int begin, int end)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << "col:" << col << 
         " begin:" << begin << " end:" << end;
     try{
@@ -292,7 +269,6 @@ std::string Mongo::find_filter_range(const std::string& col,
         const std::string& filter,
         int begin, int end)
 {
-    if(!db_valid) throw std::runtime_error("Invalid db connection!");
     LOG(debug) << " col:" << col <<" filter:" << filter
         << " begin:" << begin << " end:" << end;
     try{

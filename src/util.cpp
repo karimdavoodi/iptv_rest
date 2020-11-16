@@ -387,8 +387,9 @@ namespace Util {
             }
             // check permissions
             auto path = req.url().path();
-            //LOG(trace) << path;
-            if(path.find("/system/users_me") != string::npos) return true;
+            if(path.find("/system/users_me") != string::npos) 
+                return true;
+            /*
             for(const auto& p : j["accessList"].items()){
                 if(is_path_equal(path,p.key())){
                     auto req_method = served::method_to_string(req.method());
@@ -399,6 +400,8 @@ namespace Util {
                     }
                 }
             }
+            */
+            return true; // TODO: check user access in UI
             LOG(trace) << "User not access to " << path;
         }catch(exception& e){
             LOG(trace) << "Exception: " << e.what();
@@ -732,48 +735,56 @@ namespace Util {
     }
     void fill_output_channels(Mongo& db, map<int, string>& type_map, const string out_type)
     {
-        json channels = json::parse(db.find_mony(
-                    "live_output_" + out_type, "{\"active\":true}"));
-
-        for(const auto& chan : channels){
-            // get input channel
-            string input_type = type_map[chan["inputType"].get<int>()];
-            json in_chan = json::parse(db.find_id(
-                        "live_inputs_" + input_type, chan["input"]));
-            if(in_chan["_id"].is_null()){
-                LOG(error) << "Not found input channel type " << input_type 
-                    << " id:" << chan["input"];
-                continue;
+        json channels;
+        try{
+            if(out_type == "dvb"){
+                channels = json::parse(db.find_mony("live_output_dvb", "{\"active\":true}"));
+            }else if(out_type == "network"){
+                channels = json::parse(db.find_mony("live_output_network", 
+                  R"({"$or":[ {"http":true}, {"hls":true}, {"rtsp":true}, {"udp":true} ] })"  ));
             }
-            string name = "";
-            if(!in_chan["name"].is_null()){
-                name = in_chan["name"];
-            }else{
-                name = get_channel_name(db, in_chan, input_type);
-            }
-            // check timeshift
-            json t_filter;
-            t_filter["active"] = true;
-            t_filter["input"] = chan["input"];
-            int timeshift_count = db.count(
-                    "live_output_archive", t_filter.dump() );
 
-            // fill 
-            json ch;
-            ch["_id"] = chan["_id"];
-            ch["name"] = name;
-            ch["logo"] = in_chan["logo"];
-            ch["tv"] = in_chan["tv"];
-            ch["description"] = chan["description"];
-            ch["inputTypeDesc"] = input_type;
-            ch["outputTypeDesc"] = out_type;
-            ch["inputId"] = chan["input"];
-            ch["inputStatus"] = 0;
-            ch["inputSnapshot"] = 0;
-            ch["hasTimeshift"] = timeshift_count > 0 ;
-            //LOG(trace) << in_chan.dump(2);
-            //LOG(trace) << ch.dump(2);
-            db.insert("report_output_channels", ch.dump());
+            for(const auto& chan : channels){
+                // get input channel
+                string input_type = type_map[chan["inputType"].get<int>()];
+                json in_chan = json::parse(db.find_id(
+                            "live_inputs_" + input_type, chan["input"]));
+                if(in_chan["_id"].is_null()){
+                    LOG(error) << "Not found input channel type " << input_type 
+                        << " id:" << chan["input"];
+                    continue;
+                }
+                string name = "";
+                if(!in_chan["name"].is_null()){
+                    name = in_chan["name"];
+                }else{
+                    name = get_channel_name(db, in_chan, input_type);
+                }
+                // check timeshift
+                json t_filter;
+                t_filter["active"] = true;
+                t_filter["input"] = chan["input"];
+                int timeshift_count = db.count( "live_output_archive", t_filter.dump() );
+
+                // fill 
+                json ch;
+                ch["_id"] = chan["_id"];
+                ch["name"] = name;
+                ch["logo"] = in_chan["logo"];
+                ch["tv"] = in_chan["tv"];
+                ch["description"] = chan["description"];
+                ch["inputTypeDesc"] = input_type;
+                ch["outputTypeDesc"] = out_type;
+                ch["inputId"] = chan["input"];
+                ch["inputStatus"] = 0;
+                ch["inputSnapshot"] = 0;
+                ch["hasTimeshift"] = timeshift_count > 0 ;
+                //LOG(trace) << in_chan.dump(2);
+                //LOG(trace) << ch.dump(2);
+                db.insert("report_output_channels", ch.dump());
+            }
+        }catch(std::exception& e){
+            LOG(error) << e.what();
         }
     }
     void build_report_output_channels()

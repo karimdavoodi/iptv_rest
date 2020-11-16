@@ -10,6 +10,7 @@
 class Mongo {
     private:
         bool db_valid;
+        mongocxx::client client{mongocxx::uri{SERVER}};
         mongocxx::database db;
     public:
          Mongo(); 

@@ -484,20 +484,38 @@ Query: in 'GET' method, use any field as parameter.
                 "start": epochtime,
                 "expire": epochtime,
                 "weektime": [int],          # from system/weektime  
-                "accessList": {             # from system/users_accesslist 
-                    "/system/users":[GET,PUT,POST,DELET],
-                },   
+                "accessList": [
+                        {
+                            "page":int,          # from system/ui_pages
+                            "readOnly":boolean
+                        }
+                    ],           
                 "user": string,     # use for Authorization
                 "pass": string,     # use for Authorization
             }
-        Path: /system/users_accesslist
+        Path: /system/ui_pages
         Method: GET
         ResponseBody: 
+            {
+                "total":int,
+                "content":[
+                    {
+                        "_id": int,
+                        "page": string,
+                        "changeable": boolean
+                    }
+                ]
+            }
+        Path: /system/users_accesslist
+        Method: GET
+        ResponseBody:
             {
                 "api1":[method,..],    #from APIs of this document
                 "api2":[method,..],
                 ...
             }
+
+
 ### Hotel Survey
         Description: Manage system users
         Path: /system/survey
@@ -914,6 +932,10 @@ Query: in 'GET' method, use any field as parameter.
                       }
                  ]
             }
+        Path: /live/satellites/names/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: like content of GET
+
         Description: Get Satellite frequency
         Path: /live/satellites/frequencies
         Method: GET
@@ -933,6 +955,9 @@ Query: in 'GET' method, use any field as parameter.
                       }
                  ]
             }
+        Path: /live/satellites/frequencies/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: like content of GET
 
         Description: Get Satellite channels
         Path: /live/satellites/channels
@@ -954,6 +979,10 @@ Query: in 'GET' method, use any field as parameter.
                       }
                  ]
             }
+        Path: /live/satellites/channels/{id}
+        Method: GET, PUT, POST, DELETE 
+        RequestBody: like content of GET
+
         Description: Get physical tuners list
         Path: /live/tuners/system
         Method: GET
@@ -1029,6 +1058,7 @@ Query: in 'GET' method, use any field as parameter.
 
                 ]
             }
+
         Description: Get/Set network iptv account
         Path: /live/network/accounts
         Method: GET
@@ -1740,3 +1770,6 @@ Query: in 'GET' method, use any field as parameter.
                 "body": string,
             }
 
+#######################################################
+##########    High level APIs   #######################
+#######################################################

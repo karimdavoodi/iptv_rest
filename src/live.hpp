@@ -4,6 +4,16 @@
 void live_satellites_names_get(served::response& , const served::request& );
 void live_satellites_frequencies_get(served::response& , const served::request& );
 void live_satellites_channels_get(served::response& , const served::request& );
+void live_satellites_names_post(served::response& , const served::request& );
+void live_satellites_frequencies_post(served::response& , const served::request& );
+void live_satellites_channels_post(served::response& , const served::request& );
+void live_satellites_names_put(served::response& , const served::request& );
+void live_satellites_frequencies_put(served::response& , const served::request& );
+void live_satellites_channels_put(served::response& , const served::request& );
+void live_satellites_names_del(served::response& , const served::request& );
+void live_satellites_frequencies_del(served::response& , const served::request& );
+void live_satellites_channels_del(served::response& , const served::request& );
+
 void live_tuners_system_get(served::response& , const served::request& );
 void live_tuners_scan_get(served::response& , const served::request& );
 void live_tuners_scan_bw_get(served::response& , const served::request& );
