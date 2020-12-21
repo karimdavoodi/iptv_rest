@@ -1160,11 +1160,11 @@ Query: in 'GET' method, use any field as parameter.
                 "preset": string,       # from  'ultrafast','fast','medium','slow','veryslow' 
                 "videoCodec": string,   # from  'No Change','h265','h264','mpeg2' 
                 "videoSize": string,    # from  'No Change','4K', 'FHD', 'HD', 'SD', 'CD' 
-                "videoRate": int,       # from 1 .. 100000000  (in bps) 
+                "videoRate": int,       # from 1 .. 100  (in Mbps) 
                 "videoFps": int,        # from 1 .. 60
                 "videoProfile": string, # from  'Baseline', 'Main', 'High'
                 "audioCodec": string,   # from  'No Change','aac','mp3','mp2' 
-                "audioRate": int,       # from 1 to 1000000 (in bps)
+                "audioRate": int,       # from 1 to 1000 (in Kbps)
                 "extra": string 
             }
         Description: Manage of scrambling profiles
@@ -1770,6 +1770,3 @@ Query: in 'GET' method, use any field as parameter.
                 "body": string,
             }
 
-#######################################################
-##########    High level APIs   #######################
-#######################################################

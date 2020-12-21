@@ -339,6 +339,8 @@ namespace Util {
     bool check_auth(Mongo& db, served::response &response, const served::request &req)
     {
         try{
+
+            //return true;   // FIXME
             auto auth_hdr = req.header("Authorization");
             if(auth_hdr.size() < 10){
                 LOG(trace) << "header Authorization not found in:" << req.url().path();

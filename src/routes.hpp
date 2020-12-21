@@ -206,6 +206,7 @@ mux.handle("/live/output/archive")
 
 ////////////////////// REPORT //////////////////////////////////////////////////
 LOG(trace) << "Add route /report/* GET";
+mux.handle("/report/new").get(report_new_get);
 mux.handle("/status/information").get(status_information_get);
 mux.handle("/report/tuners").get(report_tuners_get);
 mux.handle("/report/channels").get(report_channels_get);

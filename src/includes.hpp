@@ -1,3 +1,4 @@
+#include "report_new.hpp"
 #include "report.hpp"
 #include "system.hpp"
 #include "storage.hpp"

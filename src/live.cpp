@@ -351,7 +351,8 @@ void func_add_network_account(json account)
             input_net["active"] = true;
             input_net["name"] = name;
             input_net["type"] = "MST";
-            input_net["description"] = "";
+            input_net["description"] = account["description"].is_null() ? "" : 
+                                     account["description"];
             input_net["accountId"] = account["_id"];
             input_net["channelId"] = net_chan["_id"];
             input_net["url"] = chan["url"];
